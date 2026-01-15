@@ -47,7 +47,7 @@ export default async function TodayPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Today's Progress</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Today&apos;s Progress</h1>
       <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
         {new Date().toLocaleDateString("en-US", {
           weekday: "long",
@@ -115,7 +115,7 @@ export default async function TodayPage() {
 
       <div className="mt-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold tracking-tight">Today's Meals</h2>
+          <h2 className="text-lg font-semibold tracking-tight">Today&apos;s Meals</h2>
           <a
             href="/app/search"
             className="inline-flex h-9 items-center justify-center rounded-full bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"

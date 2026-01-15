@@ -1,11 +1,7 @@
-# Supabase Database Schema
+-- Supabase Database Schema for NutriTracker
+-- Copy this entire file and paste into Supabase SQL Editor, then click Run
 
-Run these SQL commands in your Supabase SQL Editor to set up the database.
-
-## 1. Enable Row Level Security (RLS)
-
-```sql
--- Users table (extends auth.users)
+-- 1. PROFILES TABLE
 CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT,
@@ -35,11 +31,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-```
 
-## 2. User Goals
 
-```sql
+-- 2. USER GOALS TABLE
 CREATE TABLE user_goals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -62,11 +56,9 @@ CREATE POLICY "Users can insert own goals" ON user_goals
 
 CREATE POLICY "Users can update own goals" ON user_goals
   FOR UPDATE USING (auth.uid() = user_id);
-```
 
-## 3. Food Logs
 
-```sql
+-- 3. FOOD LOGS TABLE
 CREATE TABLE food_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -105,11 +97,9 @@ CREATE POLICY "Users can delete own logs" ON food_logs
   FOR DELETE USING (auth.uid() = user_id);
 
 CREATE INDEX idx_food_logs_user_date ON food_logs(user_id, date DESC);
-```
 
-## 4. Meal Suggestions (Preloaded)
 
-```sql
+-- 4. MEAL SUGGESTIONS TABLE
 CREATE TABLE meal_suggestions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
@@ -122,9 +112,7 @@ CREATE TABLE meal_suggestions (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Public read access
 ALTER TABLE meal_suggestions ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Anyone can view meal suggestions" ON meal_suggestions
   FOR SELECT USING (true);
-```
