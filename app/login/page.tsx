@@ -28,8 +28,8 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/app");
-    router.refresh();
+    // Force a hard navigation instead of client-side routing
+    window.location.href = "/app";
   }
 
   return (

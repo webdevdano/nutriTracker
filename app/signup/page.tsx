@@ -11,6 +11,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   async function handleSignup(event: React.FormEvent) {
     event.preventDefault();
@@ -25,6 +26,7 @@ export default function SignupPage() {
         data: {
           full_name: fullName,
         },
+        emailRedirectTo: `${window.location.origin}/app`,
       },
     });
 
@@ -34,8 +36,8 @@ export default function SignupPage() {
       return;
     }
 
-    router.push("/app");
-    router.refresh();
+    setSuccess(true);
+    setLoading(false);
   }
 
   return (
@@ -48,7 +50,30 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <form
+        {success ? (
+          <div className="rounded-2xl border border-green-200/70 bg-green-50 p-6 dark:border-green-800/80 dark:bg-green-950">
+            <div className="text-center">
+              <div className="text-2xl">✅</div>
+              <h2 className="mt-3 text-lg font-semibold text-green-900 dark:text-green-50">
+                Check your email!
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-green-800 dark:text-green-200">
+                We sent a confirmation link to <strong>{email}</strong>
+              </p>
+              <p className="mt-3 text-sm text-green-700 dark:text-green-300">
+                Click the link in the email to verify your account and log in.
+              </p>
+              <a
+                href="/login"
+                className="mt-6 inline-flex h-10 items-center justify-center rounded-full bg-green-900 px-5 text-sm font-medium text-white hover:bg-green-800 dark:bg-green-50 dark:text-green-900 dark:hover:bg-white"
+              >
+                Go to login
+              </a>
+            </div>
+          </div>
+        ) : (
+          <>
+            <form
           onSubmit={handleSignup}
           className="rounded-2xl border border-zinc-200/70 bg-white p-6 dark:border-zinc-800/80 dark:bg-zinc-900"
         >
@@ -84,6 +109,8 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
+          </>
+        )}
               />
             </label>
 
