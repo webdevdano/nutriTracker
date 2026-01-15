@@ -26,7 +26,7 @@ export default function SignupPage() {
         data: {
           full_name: fullName,
         },
-        emailRedirectTo: `${window.location.origin}/app`,
+        emailRedirectTo: `${window.location.origin}/profile-setup`,
       },
     });
 
