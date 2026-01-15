@@ -6,10 +6,18 @@ import { useRouter } from "next/navigation";
 
 type CalculatedNeeds = {
   bmi: string;
+  bmiCategory: string;
   calories: number;
   protein: number;
   carbs: number;
   fat: number;
+  fiber: number;
+  sodium: number;
+  calcium: number;
+  iron: number;
+  vitamin_c: number;
+  vitamin_d: number;
+  potassium: number;
 };
 
 export default function ProfileSetupPage() {
@@ -79,17 +87,53 @@ export default function ProfileSetupPage() {
       const proteinRow = macros.find((row: string[]) => row[0] === "Protein");
       const carbsRow = macros.find((row: string[]) => row[0] === "Carbohydrate");
       const fatRow = macros.find((row: string[]) => row[0] === "Fat");
+      const fiberRow = macros.find((row: string[]) => row[0] === "Fiber");
 
       const protein = parseInt(proteinRow?.[1] || "150");
       const carbs = parseInt(carbsRow?.[1]?.split("-")[0] || "200");
       const fat = parseInt(fatRow?.[1]?.split("-")[0] || "65");
+      const fiber = parseInt(fiberRow?.[1]?.split("-")[0] || "28");
+
+      // Extract micronutrient recommendations
+      const vitamins = nutritionData.vitamins_table?.["vitamins-table"] || [];
+      const minerals = nutritionData.minerals_table?.["minerals-table"] || [];
+
+      const vitaminCRow = vitamins.find((row: string[]) => row[0]?.includes("Vitamin C"));
+      const vitaminDRow = vitamins.find((row: string[]) => row[0]?.includes("Vitamin D"));
+      
+      const calciumRow = minerals.find((row: string[]) => row[0]?.includes("Calcium"));
+      const ironRow = minerals.find((row: string[]) => row[0]?.includes("Iron"));
+      const sodiumRow = minerals.find((row: string[]) => row[0]?.includes("Sodium"));
+      const potassiumRow = minerals.find((row: string[]) => row[0]?.includes("Potassium"));
+
+      const vitamin_c = parseInt(vitaminCRow?.[1]?.replace(/,/g, "") || "90");
+      const vitamin_d = parseInt(vitaminDRow?.[1]?.replace(/,/g, "") || "15");
+      const calcium = parseInt(calciumRow?.[1]?.replace(/,/g, "") || "1000");
+      const iron = parseInt(ironRow?.[1]?.replace(/,/g, "") || "8");
+      const sodium = parseInt(sodiumRow?.[1]?.replace(/,/g, "") || "2300");
+      const potassium = parseInt(potassiumRow?.[1]?.replace(/,/g, "") || "3400");
+
+      // Get BMI category
+      const bmiValue = parseFloat(bmiData.bmi || nutritionData.BMI_EER?.BMI || "0");
+      let bmiCategory = "Normal";
+      if (bmiValue < 18.5) bmiCategory = "Underweight";
+      else if (bmiValue >= 25 && bmiValue < 30) bmiCategory = "Overweight";
+      else if (bmiValue >= 30) bmiCategory = "Obese";
 
       setCalculated({
-        bmi: bmiData.bmi || nutritionData.BMI_EER?.BMI || "0",
+        bmi: bmiValue.toFixed(1),
+        bmiCategory,
         calories,
         protein,
         carbs,
         fat,
+        fiber,
+        sodium,
+        calcium,
+        iron,
+        vitamin_c,
+        vitamin_d,
+        potassium,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Calculation failed");
@@ -262,40 +306,75 @@ export default function ProfileSetupPage() {
           <div className="mt-6">
             <div className="rounded-2xl border border-zinc-200/70 bg-white p-6 dark:border-zinc-800/80 dark:bg-zinc-900">
               <h2 className="text-lg font-semibold tracking-tight">
-                Your Recommended Daily Targets
+                Your Health Profile & Recommendations
               </h2>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div>
-                  <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    BMI
+              
+              {/* BMI Section */}
+              <div className="mt-4 rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800/50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                      Body Mass Index (BMI)
+                    </div>
+                    <div className="mt-1 text-2xl font-semibold">{calculated.bmi}</div>
                   </div>
-                  <div className="mt-1 text-xl font-semibold">{calculated.bmi}</div>
+                  <div className="rounded-full bg-zinc-200 px-3 py-1 text-sm font-medium dark:bg-zinc-700">
+                    {calculated.bmiCategory}
+                  </div>
                 </div>
-                <div>
-                  <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    Calories
-                  </div>
-                  <div className="mt-1 text-xl font-semibold">
-                    {calculated.calories} cal
-                  </div>
+              </div>
+
+              {/* Macronutrients */}
+              <h3 className="mt-6 text-sm font-semibold">Daily Macronutrient Targets</h3>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Calories</div>
+                  <div className="mt-1 text-xl font-semibold">{calculated.calories} cal</div>
                 </div>
-                <div>
-                  <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    Protein
-                  </div>
+                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Protein</div>
                   <div className="mt-1 text-xl font-semibold">{calculated.protein}g</div>
                 </div>
-                <div>
-                  <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    Carbs
-                  </div>
+                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Carbs</div>
                   <div className="mt-1 text-xl font-semibold">{calculated.carbs}g</div>
                 </div>
-                <div>
-                  <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    Fat
-                  </div>
+                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Fat</div>
                   <div className="mt-1 text-xl font-semibold">{calculated.fat}g</div>
+                </div>
+                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Fiber</div>
+                  <div className="mt-1 text-xl font-semibold">{calculated.fiber}g</div>
+                </div>
+                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Sodium (limit)</div>
+                  <div className="mt-1 text-xl font-semibold">{calculated.sodium}mg</div>
+                </div>
+              </div>
+
+              {/* Micronutrients */}
+              <h3 className="mt-6 text-sm font-semibold">Key Micronutrient Targets</h3>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Vitamin C</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.vitamin_c}mg</div>
+                </div>
+                <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Vitamin D</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.vitamin_d}µg</div>
+                </div>
+                <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Calcium</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.calcium}mg</div>
+                </div>
+                <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Iron</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.iron}mg</div>
+                </div>
+                <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Potassium</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.potassium}mg</div>
                 </div>
               </div>
 
@@ -304,7 +383,7 @@ export default function ProfileSetupPage() {
                 className="mt-6 h-11 w-full rounded-full bg-green-900 px-5 text-sm font-medium text-white hover:bg-green-800 disabled:opacity-60 dark:bg-green-50 dark:text-green-900 dark:hover:bg-white"
                 disabled={loading}
               >
-                {loading ? "Saving..." : "Save & Set Goals"}
+                {loading ? "Saving..." : "Save Profile & Set Goals"}
               </button>
             </div>
           </div>
