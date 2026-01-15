@@ -86,6 +86,29 @@ export default function SearchPage() {
     router.push("/app");
   }
 
+  async function handleAddToGroceryList(food: UsdaFood) {
+    try {
+      const response = await fetch("/api/grocery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          food_name: food.description,
+          quantity: 1,
+          unit: "serving"
+        }),
+      });
+
+      if (response.ok) {
+        alert(`Added ${food.description} to grocery list!`);
+      } else {
+        const data = await response.json();
+        alert(`Failed to add to grocery list: ${data.error}`);
+      }
+    } catch (error) {
+      alert("Failed to add to grocery list");
+    }
+  }
+
   function getNutrientValue(food: UsdaFood, name: string): string {
     const nutrient = food.foodNutrients?.find((n) => n.nutrientName === name);
     if (!nutrient) return "—";
@@ -146,12 +169,20 @@ export default function SearchPage() {
                     <span>{getNutrientValue(food, "Total lipid (fat)")} fat</span>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleLogFood(food)}
-                  className="shrink-0 rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-900"
-                >
-                  + Log
-                </button>
+                <div className="flex shrink-0 gap-2">
+                  <button
+                    onClick={() => handleAddToGroceryList(food)}
+                    className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-900"
+                  >
+                    + Grocery
+                  </button>
+                  <button
+                    onClick={() => handleLogFood(food)}
+                    className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-900"
+                  >
+                    + Log
+                  </button>
+                </div>
               </div>
             </div>
           ))}
