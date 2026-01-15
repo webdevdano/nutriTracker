@@ -1,22 +1,53 @@
-export default function Home() {
+import { createClient } from "@/lib/supabase/server";
+
+export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <div className="min-h-dvh bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
       <header className="border-b border-zinc-200/70 dark:border-zinc-800/80">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-4">
           <div className="text-sm font-semibold tracking-tight">NutriTracker</div>
           <nav className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-            <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="#features">
-              Features
-            </a>
-            <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="#how-it-works">
-              How it works
-            </a>
-            <a
-              className="rounded-full border border-zinc-300 px-3 py-1.5 text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
-              href="/login"
-            >
-              Log in
-            </a>
+            {user ? (
+              <>
+                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="/app">
+                  Dashboard
+                </a>
+                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="/app/meals">
+                  Meals
+                </a>
+                <span className="text-zinc-900 dark:text-zinc-50">
+                  {user.email}
+                </span>
+                <form action="/auth/signout" method="post">
+                  <button
+                    className="rounded-full border border-zinc-300 px-3 py-1.5 text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
+                    type="submit"
+                  >
+                    Sign out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="#features">
+                  Features
+                </a>
+                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="#how-it-works">
+                  How it works
+                </a>
+                <a
+                  className="rounded-full border border-zinc-300 px-3 py-1.5 text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
+                  href="/login"
+                >
+                  Log in
+                </a>
+              </>
+            )}
           </nav>
         </div>
       </header>
@@ -24,31 +55,62 @@ export default function Home() {
       <main>
         <section className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
           <div className="max-w-2xl">
-            <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-              Meal logging • Macro totals • Nutrition history
-            </p>
-            <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-              Track nutrition without the busywork.
-            </h1>
-            <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
-              Log foods, see daily totals, and review trends over time. Built as a web app first so
-              the same backend can power a future iOS app.
-            </p>
+            {user ? (
+              <>
+                <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                  Welcome back!
+                </p>
+                <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+                  Ready to track your nutrition?
+                </h1>
+                <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+                  Continue logging your meals and reviewing your progress.
+                </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a
-                className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
-                href="/signup"
-              >
-                Get started free
-              </a>
-              <a
-                className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
-                href="/login"
-              >
-                Log in
-              </a>
-            </div>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <a
+                    className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+                    href="/app"
+                  >
+                    Go to Dashboard
+                  </a>
+                  <a
+                    className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
+                    href="/app/meals"
+                  >
+                    Log a meal
+                  </a>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                  Meal logging • Macro totals • Nutrition history
+                </p>
+                <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+                  Track nutrition without the busywork.
+                </h1>
+                <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+                  Log foods, see daily totals, and review trends over time. Built as a web app first so
+                  the same backend can power a future iOS app.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <a
+                    className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+                    href="/signup"
+                  >
+                    Get started free
+                  </a>
+                  <a
+                    className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
+                    href="/login"
+                  >
+                    Log in
+                  </a>
+                </div>
+              </>
+            )}
           </div>
         </section>
 

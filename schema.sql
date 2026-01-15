@@ -79,6 +79,37 @@ CREATE TABLE food_logs (
   fiber DECIMAL,
   sodium DECIMAL,
   
+  -- Additional macronutrients
+  saturated_fat DECIMAL,
+  trans_fat DECIMAL,
+  polyunsaturated_fat DECIMAL,
+  monounsaturated_fat DECIMAL,
+  cholesterol DECIMAL,
+  sugars DECIMAL,
+  added_sugars DECIMAL,
+  
+  -- Vitamins
+  vitamin_a DECIMAL,
+  vitamin_c DECIMAL,
+  vitamin_d DECIMAL,
+  vitamin_e DECIMAL,
+  vitamin_k DECIMAL,
+  thiamin DECIMAL,
+  riboflavin DECIMAL,
+  niacin DECIMAL,
+  vitamin_b6 DECIMAL,
+  folate DECIMAL,
+  vitamin_b12 DECIMAL,
+  
+  -- Minerals
+  calcium DECIMAL,
+  iron DECIMAL,
+  magnesium DECIMAL,
+  phosphorus DECIMAL,
+  potassium DECIMAL,
+  zinc DECIMAL,
+  selenium DECIMAL,
+  
   -- Quantity logged
   quantity DECIMAL DEFAULT 1,
   
