@@ -20,6 +20,9 @@ export default async function Home() {
                 <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="/app/meals">
                   Meals
                 </a>
+                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="/app/learn">
+                  Learn
+                </a>
                 <span className="text-zinc-900 dark:text-zinc-50">
                   {user.email}
                 </span>

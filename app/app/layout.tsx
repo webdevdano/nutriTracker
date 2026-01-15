@@ -47,6 +47,12 @@ export default async function AppLayout({
             </a>
             <a
               className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+              href="/app/learn"
+            >
+              Learn
+            </a>
+            <a
+              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
               href="/profile-setup"
             >
               Profile
