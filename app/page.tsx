@@ -6,45 +6,58 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Fetch user's first name from profiles
+  let firstName = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("first_name")
+      .eq("id", user.id)
+      .single();
+    firstName = profile?.first_name;
+  }
+
   return (
     <div className="min-h-dvh bg-white text-black dark:bg-black dark:text-white">
-      <header className="border-b border-gray-200 dark:border-gray-800">
+      <header className="border-b border-[#D3D8E0] bg-white/95 backdrop-blur-sm dark:border-gray-800 dark:bg-black/95">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-4">
-          <div className="text-sm font-semibold tracking-tight">NutriTracker</div>
-          <nav className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm font-semibold tracking-tight text-[#4169E1] dark:text-[#87CEEB]">NutriTracker</div>
+          <nav className="flex items-center gap-3 text-sm">
             {user ? (
-              <>
-                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="/app">
-                  Dashboard
-                </a>
-                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="/app/meals">
-                  Meals
-                </a>
-                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="/app/learn">
-                  Learn
-                </a>
-                <span className="text-zinc-900 dark:text-zinc-50">
-                  {user.email}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 rounded-full border border-[#B0C4DE]/30 bg-white/40 p-1 backdrop-blur-md dark:border-gray-700/30 dark:bg-black/40">
+                  <a className="rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#4169E1] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#87CEEB]" href="/app">
+                    Dashboard
+                  </a>
+                  <a className="rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#4169E1] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#87CEEB]" href="/app/meals">
+                    Meals
+                  </a>
+                  <a className="rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#4169E1] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#87CEEB]" href="/app/learn">
+                    Learn
+                  </a>
+                  <form action="/auth/signout" method="post" className="inline">
+                    <button
+                      className="rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#C8102E] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#C8102E]"
+                      type="submit"
+                    >
+                      Sign out
+                    </button>
+                  </form>
+                </div>
+                <span className="text-sm font-medium text-[#4169E1] dark:text-[#87CEEB]">
+                  Hello, {firstName || user.email?.split('@')[0]}
                 </span>
-                <form action="/auth/signout" method="post">
-                  <button
-                    className="rounded-full border border-zinc-300 px-3 py-1.5 text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
-                    type="submit"
-                  >
-                    Sign out
-                  </button>
-                </form>
-              </>
+              </div>
             ) : (
               <>
-                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="#features">
+                <a className="text-[#A9A9A9] hover:text-[#4169E1] dark:text-gray-400 dark:hover:text-[#87CEEB]" href="#features">
                   Features
                 </a>
-                <a className="hover:text-zinc-900 dark:hover:text-zinc-50" href="#how-it-works">
+                <a className="text-[#A9A9A9] hover:text-[#4169E1] dark:text-gray-400 dark:hover:text-[#87CEEB]" href="#how-it-works">
                   How it works
                 </a>
                 <a
-                  className="rounded-full border border-zinc-300 px-3 py-1.5 text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
+                  className="rounded-full border border-[#B0C4DE] px-4 py-1.5 text-sm font-medium text-[#4169E1] hover:bg-[#E0E0E0] dark:border-gray-700 dark:text-[#87CEEB] dark:hover:bg-gray-900"
                   href="/login"
                 >
                   Log in

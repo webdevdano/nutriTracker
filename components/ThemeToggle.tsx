@@ -41,7 +41,7 @@ export default function ThemeToggle() {
   // Don't render until mounted to avoid hydration mismatch
   if (!mounted) {
     return (
-      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800">
+      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#B0C4DE] bg-white text-[#4169E1] shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-[#87CEEB]">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -62,7 +62,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-white hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+      className="flex h-9 w-9 items-center justify-center rounded-full border border-[#B0C4DE] bg-white text-[#4169E1] shadow-sm hover:bg-[#E0E0E0] dark:border-gray-700 dark:bg-gray-800 dark:text-[#87CEEB] dark:hover:bg-gray-700"
       aria-label="Toggle theme"
     >
       {theme === "light" ? (
