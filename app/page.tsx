@@ -13,9 +13,9 @@ export default function Home() {
             </a>
             <a
               className="rounded-full border border-zinc-300 px-3 py-1.5 text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
-              href="/dashboard"
+              href="/login"
             >
-              Open app
+              Log in
             </a>
           </nav>
         </div>
@@ -38,15 +38,15 @@ export default function Home() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
                 className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
-                href="/dashboard"
+                href="/signup"
               >
-                Start tracking
+                Get started free
               </a>
               <a
                 className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-5 text-sm font-medium text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
-                href="#features"
+                href="/login"
               >
-                See features
+                Log in
               </a>
             </div>
           </div>
