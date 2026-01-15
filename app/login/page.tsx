@@ -33,18 +33,18 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-zinc-50 px-6 dark:bg-zinc-950">
+    <div className="flex min-h-dvh items-center justify-center bg-white px-6 dark:bg-black">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">Log in</h1>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Welcome back to NutriTracker
           </p>
         </div>
 
         <form
           onSubmit={handleLogin}
-          className="rounded-2xl border border-zinc-200/70 bg-white p-6 dark:border-zinc-800/80 dark:bg-zinc-900"
+          className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
         >
           <div className="grid gap-4">
             <label className="grid gap-1.5">

@@ -203,20 +203,20 @@ export default function ProfileSetupPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+    <div className="min-h-dvh bg-white text-black dark:bg-black dark:text-white">
       <div className="mx-auto w-full max-w-3xl px-6 py-12">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-semibold tracking-tight">
             {hasProfile ? "Update Your Profile" : "Set Up Your Profile"}
           </h1>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Calculate your daily nutritional needs and set personalized goals
           </p>
         </div>
 
         <form
           onSubmit={handleCalculate}
-          className="rounded-2xl border border-zinc-200/70 bg-white p-6 dark:border-zinc-800/80 dark:bg-zinc-900"
+          className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="grid gap-1.5">

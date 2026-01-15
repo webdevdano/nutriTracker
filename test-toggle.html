@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    function testToggle() {
+      console.log('Before:', document.documentElement.classList.contains('dark'));
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+      console.log('After:', document.documentElement.classList.contains('dark'));
+      console.log('LocalStorage:', localStorage.getItem('theme'));
+    }
+  </script>
+  <style>
+    body { background: white; color: black; }
+    .dark body { background: #0a0a1a; color: #E0E0E0; }
+  </style>
+</head>
+<body>
+  <button onclick="testToggle()">Test Toggle</button>
+  <p>Check console for debug info</p>
+</body>
+</html>

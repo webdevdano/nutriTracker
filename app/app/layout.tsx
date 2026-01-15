@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default async function AppLayout({
   children,
@@ -16,62 +17,65 @@ export default async function AppLayout({
   }
 
   return (
-    <div className="min-h-dvh bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
-      <header className="border-b border-zinc-200/70 dark:border-zinc-800/80">
+    <div className="min-h-dvh bg-white dark:bg-black">
+      <header className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-black">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
           <div className="text-sm font-semibold tracking-tight">NutriTracker</div>
-          <nav className="flex items-center gap-4 text-sm">
-            <a
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-              href="/app"
-            >
-              Today
-            </a>
-            <a
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-              href="/app/search"
-            >
-              Search Foods
-            </a>
-            <a
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-              href="/app/goals"
-            >
-              Goals
-            </a>
-            <a
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-              href="/app/meals"
-            >
-              Meals
-            </a>
-            <a
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-              href="/app/learn"
-            >
-              Learn
-            </a>
-            <a
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-              href="/app/grocery"
-            >
-              Grocery List
-            </a>
-            <a
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-              href="/profile-setup"
-            >
-              Profile
-            </a>
-            <form action="/auth/signout" method="post">
-              <button
-                type="submit"
-                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+          <div className="flex items-center gap-4">
+            <nav className="flex items-center gap-2 rounded-full border border-gray-300 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-900">
+              <a
+                className="rounded-full px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-white dark:text-gray-300 dark:hover:bg-gray-800"
+                href="/app"
               >
-                Sign out
-              </button>
-            </form>
-          </nav>
+                Today
+              </a>
+              <a
+                className="rounded-full px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-white dark:text-gray-300 dark:hover:bg-gray-800"
+                href="/app/search"
+              >
+                Search
+              </a>
+              <a
+                className="rounded-full px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-white dark:text-gray-300 dark:hover:bg-gray-800"
+                href="/app/goals"
+              >
+                Goals
+              </a>
+              <a
+                className="rounded-full px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-white dark:text-gray-300 dark:hover:bg-gray-800"
+                href="/app/meals"
+              >
+                Meals
+              </a>
+              <a
+                className="rounded-full px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-white dark:text-gray-300 dark:hover:bg-gray-800"
+                href="/app/learn"
+              >
+                Learn
+              </a>
+              <a
+                className="rounded-full px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-white dark:text-gray-300 dark:hover:bg-gray-800"
+                href="/app/grocery"
+              >
+                Grocery
+              </a>
+              <a
+                className="rounded-full px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-white dark:text-gray-300 dark:hover:bg-gray-800"
+                href="/profile-setup"
+              >
+                Profile
+              </a>
+              <form action="/auth/signout" method="post" className="inline">
+                <button
+                  type="submit"
+                  className="rounded-full px-4 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-white dark:text-gray-300 dark:hover:bg-gray-800"
+                >
+                  Sign out
+                </button>
+              </form>
+            </nav>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
       <main>{children}</main>

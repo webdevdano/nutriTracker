@@ -41,7 +41,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-zinc-50 px-6 dark:bg-zinc-950">
+    <div className="flex min-h-dvh items-center justify-center bg-white px-6 dark:bg-black">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">Sign up</h1>

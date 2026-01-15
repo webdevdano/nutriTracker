@@ -7,8 +7,8 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   return (
-    <div className="min-h-dvh bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
-      <header className="border-b border-zinc-200/70 dark:border-zinc-800/80">
+    <div className="min-h-dvh bg-white text-black dark:bg-black dark:text-white">
+      <header className="border-b border-gray-200 dark:border-gray-800">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-4">
           <div className="text-sm font-semibold tracking-tight">NutriTracker</div>
           <nav className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
