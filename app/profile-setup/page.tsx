@@ -105,6 +105,13 @@ export default function ProfileSetupPage() {
     setError(null);
 
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      setError("Not authenticated");
+      setLoading(false);
+      return;
+    }
 
     // Update profile with health metrics
     const { error: profileError } = await supabase
@@ -122,7 +129,7 @@ export default function ProfileSetupPage() {
         recommended_carbs: calculated.carbs,
         recommended_fat: calculated.fat,
       })
-      .eq("id", (await supabase.auth.getUser()).data.user?.id || "");
+      .eq("id", user.id);
 
     if (profileError) {
       setError(profileError.message);
@@ -133,6 +140,7 @@ export default function ProfileSetupPage() {
     // Create/update goals based on recommendations
     const { error: goalsError } = await supabase.from("user_goals").upsert(
       {
+        user_id: user.id,
         calories_goal: calculated.calories,
         protein_goal: calculated.protein,
         carbs_goal: calculated.carbs,
