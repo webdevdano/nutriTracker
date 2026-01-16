@@ -152,7 +152,7 @@ function NutrientModal({ nutrient, onClose }: { nutrient: NutrientInfo; onClose:
       onClick={onClose}
     >
       <div 
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900"
+        className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -179,52 +179,80 @@ function NutrientModal({ nutrient, onClose }: { nutrient: NutrientInfo; onClose:
           <p className="text-zinc-700 dark:text-zinc-300">{nutrient.description}</p>
         </div>
 
-        {/* Benefits */}
-        <div className="mb-6">
-          <h3 className="mb-3 text-lg font-semibold">Health Benefits</h3>
-          <ul className="space-y-2">
-            {nutrient.benefits.map((benefit, index) => (
-              <li key={index} className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300">
-                <svg className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                {benefit}
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* Two Column Layout */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Left Column */}
+          <div className="space-y-6">
+            {/* Benefits */}
+            <div>
+              <h3 className="mb-3 text-lg font-semibold">Health Benefits</h3>
+              <ul className="space-y-2">
+                {nutrient.benefits.map((benefit, index) => (
+                  <li key={index} className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                    <svg className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {benefit}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-        {/* Food Sources */}
-        <div className={nutrient.absorptionTips && nutrient.absorptionTips.length > 0 ? "mb-6" : ""}>
-          <h3 className="mb-3 text-lg font-semibold">Food Sources</h3>
-          <div className="flex flex-wrap gap-2">
-            {nutrient.sources.map((source, index) => (
-              <span
-                key={index}
-                className="rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-              >
-                {source}
-              </span>
-            ))}
+            {/* Food Sources */}
+            <div>
+              <h3 className="mb-3 text-lg font-semibold">Food Sources</h3>
+              <div className="flex flex-wrap gap-2">
+                {nutrient.sources.map((source, index) => (
+                  <span
+                    key={index}
+                    className="rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                  >
+                    {source}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Absorption Tips */}
+            {nutrient.absorptionTips && nutrient.absorptionTips.length > 0 && (
+              <div>
+                <h3 className="mb-3 text-lg font-semibold">Absorption Tips</h3>
+                <ul className="space-y-2">
+                  {nutrient.absorptionTips.map((tip, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                      <svg className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
-        </div>
 
-        {/* Absorption Tips */}
-        {nutrient.absorptionTips && nutrient.absorptionTips.length > 0 && (
+          {/* Right Column */}
           <div>
-            <h3 className="mb-3 text-lg font-semibold">Absorption Tips</h3>
-            <ul className="space-y-2">
-              {nutrient.absorptionTips.map((tip, index) => (
-                <li key={index} className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300">
-                  <svg className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {tip}
-                </li>
-              ))}
-            </ul>
+            {/* Overdose Risks */}
+            {nutrient.overdoseRisks && nutrient.overdoseRisks.length > 0 && (
+              <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/30">
+                <h3 className="mb-3 text-lg font-semibold text-red-900 dark:text-red-400">
+                  ⚠️ Risks of Taking Too Much
+                </h3>
+                <ul className="space-y-2">
+                  {nutrient.overdoseRisks.map((risk, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm text-red-800 dark:text-red-300">
+                      <svg className="mt-0.5 h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      {risk}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

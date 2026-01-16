@@ -11,6 +11,7 @@ export type NutrientInfo = {
   dailyValue?: string;
   unit: string;
   absorptionTips?: string[];
+  overdoseRisks?: string[];
 };
 
 export const nutrientDatabase: Record<string, NutrientInfo> = {
@@ -38,6 +39,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Quinoa and whole grains'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can strain kidneys, especially in people with kidney disease',
+      'May lead to dehydration if water intake is insufficient',
+      'Excessive intake can displace other important nutrients',
+      'May contribute to weight gain if consumed in excess calories'
+    ],
     dailyValue: '50g (based on 2,000 calorie diet)'
   },
   carbs: {
@@ -60,6 +67,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Dairy products'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Excess refined carbs can lead to weight gain and obesity',
+      'May increase risk of type 2 diabetes',
+      'Can cause blood sugar spikes and crashes',
+      'May contribute to tooth decay and cavities'
+    ],
     dailyValue: '275g (based on 2,000 calorie diet)'
   },
   fat: {
@@ -85,6 +98,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Eggs and full-fat dairy'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Excess saturated and trans fats increase heart disease risk',
+      'Can lead to weight gain and obesity',
+      'May raise LDL (bad) cholesterol levels',
+      'High intake increases risk of certain cancers'
+    ],
     dailyValue: '78g (based on 2,000 calorie diet)'
   },
   fiber: {
@@ -111,6 +130,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Nuts and seeds',
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can cause bloating, gas, and digestive discomfort',
+      'May lead to constipation if fluid intake is inadequate',
+      'Can interfere with absorption of certain minerals',
+      'Too much too quickly can cause diarrhea'
+    ],
     dailyValue: '28g'
   },
   
@@ -138,6 +163,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
 
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can cause liver damage and toxicity',
+      'May lead to birth defects during pregnancy',
+      'Can cause bone loss and osteoporosis',
+      'May result in headaches, dizziness, and nausea'
+    ],
     dailyValue: '900 µg (men), 700 µg (women)'
   },
   vitamin_c: {
@@ -162,6 +193,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Spinach, kale and other leafy greens'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can cause digestive upset, diarrhea, and nausea',
+      'May increase risk of kidney stones',
+      'Can interfere with certain medical tests',
+      'Large doses may cause stomach cramps'
+    ],
     dailyValue: '90 mg (men), 75 mg (women)'
   },
   vitamin_d: {
@@ -188,6 +225,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Mushrooms exposed to UV light'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can cause dangerous buildup of calcium in blood',
+      'May lead to kidney damage and kidney stones',
+      'Can cause nausea, vomiting, and weakness',
+      'May result in bone loss and heart problems'
+    ],
     dailyValue: '15-20 µg (600-800 IU)'
   },
   vitamin_e: {
@@ -212,6 +255,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Peanut butter',
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can increase risk of bleeding and hemorrhagic stroke',
+      'May interfere with blood clotting',
+      'Can interact with blood-thinning medications',
+      'High doses may cause fatigue and weakness'
+    ],
     dailyValue: '15 mg'
   },
   vitamin_k: {
@@ -234,6 +283,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Meat, liver, eggs and dairy products (smaller amounts)',
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can interfere with blood-thinning medications like warfarin',
+      'May reduce effectiveness of anticoagulant therapy',
+      'Excessive intake can increase blood clotting',
+      'Supplemental forms may cause allergic reactions'
+    ],
     dailyValue: '120 µg (men), 90 µg (women)'
   },
   thiamin: {
@@ -256,6 +311,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Asparagus, cauliflower and potatoes',
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Rarely toxic as it is water-soluble',
+      'Very high doses may cause allergic reactions',
+      'May cause skin irritation in sensitive individuals',
+      'Excessive supplementation can lead to imbalances'
+    ],
     dailyValue: '1.2 mg (men), 1.1 mg (women)'
   },
   riboflavin: {
@@ -283,6 +344,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Fortified cereals and grains (bread, pasta, oats)',
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Generally considered safe as excess is excreted',
+      'May cause bright yellow urine (harmless)',
+      'Very high doses may cause diarrhea',
+      'Can increase sensitivity to sunlight in rare cases'
+    ],
     dailyValue: '1.3 mg (men), 1.1 mg (women)'
   },
   niacin: {
@@ -307,6 +374,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Bananas',
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can cause severe flushing and skin redness',
+      'May lead to liver damage at high doses',
+      'Can cause nausea, vomiting, and itching',
+      'May worsen gout or peptic ulcers'
+    ],
     dailyValue: '16 mg (men), 14 mg (women)'
   },
   vitamin_b6: {
@@ -332,6 +405,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Bananas and Orange fruits(papaya, cantaloupe, oranges)'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can cause severe nerve damage and numbness',
+      'May lead to loss of muscle control',
+      'Can cause painful skin lesions',
+      'High doses may result in sensitivity to sunlight'
+    ],
     dailyValue: '1.3-1.7 mg'
   },
   folate: {
@@ -357,6 +436,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Fortified cereals and breads'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can mask vitamin B12 deficiency symptoms',
+      'May increase cancer risk in high doses',
+      'Can interact with certain medications',
+      'May cause digestive issues and sleep problems'
+    ],
     dailyValue: '400 µg'
   },
   vitamin_b12: {
@@ -382,6 +467,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Nutritional yeast'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Generally safe as excess is excreted',
+      'May cause acne or skin conditions in some people',
+      'Can interact with certain medications',
+      'Rarely may cause allergic reactions'
+    ],
     dailyValue: '2.4 µg'
   },
   
@@ -409,6 +500,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Dried figs',
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can cause kidney stones',
+      'May lead to constipation and bloating',
+      'Can interfere with absorption of iron and zinc',
+      'May increase risk of heart disease at very high doses'
+    ],
     dailyValue: '1,000-1,200 mg'
   },
   iron: {
@@ -633,6 +730,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Red meat'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Increases risk of heart disease and stroke',
+      'Can lead to plaque buildup in arteries',
+      'May raise LDL (bad) cholesterol levels',
+      'Increases risk of atherosclerosis'
+    ],
     dailyValue: '<300 mg (limit for healthy individuals)'
   },
   saturated_fat: {
@@ -653,6 +756,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Processed baked goods'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Increases LDL (bad) cholesterol significantly',
+      'Raises risk of heart disease and stroke',
+      'May promote inflammation in the body',
+      'Can contribute to insulin resistance'
+    ],
     dailyValue: '<22 g (limit, based on 2,000 calorie diet)'
   },
   sugars: {
@@ -672,6 +781,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Baked goods'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Increases risk of obesity and type 2 diabetes',
+      'Can cause tooth decay and cavities',
+      'May lead to fatty liver disease',
+      'Increases inflammation and heart disease risk'
+    ],
     dailyValue: '<50 g (limit for added sugars)'
   }
 };
