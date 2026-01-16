@@ -54,6 +54,18 @@ export default function TodayPage() {
   const [showAllNutrients, setShowAllNutrients] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  async function handleRemoveLog(logId: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from("food_logs").delete().eq("id", logId);
+    
+    if (error) {
+      alert(`Failed to remove: ${error.message}`);
+      return;
+    }
+    
+    setLogs(logs.filter(log => log.id !== logId));
+  }
+
   useEffect(() => {
     async function fetchData() {
       const supabase = createClient();
@@ -310,11 +322,22 @@ export default function TodayPage() {
                     cal · {Math.round((log.protein || 0) * log.quantity)}g protein
                   </div>
                 </div>
-                <div className="text-xs text-zinc-500">
-                  {new Date(log.time).toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    minute: "2-digit",
-                  })}
+                <div className="flex items-center gap-3">
+                  <div className="text-xs text-zinc-500">
+                    {new Date(log.time).toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                  <button
+                    onClick={() => handleRemoveLog(log.id)}
+                    className="rounded-full p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30 dark:hover:text-red-400"
+                    title="Remove"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             ))}

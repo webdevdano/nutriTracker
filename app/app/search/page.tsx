@@ -90,25 +90,71 @@ export default function SearchPage() {
     setSelectedFood(null);
   }
 
+  function getNutrient(name: string): number {
+    if (!selectedFood?.foodNutrients) return 0;
+    return selectedFood.foodNutrients.find((n) => n.nutrientName === name)?.value || 0;
+  }
+
   async function handleAddFood() {
     if (!selectedFood) return;
 
     setAdding(true);
     const multiplier = servingSize / 100; // USDA values are per 100g
 
-    const calories =
-      (selectedFood.foodNutrients?.find((n) => n.nutrientName === "Energy")?.value || 0) * multiplier;
-    const protein =
-      (selectedFood.foodNutrients?.find((n) => n.nutrientName === "Protein")?.value || 0) * multiplier;
-    const carbs =
-      (selectedFood.foodNutrients?.find((n) => n.nutrientName === "Carbohydrate, by difference")?.value || 0) * multiplier;
-    const fat =
-      (selectedFood.foodNutrients?.find((n) => n.nutrientName === "Total lipid (fat)")?.value || 0) * multiplier;
+    // Extract all nutrients from USDA API
+    const calories = getNutrient("Energy") * multiplier;
+    const protein = getNutrient("Protein") * multiplier;
+    const carbs = getNutrient("Carbohydrate, by difference") * multiplier;
+    const fat = getNutrient("Total lipid (fat)") * multiplier;
+    const fiber = getNutrient("Fiber, total dietary") * multiplier;
+    const sodium = getNutrient("Sodium, Na") * multiplier;
+    
+    // Fat breakdown
+    const saturated_fat = getNutrient("Fatty acids, total saturated") * multiplier;
+    const trans_fat = getNutrient("Fatty acids, total trans") * multiplier;
+    const polyunsaturated_fat = getNutrient("Fatty acids, total polyunsaturated") * multiplier;
+    const monounsaturated_fat = getNutrient("Fatty acids, total monounsaturated") * multiplier;
+    const cholesterol = getNutrient("Cholesterol") * multiplier;
+    
+    // Sugars
+    const sugars = getNutrient("Sugars, total including NLEA") * multiplier;
+    const added_sugars = getNutrient("Sugars, added") * multiplier;
+    
+    // Vitamins
+    const vitamin_a = getNutrient("Vitamin A, RAE") * multiplier;
+    const vitamin_c = getNutrient("Vitamin C, total ascorbic acid") * multiplier;
+    const vitamin_d = getNutrient("Vitamin D (D2 + D3)") * multiplier;
+    const vitamin_e = getNutrient("Vitamin E (alpha-tocopherol)") * multiplier;
+    const vitamin_k = getNutrient("Vitamin K (phylloquinone)") * multiplier;
+    const thiamin = getNutrient("Thiamin") * multiplier;
+    const riboflavin = getNutrient("Riboflavin") * multiplier;
+    const niacin = getNutrient("Niacin") * multiplier;
+    const vitamin_b6 = getNutrient("Vitamin B-6") * multiplier;
+    const folate = getNutrient("Folate, total") * multiplier;
+    const vitamin_b12 = getNutrient("Vitamin B-12") * multiplier;
+    
+    // Minerals
+    const calcium = getNutrient("Calcium, Ca") * multiplier;
+    const iron = getNutrient("Iron, Fe") * multiplier;
+    const magnesium = getNutrient("Magnesium, Mg") * multiplier;
+    const phosphorus = getNutrient("Phosphorus, P") * multiplier;
+    const potassium = getNutrient("Potassium, K") * multiplier;
+    const zinc = getNutrient("Zinc, Zn") * multiplier;
+    const selenium = getNutrient("Selenium, Se") * multiplier;
 
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      alert("You must be logged in to log food");
+      setAdding(false);
+      return;
+    }
+
     const today = new Date().toISOString().split("T")[0];
 
     const { error: insertError } = await supabase.from("food_logs").insert({
+      user_id: user.id,
       date: today,
       fdc_id: selectedFood.fdcId,
       food_name: `${selectedFood.description} (${servingSize}g)`,
@@ -116,6 +162,33 @@ export default function SearchPage() {
       protein,
       carbs,
       fat,
+      fiber,
+      sodium,
+      saturated_fat,
+      trans_fat,
+      polyunsaturated_fat,
+      monounsaturated_fat,
+      cholesterol,
+      sugars,
+      added_sugars,
+      vitamin_a,
+      vitamin_c,
+      vitamin_d,
+      vitamin_e,
+      vitamin_k,
+      thiamin,
+      riboflavin,
+      niacin,
+      vitamin_b6,
+      folate,
+      vitamin_b12,
+      calcium,
+      iron,
+      magnesium,
+      phosphorus,
+      potassium,
+      zinc,
+      selenium,
       quantity: 1,
       time: new Date().toISOString(),
     });
