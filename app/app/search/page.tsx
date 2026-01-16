@@ -244,24 +244,37 @@ export default function SearchPage() {
       {results.length > 0 && (
         <div className="mt-6 space-y-2">
           {results.map((food) => (
-            <button
+            <div
               key={food.fdcId}
-              onClick={() => openModal(food)}
-              className="w-full rounded-xl border border-[#D3D8E0] bg-white p-4 text-left transition-colors hover:bg-[#E0E0E0] dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+              className="flex items-center gap-3 rounded-xl border border-[#D3D8E0] bg-white p-4 transition-colors hover:bg-[#E0E0E0] dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
             >
-              <div className="font-medium">{food.description}</div>
-              {food.brandOwner && (
-                <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-                  {food.brandOwner}
+              <button
+                onClick={() => openModal(food)}
+                className="flex-1 text-left"
+              >
+                <div className="font-medium">{food.description}</div>
+                {food.brandOwner && (
+                  <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                    {food.brandOwner}
+                  </div>
+                )}
+                <div className="mt-2 flex gap-4 text-xs text-zinc-600 dark:text-zinc-400">
+                  <span>{getNutrientValue(food, "Energy")}</span>
+                  <span>{getNutrientValue(food, "Protein")} protein</span>
+                  <span>{getNutrientValue(food, "Carbohydrate, by difference")} carbs</span>
+                  <span>{getNutrientValue(food, "Total lipid (fat)")} fat</span>
                 </div>
-              )}
-              <div className="mt-2 flex gap-4 text-xs text-zinc-600 dark:text-zinc-400">
-                <span>{getNutrientValue(food, "Energy")}</span>
-                <span>{getNutrientValue(food, "Protein")} protein</span>
-                <span>{getNutrientValue(food, "Carbohydrate, by difference")} carbs</span>
-                <span>{getNutrientValue(food, "Total lipid (fat)")} fat</span>
-              </div>
-            </button>
+              </button>
+              <button
+                onClick={() => openModal(food)}
+                className="shrink-0 rounded-full bg-[#4169E1] p-2 text-white hover:bg-[#000080] dark:bg-[#87CEEB] dark:text-black dark:hover:bg-[#ADD8E6]"
+                title="Add to log"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
           ))}
         </div>
       )}
