@@ -71,7 +71,7 @@ export default function LearnPage() {
         // Search Results
         <div className="space-y-4">
           {filteredNutrients.length === 0 ? (
-            <p className="text-sm text-zinc-500">No nutrients found matching "{searchQuery}"</p>
+            <p className="text-sm text-zinc-500">No nutrients found matching &ldquo;{searchQuery}&rdquo;</p>
           ) : (
             filteredNutrients.map((nutrient) => (
               <NutrientCard
@@ -185,7 +185,7 @@ function NutrientModal({ nutrient, onClose }: { nutrient: NutrientInfo; onClose:
           <ul className="space-y-2">
             {nutrient.benefits.map((benefit, index) => (
               <li key={index} className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300">
-                <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 {benefit}

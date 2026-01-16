@@ -16,12 +16,31 @@ type UsdaFood = {
   }>;
 };
 
+type ServingSize = {
+  label: string;
+  grams: number;
+};
+
+const SERVING_SIZES: ServingSize[] = [
+  { label: "100g", grams: 100 },
+  { label: "150g", grams: 150 },
+  { label: "200g", grams: 200 },
+];
+
+const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snack"];
+
 export default function SearchPage() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<UsdaFood[]>([]);
   const [error, setError] = useState<string | null>(null);
+  
+  const [selectedFood, setSelectedFood] = useState<UsdaFood | null>(null);
+  const [servingSize, setServingSize] = useState<number>(100);
+  const [customServing, setCustomServing] = useState("");
+  const [mealType, setMealType] = useState("Lunch");
+  const [adding, setAdding] = useState(false);
 
   async function handleSearch(event: React.FormEvent) {
     event.preventDefault();
@@ -32,7 +51,7 @@ export default function SearchPage() {
 
     try {
       const response = await fetch(
-        `/api/foods/search?query=${encodeURIComponent(query)}&pageSize=15`,
+        `/api/foods/search?query=${encodeURIComponent(query)}&pageSize=5`,
       );
       const data = await response.json();
 
@@ -42,7 +61,16 @@ export default function SearchPage() {
         return;
       }
 
-      setResults(data.foods || []);
+      // Simple deduplication by description
+      const seen = new Set();
+      const deduped = (data.foods || []).filter((food: UsdaFood) => {
+        const key = food.description.toLowerCase().trim();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      setResults(deduped.slice(0, 5));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Search failed");
       setResults([]);
@@ -51,62 +79,56 @@ export default function SearchPage() {
     }
   }
 
-  async function handleLogFood(food: UsdaFood) {
+  function openModal(food: UsdaFood) {
+    setSelectedFood(food);
+    setServingSize(100);
+    setCustomServing("");
+    setMealType("Lunch");
+  }
+
+  function closeModal() {
+    setSelectedFood(null);
+  }
+
+  async function handleAddFood() {
+    if (!selectedFood) return;
+
+    setAdding(true);
+    const multiplier = servingSize / 100; // USDA values are per 100g
+
     const calories =
-      food.foodNutrients?.find((n) => n.nutrientName === "Energy")?.value || 0;
+      (selectedFood.foodNutrients?.find((n) => n.nutrientName === "Energy")?.value || 0) * multiplier;
     const protein =
-      food.foodNutrients?.find((n) => n.nutrientName === "Protein")?.value || 0;
+      (selectedFood.foodNutrients?.find((n) => n.nutrientName === "Protein")?.value || 0) * multiplier;
     const carbs =
-      food.foodNutrients?.find(
-        (n) => n.nutrientName === "Carbohydrate, by difference",
-      )?.value || 0;
+      (selectedFood.foodNutrients?.find((n) => n.nutrientName === "Carbohydrate, by difference")?.value || 0) * multiplier;
     const fat =
-      food.foodNutrients?.find((n) => n.nutrientName === "Total lipid (fat)")?.value ||
-      0;
+      (selectedFood.foodNutrients?.find((n) => n.nutrientName === "Total lipid (fat)")?.value || 0) * multiplier;
 
     const supabase = createClient();
     const today = new Date().toISOString().split("T")[0];
 
     const { error: insertError } = await supabase.from("food_logs").insert({
       date: today,
-      fdc_id: food.fdcId,
-      food_name: food.description,
+      fdc_id: selectedFood.fdcId,
+      food_name: `${selectedFood.description} (${servingSize}g)`,
       calories,
       protein,
       carbs,
       fat,
       quantity: 1,
+      time: new Date().toISOString(),
     });
+
+    setAdding(false);
 
     if (insertError) {
       alert(`Failed to log food: ${insertError.message}`);
       return;
     }
 
+    closeModal();
     router.push("/app");
-  }
-
-  async function handleAddToGroceryList(food: UsdaFood) {
-    try {
-      const response = await fetch("/api/grocery", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          food_name: food.description,
-          quantity: 1,
-          unit: "serving"
-        }),
-      });
-
-      if (response.ok) {
-        alert(`Added ${food.description} to grocery list!`);
-      } else {
-        const data = await response.json();
-        alert(`Failed to add to grocery list: ${data.error}`);
-      }
-    } catch (error) {
-      alert("Failed to add to grocery list");
-    }
   }
 
   function getNutrientValue(food: UsdaFood, name: string): string {
@@ -116,24 +138,25 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 py-8">
+    <div className="mx-auto w-full max-w-3xl px-6 py-8">
       <h1 className="text-2xl font-semibold tracking-tight">Search Foods</h1>
       <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-        Find foods from the USDA database and log them
+        Search and add to your daily log
       </p>
 
       <form onSubmit={handleSearch} className="mt-6">
         <div className="flex gap-2">
           <input
             type="text"
-            className="h-11 flex-1 rounded-xl border border-zinc-300 bg-transparent px-4 text-sm dark:border-zinc-700"
-            placeholder="Search for foods (e.g., chicken breast, broccoli)"
+            className="h-12 flex-1 rounded-xl border border-[#B0C4DE] bg-white px-4 text-sm dark:border-gray-700 dark:bg-black"
+            placeholder="Type a food (e.g., chicken)"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            autoFocus
           />
           <button
             type="submit"
-            className="h-11 rounded-full bg-zinc-900 px-6 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+            className="h-12 rounded-full bg-[#4169E1] px-6 text-sm font-medium text-white hover:bg-[#000080] disabled:opacity-60 dark:bg-[#87CEEB] dark:text-black dark:hover:bg-[#ADD8E6]"
             disabled={loading}
           >
             {loading ? "Searching…" : "Search"}
@@ -141,57 +164,126 @@ export default function SearchPage() {
         </div>
       </form>
 
-      {error ? (
+      {error && (
         <div className="mt-4 text-sm text-red-600 dark:text-red-400">{error}</div>
-      ) : null}
+      )}
 
-      {results.length > 0 ? (
-        <div className="mt-6 grid gap-3">
+      {results.length > 0 && (
+        <div className="mt-6 space-y-2">
           {results.map((food) => (
-            <div
+            <button
               key={food.fdcId}
-              className="rounded-xl border border-zinc-200/70 p-4 dark:border-zinc-800/80"
+              onClick={() => openModal(food)}
+              className="w-full rounded-xl border border-[#D3D8E0] bg-white p-4 text-left transition-colors hover:bg-[#E0E0E0] dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="text-sm font-medium">{food.description}</div>
-                  {food.brandOwner ? (
-                    <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-                      {food.brandOwner}
-                    </div>
-                  ) : null}
-                  <div className="mt-2 flex gap-4 text-xs text-zinc-600 dark:text-zinc-400">
-                    <span>{getNutrientValue(food, "Energy")} cal</span>
-                    <span>{getNutrientValue(food, "Protein")} protein</span>
-                    <span>
-                      {getNutrientValue(food, "Carbohydrate, by difference")} carbs
-                    </span>
-                    <span>{getNutrientValue(food, "Total lipid (fat)")} fat</span>
-                  </div>
+              <div className="font-medium">{food.description}</div>
+              {food.brandOwner && (
+                <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                  {food.brandOwner}
                 </div>
-                <div className="flex shrink-0 gap-2">
-                  <button
-                    onClick={() => handleAddToGroceryList(food)}
-                    className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-900"
-                  >
-                    + Grocery
-                  </button>
-                  <button
-                    onClick={() => handleLogFood(food)}
-                    className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-900"
-                  >
-                    + Log
-                  </button>
-                </div>
+              )}
+              <div className="mt-2 flex gap-4 text-xs text-zinc-600 dark:text-zinc-400">
+                <span>{getNutrientValue(food, "Energy")}</span>
+                <span>{getNutrientValue(food, "Protein")} protein</span>
+                <span>{getNutrientValue(food, "Carbohydrate, by difference")} carbs</span>
+                <span>{getNutrientValue(food, "Total lipid (fat)")} fat</span>
               </div>
-            </div>
+            </button>
           ))}
         </div>
-      ) : query && !loading ? (
+      )}
+
+      {query && !loading && results.length === 0 && (
         <div className="mt-8 text-center text-sm text-zinc-600 dark:text-zinc-400">
-          No results found. Try a different search term.
+          No results found. Try a different search.
         </div>
-      ) : null}
+      )}
+
+      {/* Modal */}
+      {selectedFood && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={closeModal}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-[#B0C4DE] bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-900"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-semibold">{selectedFood.description}</h2>
+            
+            <div className="mt-4">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Serving Size
+              </label>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {SERVING_SIZES.map((size) => (
+                  <button
+                    key={size.grams}
+                    onClick={() => {
+                      setServingSize(size.grams);
+                      setCustomServing("");
+                    }}
+                    className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                      servingSize === size.grams && !customServing
+                        ? "border-[#4169E1] bg-[#4169E1] text-white dark:border-[#87CEEB] dark:bg-[#87CEEB] dark:text-black"
+                        : "border-[#D3D8E0] hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
+                    }`}
+                  >
+                    {size.label}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="number"
+                placeholder="Custom (grams)"
+                value={customServing}
+                onChange={(e) => {
+                  setCustomServing(e.target.value);
+                  if (e.target.value) setServingSize(parseInt(e.target.value) || 100);
+                }}
+                className="mt-2 h-10 w-full rounded-lg border border-[#D3D8E0] px-3 text-sm dark:border-gray-700 dark:bg-gray-800"
+              />
+            </div>
+
+            <div className="mt-4">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Meal Type
+              </label>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                {MEAL_TYPES.map((meal) => (
+                  <button
+                    key={meal}
+                    onClick={() => setMealType(meal)}
+                    className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                      mealType === meal
+                        ? "border-[#4169E1] bg-[#4169E1] text-white dark:border-[#87CEEB] dark:bg-[#87CEEB] dark:text-black"
+                        : "border-[#D3D8E0] hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
+                    }`}
+                  >
+                    {meal}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-2">
+              <button
+                onClick={closeModal}
+                className="flex-1 rounded-full border border-[#D3D8E0] px-4 py-2 text-sm font-medium hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddFood}
+                disabled={adding}
+                className="flex-1 rounded-full bg-[#4169E1] px-4 py-2 text-sm font-medium text-white hover:bg-[#000080] disabled:opacity-60 dark:bg-[#87CEEB] dark:text-black dark:hover:bg-[#ADD8E6]"
+              >
+                {adding ? "Adding..." : "Add to Log"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
