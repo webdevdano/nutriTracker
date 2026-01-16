@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 
 type FoodLog = {
   id: string;
+  fdc_id: number;
   food_name: string;
   calories: number | null;
   protein: number | null;
@@ -53,6 +54,12 @@ export default function TodayPage() {
   const [goals, setGoals] = useState<UserGoal | null>(null);
   const [showAllNutrients, setShowAllNutrients] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+  const [editingLog, setEditingLog] = useState<FoodLog | null>(null);
+  const [editServingSize, setEditServingSize] = useState<number>(100);
+  const [editCustomServing, setEditCustomServing] = useState("");
+  const [foodData, setFoodData] = useState<any>(null);
+  const [updating, setUpdating] = useState(false);
 
   async function handleRemoveLog(logId: string) {
     const supabase = createClient();
@@ -64,6 +71,132 @@ export default function TodayPage() {
     }
     
     setLogs(logs.filter(log => log.id !== logId));
+  }
+
+  async function handleEditLog(log: FoodLog) {
+    setEditingLog(log);
+    setEditServingSize(100);
+    setEditCustomServing("");
+    setUpdating(false);
+    
+    // Fetch food data from USDA API using fdc_id
+    try {
+      const response = await fetch(`/api/foods/${log.fdc_id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch food data");
+      }
+      const data = await response.json();
+      setFoodData(data);
+    } catch (err) {
+      console.error("Failed to fetch food data:", err);
+      alert("Could not load food data for editing");
+    }
+  }
+
+  function closeEditModal() {
+    setEditingLog(null);
+    setFoodData(null);
+  }
+
+  async function handleUpdateLog() {
+    if (!editingLog || !foodData) return;
+
+    setUpdating(true);
+    const multiplier = editServingSize / 100;
+
+    function getNutrient(name: string): number {
+      if (!foodData?.foodNutrients) return 0;
+      return foodData.foodNutrients.find((n: any) => n.nutrientName === name)?.value || 0;
+    }
+
+    const calories = getNutrient("Energy") * multiplier;
+    const protein = getNutrient("Protein") * multiplier;
+    const carbs = getNutrient("Carbohydrate, by difference") * multiplier;
+    const fat = getNutrient("Total lipid (fat)") * multiplier;
+    const fiber = getNutrient("Fiber, total dietary") * multiplier;
+    const sodium = getNutrient("Sodium, Na") * multiplier;
+    const saturated_fat = getNutrient("Fatty acids, total saturated") * multiplier;
+    const trans_fat = getNutrient("Fatty acids, total trans") * multiplier;
+    const polyunsaturated_fat = getNutrient("Fatty acids, total polyunsaturated") * multiplier;
+    const monounsaturated_fat = getNutrient("Fatty acids, total monounsaturated") * multiplier;
+    const cholesterol = getNutrient("Cholesterol") * multiplier;
+    const sugars = getNutrient("Sugars, total including NLEA") * multiplier;
+    const added_sugars = getNutrient("Sugars, added") * multiplier;
+    const vitamin_a = getNutrient("Vitamin A, RAE") * multiplier;
+    const vitamin_c = getNutrient("Vitamin C, total ascorbic acid") * multiplier;
+    const vitamin_d = getNutrient("Vitamin D (D2 + D3)") * multiplier;
+    const vitamin_e = getNutrient("Vitamin E (alpha-tocopherol)") * multiplier;
+    const vitamin_k = getNutrient("Vitamin K (phylloquinone)") * multiplier;
+    const thiamin = getNutrient("Thiamin") * multiplier;
+    const riboflavin = getNutrient("Riboflavin") * multiplier;
+    const niacin = getNutrient("Niacin") * multiplier;
+    const vitamin_b6 = getNutrient("Vitamin B-6") * multiplier;
+    const folate = getNutrient("Folate, total") * multiplier;
+    const vitamin_b12 = getNutrient("Vitamin B-12") * multiplier;
+    const calcium = getNutrient("Calcium, Ca") * multiplier;
+    const iron = getNutrient("Iron, Fe") * multiplier;
+    const magnesium = getNutrient("Magnesium, Mg") * multiplier;
+    const phosphorus = getNutrient("Phosphorus, P") * multiplier;
+    const potassium = getNutrient("Potassium, K") * multiplier;
+    const zinc = getNutrient("Zinc, Zn") * multiplier;
+    const selenium = getNutrient("Selenium, Se") * multiplier;
+
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("food_logs")
+      .update({
+        food_name: `${foodData.description} (${editServingSize}g)`,
+        calories,
+        protein,
+        carbs,
+        fat,
+        fiber,
+        sodium,
+        saturated_fat,
+        trans_fat,
+        polyunsaturated_fat,
+        monounsaturated_fat,
+        cholesterol,
+        sugars,
+        added_sugars,
+        vitamin_a,
+        vitamin_c,
+        vitamin_d,
+        vitamin_e,
+        vitamin_k,
+        thiamin,
+        riboflavin,
+        niacin,
+        vitamin_b6,
+        folate,
+        vitamin_b12,
+        calcium,
+        iron,
+        magnesium,
+        phosphorus,
+        potassium,
+        zinc,
+        selenium,
+      })
+      .eq("id", editingLog.id);
+
+    setUpdating(false);
+
+    if (error) {
+      alert(`Failed to update: ${error.message}`);
+      return;
+    }
+
+    // Refresh the logs
+    const today = new Date().toISOString().split("T")[0];
+    const { data } = await supabase
+      .from("food_logs")
+      .select("*")
+      .eq("date", today)
+      .order("time", { ascending: false });
+    
+    setLogs((data || []) as FoodLog[]);
+    closeEditModal();
   }
 
   useEffect(() => {
@@ -330,6 +463,15 @@ export default function TodayPage() {
                     })}
                   </div>
                   <button
+                    onClick={() => handleEditLog(log)}
+                    className="rounded-full p-1.5 text-zinc-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/30 dark:hover:text-blue-400"
+                    title="Edit"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                  <button
                     onClick={() => handleRemoveLog(log.id)}
                     className="rounded-full p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30 dark:hover:text-red-400"
                     title="Remove"
@@ -344,6 +486,76 @@ export default function TodayPage() {
           </div>
         )}
       </div>
+
+      {/* Edit Modal */}
+      {editingLog && foodData && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={closeEditModal}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-[#B0C4DE] bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-900"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-semibold">Edit Serving Size</h2>
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{foodData.description}</p>
+            
+            <div className="mt-4">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Serving Size
+              </label>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {[
+                  { label: "100g", grams: 100 },
+                  { label: "150g", grams: 150 },
+                  { label: "200g", grams: 200 },
+                ].map((size) => (
+                  <button
+                    key={size.grams}
+                    onClick={() => {
+                      setEditServingSize(size.grams);
+                      setEditCustomServing("");
+                    }}
+                    className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                      editServingSize === size.grams && !editCustomServing
+                        ? "border-[#4169E1] bg-[#4169E1] text-white dark:border-[#87CEEB] dark:bg-[#87CEEB] dark:text-black"
+                        : "border-[#D3D8E0] hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
+                    }`}
+                  >
+                    {size.label}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="number"
+                placeholder="Custom (grams)"
+                value={editCustomServing}
+                onChange={(e) => {
+                  setEditCustomServing(e.target.value);
+                  if (e.target.value) setEditServingSize(parseInt(e.target.value) || 100);
+                }}
+                className="mt-2 h-10 w-full rounded-lg border border-[#D3D8E0] px-3 text-sm dark:border-gray-700 dark:bg-gray-800"
+              />
+            </div>
+
+            <div className="mt-6 flex gap-2">
+              <button
+                onClick={closeEditModal}
+                className="flex-1 rounded-full border border-[#D3D8E0] px-4 py-2 text-sm font-medium hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdateLog}
+                disabled={updating}
+                className="flex-1 rounded-full bg-[#4169E1] px-4 py-2 text-sm font-medium text-white hover:bg-[#000080] disabled:opacity-60 dark:bg-[#87CEEB] dark:text-black dark:hover:bg-[#ADD8E6]"
+              >
+                {updating ? "Updating..." : "Update"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
