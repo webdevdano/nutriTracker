@@ -28,12 +28,13 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
     ],
     sources: [
       'Chicken, turkey, lean beef',
-      'Fish and seafood',
+      'Pork, lamb, and other meats',
+      'Fish, shrimp, crab and other seafood',
       'Eggs and dairy products',
       'Legumes (beans, lentils)',
       'Tofu, tempeh, seitan',
       'Nuts and seeds',
-      'Quinoa'
+      'Quinoa and whole grains'
     ],
     dailyValue: '50g (based on 2,000 calorie diet)'
   },
@@ -50,11 +51,10 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Enhances athletic performance'
     ],
     sources: [
-      'Whole grains (oats, brown rice, quinoa)',
+      'Grains (bread, pasta, oats, rice, quinoa)',
       'Fruits and vegetables',
       'Legumes and beans',
       'Sweet potatoes',
-      'Whole wheat bread and pasta',
       'Dairy products'
     ],
     dailyValue: '275g (based on 2,000 calorie diet)'
@@ -79,7 +79,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Olive oil and coconut oil',
       'Fatty fish (salmon, mackerel)',
       'Dark chocolate',
-      'Eggs'
+      'Eggs and full-fat dairy'
     ],
     dailyValue: '78g (based on 2,000 calorie diet)'
   },
@@ -97,12 +97,14 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Reduces risk of chronic diseases'
     ],
     sources: [
-      'Whole grains and oats',
-      'Beans and lentils',
-      'Fruits (especially with skin)',
-      'Vegetables',
+      'Whole grains, rice, bread, pasta and oats',
+      'Beans (kidney, black, pinto), chickpeas and lentils',
+      'Berries (raspberries, blackberries, strawberries)',
+      'Pears & apples (especially with skin)',
+      'Sweet potatoes & potatoes (with skin)',
+      'Vegetables (broccoli, carrots, Brussels sprouts)',
+      'Leafy greens (spinach, kale, swiss chard)',
       'Nuts and seeds',
-      'Chia seeds and flaxseed'
     ],
     dailyValue: '28g'
   },
@@ -121,13 +123,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Supports heart, lung, and kidney function'
     ],
     sources: [
-      'Sweet potatoes and carrots',
-      'Spinach and kale',
       'Liver',
-      'Eggs',
-      'Dairy products',
-      'Cantaloupe and mango',
-      'Red bell peppers'
+      'Fish (Salmon, herring, mackerel, tuna)',
+      'Spinach and kale',
+      'Eggs & Dairy products (Milk, cheese, yogurt)',
+      'Orange fruits (Cantaloupe, apricots, papaya and mango)',
+      'Orange/Yellow Veggies (peppers, carrots, squash)'
     ],
     dailyValue: '900 µg (men), 700 µg (women)'
   },

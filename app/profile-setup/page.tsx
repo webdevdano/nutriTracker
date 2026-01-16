@@ -33,6 +33,7 @@ export default function ProfileSetupPage() {
   const [inches, setInches] = useState("0");
   const [weight, setWeight] = useState("");
   const [activityLevel, setActivityLevel] = useState("Active");
+  const [fitnessGoal, setFitnessGoal] = useState<"shred" | "bulk" | "maintain">("maintain");
 
   const [calculated, setCalculated] = useState<CalculatedNeeds | null>(null);
 
@@ -83,6 +84,15 @@ export default function ProfileSetupPage() {
         nutritionData.BMI_EER?.["Estimated Daily Caloric Needs"]?.replace(/,/g, "") || "2000"
       );
       
+      // Adjust calories based on fitness goal
+      let adjustedCalories = calories;
+      if (fitnessGoal === "shred") {
+        adjustedCalories = calories - 500; // Caloric deficit for weight loss
+      } else if (fitnessGoal === "bulk") {
+        adjustedCalories = calories + 500; // Caloric surplus for muscle gain
+      }
+      // maintain stays at base calories
+      
       const macros = nutritionData.macronutrients_table?.["macronutrients-table"] || [];
       const proteinRow = macros.find((row: string[]) => row[0] === "Protein");
       const carbsRow = macros.find((row: string[]) => row[0] === "Carbohydrate");
@@ -123,7 +133,7 @@ export default function ProfileSetupPage() {
       setCalculated({
         bmi: bmiValue.toFixed(1),
         bmiCategory,
-        calories,
+        calories: adjustedCalories,
         protein,
         carbs,
         fat,
@@ -167,6 +177,7 @@ export default function ProfileSetupPage() {
         height_inches: parseInt(inches),
         weight_lbs: parseInt(weight),
         activity_level: activityLevel,
+        fitness_goal: fitnessGoal,
         bmi: parseFloat(calculated.bmi),
         recommended_calories: calculated.calories,
         recommended_protein: calculated.protein,
@@ -286,6 +297,54 @@ export default function ProfileSetupPage() {
                 <option value="Active">Active</option>
                 <option value="Very Active">Very Active</option>
               </select>
+            </label>
+          </div>
+
+          {/* Fitness Goal Section */}
+          <div className="mt-6 grid gap-3">
+            <label className="grid gap-2">
+              <span className="text-sm font-medium">Fitness Goal</span>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFitnessGoal("shred")}
+                  className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
+                    fitnessGoal === "shred"
+                      ? "border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-950 dark:text-blue-300"
+                      : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600"
+                  }`}
+                >
+                  <div className="text-xs opacity-70">🔥</div>
+                  <div className="mt-1">Shred</div>
+                  <div className="mt-0.5 text-xs opacity-60">-500 cal</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFitnessGoal("maintain")}
+                  className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
+                    fitnessGoal === "maintain"
+                      ? "border-green-500 bg-green-50 text-green-700 dark:border-green-400 dark:bg-green-950 dark:text-green-300"
+                      : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600"
+                  }`}
+                >
+                  <div className="text-xs opacity-70">⚖️</div>
+                  <div className="mt-1">Maintain</div>
+                  <div className="mt-0.5 text-xs opacity-60">base</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFitnessGoal("bulk")}
+                  className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
+                    fitnessGoal === "bulk"
+                      ? "border-purple-500 bg-purple-50 text-purple-700 dark:border-purple-400 dark:bg-purple-950 dark:text-purple-300"
+                      : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600"
+                  }`}
+                >
+                  <div className="text-xs opacity-70">💪</div>
+                  <div className="mt-1">Bulk</div>
+                  <div className="mt-0.5 text-xs opacity-60">+500 cal</div>
+                </button>
+              </div>
             </label>
           </div>
 
