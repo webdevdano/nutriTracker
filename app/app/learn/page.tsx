@@ -195,7 +195,7 @@ function NutrientModal({ nutrient, onClose }: { nutrient: NutrientInfo; onClose:
         </div>
 
         {/* Food Sources */}
-        <div>
+        <div className={nutrient.absorptionTips && nutrient.absorptionTips.length > 0 ? "mb-6" : ""}>
           <h3 className="mb-3 text-lg font-semibold">Food Sources</h3>
           <div className="flex flex-wrap gap-2">
             {nutrient.sources.map((source, index) => (
@@ -208,6 +208,23 @@ function NutrientModal({ nutrient, onClose }: { nutrient: NutrientInfo; onClose:
             ))}
           </div>
         </div>
+
+        {/* Absorption Tips */}
+        {nutrient.absorptionTips && nutrient.absorptionTips.length > 0 && (
+          <div>
+            <h3 className="mb-3 text-lg font-semibold">Absorption Tips</h3>
+            <ul className="space-y-2">
+              {nutrient.absorptionTips.map((tip, index) => (
+                <li key={index} className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                  <svg className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {tip}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

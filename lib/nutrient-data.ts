@@ -10,6 +10,7 @@ export type NutrientInfo = {
   sources: string[];
   dailyValue?: string;
   unit: string;
+  absorptionTips?: string[];
 };
 
 export const nutrientDatabase: Record<string, NutrientInfo> = {
@@ -36,6 +37,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Nuts and seeds',
       'Quinoa and whole grains'
     ],
+    absorptionTips: [],
     dailyValue: '50g (based on 2,000 calorie diet)'
   },
   carbs: {
@@ -57,6 +59,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Sweet potatoes',
       'Dairy products'
     ],
+    absorptionTips: [],
     dailyValue: '275g (based on 2,000 calorie diet)'
   },
   fat: {
@@ -81,6 +84,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Dark chocolate',
       'Eggs and full-fat dairy'
     ],
+    absorptionTips: [],
     dailyValue: '78g (based on 2,000 calorie diet)'
   },
   fiber: {
@@ -106,6 +110,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Leafy greens (spinach, kale, swiss chard)',
       'Nuts and seeds',
     ],
+    absorptionTips: [],
     dailyValue: '28g'
   },
   
@@ -132,6 +137,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Red Veggies (tomatoes, red peppers)',
 
     ],
+    absorptionTips: [],
     dailyValue: '900 µg (men), 700 µg (women)'
   },
   vitamin_c: {
@@ -155,6 +161,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Broccoli, Brussels sprouts and Cauliflower',
       'Spinach, kale and other leafy greens'
     ],
+    absorptionTips: [],
     dailyValue: '90 mg (men), 75 mg (women)'
   },
   vitamin_d: {
@@ -180,6 +187,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Fortified cereals',
       'Mushrooms exposed to UV light'
     ],
+    absorptionTips: [],
     dailyValue: '15-20 µg (600-800 IU)'
   },
   vitamin_e: {
@@ -203,6 +211,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Wheat germ oil',
       'Peanut butter',
     ],
+    absorptionTips: [],
     dailyValue: '15 mg'
   },
   vitamin_k: {
@@ -224,6 +233,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Blueberries, kiwi, avocado, figs, grapes, pumpkin',
       'Meat, liver, eggs and dairy products (smaller amounts)',
     ],
+    absorptionTips: [],
     dailyValue: '120 µg (men), 90 µg (women)'
   },
   thiamin: {
@@ -245,6 +255,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Sunflower seeds & macadamia nuts',
       'Asparagus, cauliflower and potatoes',
     ],
+    absorptionTips: [],
     dailyValue: '1.2 mg (men), 1.1 mg (women)'
   },
   riboflavin: {
@@ -271,6 +282,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Quinoa and avocado',
       'Fortified cereals and grains (bread, pasta, oats)',
     ],
+    absorptionTips: [],
     dailyValue: '1.3 mg (men), 1.1 mg (women)'
   },
   niacin: {
@@ -294,6 +306,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Fortified cereals and grains (bread, pasta, rice)',
       'Bananas',
     ],
+    absorptionTips: [],
     dailyValue: '16 mg (men), 14 mg (women)'
   },
   vitamin_b6: {
@@ -318,6 +331,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Dark leafy greens',
       'Bananas and Orange fruits(papaya, cantaloupe, oranges)'
     ],
+    absorptionTips: [],
     dailyValue: '1.3-1.7 mg'
   },
   folate: {
@@ -342,6 +356,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Seafood',
       'Fortified cereals and breads'
     ],
+    absorptionTips: [],
     dailyValue: '400 µg'
   },
   vitamin_b12: {
@@ -366,6 +381,7 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Fortified plant milks and cereals',
       'Nutritional yeast'
     ],
+    absorptionTips: [],
     dailyValue: '2.4 µg'
   },
   
@@ -385,12 +401,14 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
     ],
     sources: [
       'Dairy products (milk, cheese, yogurt)',
-      'Fortified plant milks',
-      'Leafy greens (kale, collards)',
+      'Fortified plant milks, tofu & cereals',
+      'Leafy greens (spinach, kale, collards)',
+      'Broccoli, bok choy & okra',
       'Sardines and canned salmon with bones',
-      'Tofu (calcium-set)',
-      'Almonds'
+      'Almonds, Sunflower seeds and tahini',
+      'Dried figs',
     ],
+    absorptionTips: [],
     dailyValue: '1,000-1,200 mg'
   },
   iron: {
@@ -407,13 +425,21 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Prevents anemia'
     ],
     sources: [
-      'Red meat and organ meats',
-      'Poultry and seafood',
-      'Beans and lentils',
-      'Spinach and Swiss chard',
-      'Fortified cereals',
-      'Tofu and tempeh',
-      'Pumpkin seeds'
+      'Red meat (beef, lamb, pork, liver)',
+      'Eggs & Poultry (chicken, turkey)',
+      'Oysters, clams, mussels',
+      'Tuna, salmon and sardines',
+      'Legumes (lentils, chickpeas, beans, kidney beans, tofu)',
+      'Leafy greens (spinach, kale, beet greens)',
+      'Broccoli, peas and sweet potatoes',
+      'Pumpkin seeds, sesame seeds, flaxseeds, hempseeds, almonds, cashews',
+      'Dried fruits (dates, figs, apricots, raisins, prunes)',
+      'Fortified cereals, whole grains and breads',
+      'Quinoa and oats',
+    ],
+    absorptionTips: [
+      'Consume with vitamin C-rich foods to enhance absorption',
+      'Limit inhibitors like coffee, black/green tea, and calcium-rich foods during iron-rich meals'
     ],
     dailyValue: '8 mg (men), 18 mg (women)'
   },
@@ -432,13 +458,22 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Reduces anxiety and stress'
     ],
     sources: [
-      'Dark leafy greens (spinach, Swiss chard)',
-      'Nuts (almonds, cashews)',
+      'Beef, Salmon, Chicken and Turkey',
+      'Dark leafy greens (cooked spinach, Swiss chard)',
+      'Nuts (almonds, peanuts, cashews)',
       'Seeds (pumpkin, chia)',
-      'Whole grains',
-      'Legumes',
-      'Avocados',
-      'Dark chocolate'
+      'Whole grains, brown rice , oats, oatmeal',
+      'Legumes (black beans, kidney beans)',
+      'White potatoes with skin',
+      'Milk, yogurt, dark chocolate',
+      'Bananas and raisins'
+    ],
+    absorptionTips: [
+      'Pair with Vitamin D and B6 as it can improve magnesium uptake and utilization',
+      'Limit high doses of calcium or zinc supplements which may interfere with magnesium absorption',
+      'Limit excess caffeine, sugar and alcohol which can deplete magnesium levels',
+      'Take with food and stay hydrated to support mineral absorption and transport'
+
     ],
     dailyValue: '400-420 mg (men), 310-320 mg (women)'
   },
@@ -456,13 +491,17 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Maintains pH balance'
     ],
     sources: [
-      'Dairy products',
-      'Meat and poultry',
-      'Fish and seafood',
-      'Eggs',
-      'Nuts and seeds',
-      'Whole grains',
-      'Legumes'
+      'Eggs & Dairy (Milk, cheese, yogurt)',
+      'Meat (chicken, turkey, beef, pork, liver, lamb)',
+      'Fish (salmon, tuna, cod, sardines, scallops)',
+      'Legumes (lentils, chickpeas, beans, peas)',
+      'Nuts (almonds, cashews, peanut butter) and seeds (sunflower, pumpkin, sesame)',
+      'Whole grains (brown rice, oats, quinoa, whole wheat bread, amaranth)',
+      'Corn and avocados'
+    ],
+    absorptionTips: [
+      'Combine protein sources with whole grains for a balanced intake',
+      'Limit sugary drinks and highly processed items to avoid excessive, poorly absorbed phosphate additives'
     ],
     dailyValue: '700 mg'
   },
@@ -481,14 +520,17 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Maintains fluid balance'
     ],
     sources: [
-      'Bananas and oranges',
-      'Sweet potatoes and potatoes',
-      'Spinach and Swiss chard',
-      'Avocados',
+      'Chicken and salmon',
+      'Dried fruits (raisins, apricots)',
       'Beans and lentils',
-      'Yogurt',
-      'Salmon and tuna'
+      'Potatoes and winter squash (acorn, butternut)',
+      'Spinach, beet greens and broccoli',
+      'Avocados, orange, orange juice, cantaloupe and bananas',
+      'Coconut water, plant milks and dairy (milk, yogurt)',
+      'Tomatoes and tomato products',
+      'Cashews and almonds'
     ],
+    absorptionTips: [],
     dailyValue: '3,400 mg (men), 2,600 mg (women)'
   },
   sodium: {
@@ -503,13 +545,17 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Regulates blood pressure and volume'
     ],
     sources: [
-      'Table salt',
-      'Processed and packaged foods',
-      'Canned soups and vegetables',
-      'Deli meats',
-      'Cheese',
-      'Bread and baked goods'
+      'Meats (cold cuts, bacon, hot dogs, sausage)',
+      'Poultry (rotisserie chicken, deli turkey)',
+      'Seafood (especially canned or frozen)',
+      'Dairy products (cheese, cottage cheese, buttermilk)',
+      'Breads and grains (breads, rolls, tortillas)',
+      'Salty snacks (chips, pretzels, popcorn, crackers)',
+      'Condiments and sauces (gravies, ketchup, salad dressings)',
+      'Canned vegetables and soups',
+      'Added salt during cooking or seasoning'
     ],
+    absorptionTips: [],
     dailyValue: '2,300 mg (limit)'
   },
   zinc: {
@@ -526,13 +572,20 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'May reduce duration of colds'
     ],
     sources: [
-      'Oysters and shellfish',
-      'Red meat and poultry',
-      'Beans and lentils',
-      'Nuts and seeds',
-      'Whole grains',
-      'Dairy products',
-      'Dark chocolate'
+      'Oysters, mussels, crab and lobster',
+      'Red meat (beef, lamb, pork)',
+      'Chiken and turkey',
+      'Sardines and salmon',
+      'Eggs and dairy (milk, cheese, yogurt)',
+      'Legumes (lentils, chickpeas, beans, peas)',
+      'Nuts (pumpkin, hemp, sesame and chia)',
+      'Nuts (cashews, almonds and peanuts)',
+      'Fortified cereals & Whole grains (oats, quinoa, brown rice)',
+      'Mushrooms, kale and asparagus'
+    ],
+    absorptionTips: [
+      'Soaking or sprouting legumes and grains can reduce phytates that inhibit zinc absorption',
+      'Avoid high doses of iron or calcium supplements at the same time as they can interfere with zinc absorption'
     ],
     dailyValue: '11 mg (men), 8 mg (women)'
   },
@@ -550,13 +603,15 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Supports heart health'
     ],
     sources: [
-      'Brazil nuts (richest source)',
-      'Seafood (tuna, sardines)',
-      'Meat and poultry',
-      'Eggs',
-      'Whole grains',
-      'Sunflower seeds'
+      'Brazil nuts (richest source, moderation advised), sunflower seeds',
+      'Seafood (tuna, halibut, shrimp, cod and sardines)',
+      'Meat (beef, chicken, turkey, pork, liver)',
+      'Eggs & dairy (milk, cheese, cottage cheese, yogurt)',
+      'Legumes (lentils, baked beans, chickpeas)',
+      'Whole grains (oats, brown rice, whole wheat bread)',
+      'Mushrooms and spinach'
     ],
+    absorptionTips: [],
     dailyValue: '55 µg'
   },
   cholesterol: {
@@ -572,11 +627,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
     ],
     sources: [
       'Egg yolks',
-      'Shellfish (shrimp, lobster)',
-      'Organ meats',
+      'Squid and Shellfish (shrimp, crab, lobster and prawns)',
+      'Organ meats (liver, kidney and heart)',
       'Cheese and butter',
       'Red meat'
     ],
+    absorptionTips: [],
     dailyValue: '<300 mg (limit for healthy individuals)'
   },
   saturated_fat: {
@@ -591,12 +647,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
     ],
     sources: [
       'Butter and ghee',
-      'Coconut oil',
-      'Red meat',
+      'Red meat and sausage',
       'Cheese and cream',
       'Palm oil',
       'Processed baked goods'
     ],
+    absorptionTips: [],
     dailyValue: '<22 g (limit, based on 2,000 calorie diet)'
   },
   sugars: {
@@ -613,10 +669,9 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Fruits (natural sugars)',
       'Milk and yogurt (lactose)',
       'Honey and maple syrup',
-      'Candy and sweets',
-      'Soft drinks',
       'Baked goods'
     ],
+    absorptionTips: [],
     dailyValue: '<50 g (limit for added sugars)'
   }
 };
