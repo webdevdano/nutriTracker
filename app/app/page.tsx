@@ -81,11 +81,18 @@ export default function TodayPage() {
     
     // Fetch food data from USDA API using fdc_id
     try {
+      console.log("Fetching food data for fdc_id:", log.fdc_id);
       const response = await fetch(`/api/foods/${log.fdc_id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch food data");
       }
       const data = await response.json();
+      console.log("Food data received:", data);
+      console.log("Number of nutrients:", data.foodNutrients?.length);
+      if (data.foodNutrients && data.foodNutrients.length > 0) {
+        console.log("First few nutrients:", data.foodNutrients.slice(0, 5));
+        console.log("Sample nutrient structure:", JSON.stringify(data.foodNutrients[0], null, 2));
+      }
       setFoodData(data);
     } catch (err) {
       console.error("Failed to fetch food data:", err);
@@ -101,18 +108,30 @@ export default function TodayPage() {
   async function handleUpdateLog() {
     if (!editingLog || !foodData) return;
 
+    console.log("=== UPDATE STARTED ===");
+    console.log("editServingSize:", editServingSize);
+    console.log("editCustomServing:", editCustomServing);
+    console.log("foodData.description:", foodData.description);
+
     setUpdating(true);
     const multiplier = editServingSize / 100;
 
     function getNutrient(name: string): number {
       if (!foodData?.foodNutrients) return 0;
-      return foodData.foodNutrients.find((n: any) => n.nutrientName === name)?.value || 0;
+      const nutrient = foodData.foodNutrients.find((n: any) => 
+        n.nutrient?.name === name || n.nutrientName === name
+      );
+      return nutrient?.amount || nutrient?.value || 0;
     }
 
     const calories = getNutrient("Energy") * multiplier;
     const protein = getNutrient("Protein") * multiplier;
     const carbs = getNutrient("Carbohydrate, by difference") * multiplier;
     const fat = getNutrient("Total lipid (fat)") * multiplier;
+    
+    console.log("Calculated values:");
+    console.log("- multiplier:", multiplier);
+    console.log("- calories:", calories);
     const fiber = getNutrient("Fiber, total dietary") * multiplier;
     const sodium = getNutrient("Sodium, Na") * multiplier;
     const saturated_fat = getNutrient("Fatty acids, total saturated") * multiplier;
@@ -141,11 +160,18 @@ export default function TodayPage() {
     const zinc = getNutrient("Zinc, Zn") * multiplier;
     const selenium = getNutrient("Selenium, Se") * multiplier;
 
+    const newFoodName = `${foodData.description} (${editServingSize}g)`;
+    console.log("New food name:", newFoodName);
+
+    console.log("Updating log:", editingLog.id);
+    console.log("New serving size:", editServingSize);
+    console.log("New calories:", calories);
+
     const supabase = createClient();
     const { error } = await supabase
       .from("food_logs")
       .update({
-        food_name: `${foodData.description} (${editServingSize}g)`,
+        food_name: newFoodName,
         calories,
         protein,
         carbs,
@@ -180,23 +206,48 @@ export default function TodayPage() {
       })
       .eq("id", editingLog.id);
 
-    setUpdating(false);
+    console.log("Update error:", error);
 
     if (error) {
+      setUpdating(false);
       alert(`Failed to update: ${error.message}`);
       return;
     }
 
+    // Wait a moment for database to process
+    await new Promise(resolve => setTimeout(resolve, 200));
+
     // Refresh the logs
     const today = new Date().toISOString().split("T")[0];
-    const { data } = await supabase
+    const { data, error: fetchError } = await supabase
       .from("food_logs")
       .select("*")
       .eq("date", today)
       .order("time", { ascending: false });
     
-    setLogs((data || []) as FoodLog[]);
-    closeEditModal();
+    console.log("Fetched logs:", data);
+    console.log("Fetch error:", fetchError);
+    
+    if (data && data.length > 0) {
+      console.log("First log details:");
+      console.log("- food_name:", data[0].food_name);
+      console.log("- calories:", data[0].calories);
+      console.log("- protein:", data[0].protein);
+    }
+
+    setUpdating(false);
+    
+    if (data) {
+      console.log("Setting new logs state:", data);
+      const newLogs = [...data] as FoodLog[];
+      setLogs(newLogs);
+      console.log("State set, logs length:", newLogs.length);
+    }
+    
+    // Small delay to ensure state update before closing modal
+    setTimeout(() => {
+      closeEditModal();
+    }, 100);
   }
 
   useEffect(() => {
@@ -220,6 +271,13 @@ export default function TodayPage() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    console.log("Logs state updated:", logs.length, "items");
+    logs.forEach(log => {
+      console.log(`- ${log.food_name}: ${log.calories} cal`);
+    });
+  }, [logs]);
 
   const totals = logs.reduce(
     (acc, log) => ({
