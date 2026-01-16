@@ -628,6 +628,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Cashews and almonds'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can cause dangerous irregular heartbeat',
+      'May lead to muscle weakness and paralysis',
+      'Can cause nausea and vomiting',
+      'Life-threatening in people with kidney problems'
+    ],
     dailyValue: '3,400 mg (men), 2,600 mg (women)'
   },
   sodium: {
@@ -653,6 +659,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Added salt during cooking or seasoning'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Increases risk of high blood pressure',
+      'Can lead to heart disease and stroke',
+      'May cause water retention and bloating',
+      'Increases risk of kidney disease and stomach cancer'
+    ],
     dailyValue: '2,300 mg (limit)'
   },
   zinc: {
@@ -684,6 +696,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Soaking or sprouting legumes and grains can reduce phytates that inhibit zinc absorption',
       'Avoid high doses of iron or calcium supplements at the same time as they can interfere with zinc absorption'
     ],
+    overdoseRisks: [
+      'Can cause copper deficiency',
+      'May lead to nausea and vomiting',
+      'Can impair immune function',
+      'May reduce HDL (good) cholesterol levels'
+    ],
     dailyValue: '11 mg (men), 8 mg (women)'
   },
   selenium: {
@@ -709,6 +727,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Mushrooms and spinach'
     ],
     absorptionTips: [],
+    overdoseRisks: [
+      'Can cause hair loss and brittle nails',
+      'May lead to garlic breath and metallic taste',
+      'Can cause digestive upset and fatigue',
+      'May result in nerve damage at very high doses'
+    ],
     dailyValue: '55 µg'
   },
   cholesterol: {
