@@ -128,7 +128,9 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Spinach and kale',
       'Eggs & Dairy products (Milk, cheese, yogurt)',
       'Orange fruits (Cantaloupe, apricots, papaya and mango)',
-      'Orange/Yellow Veggies (peppers, carrots, squash)'
+      'Orange/Yellow Veggies (peppers, carrots, squash)',
+      'Red Veggies (tomatoes, red peppers)',
+
     ],
     dailyValue: '900 µg (men), 700 µg (women)'
   },
@@ -147,11 +149,11 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
     ],
     sources: [
       'Citrus fruits (oranges, lemons, grapefruit)',
-      'Strawberries and kiwi',
-      'Bell peppers',
-      'Broccoli and Brussels sprouts',
-      'Tomatoes',
-      'Spinach and kale'
+      'Kiwis, cantaloupe, guava, papaya and pineapple',
+      'Berries (strawberries, blueberries, raspberries)',
+      'Tomatoes, Potatoes, & Bell peppers',
+      'Broccoli, Brussels sprouts and Cauliflower',
+      'Spinach, kale and other leafy greens'
     ],
     dailyValue: '90 mg (men), 75 mg (women)'
   },
@@ -171,6 +173,8 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
     sources: [
       'Sunlight exposure (primary source)',
       'Fatty fish (salmon, tuna, mackerel)',
+      'Beef liver',
+      'Orange juice fortified with vitamin D',
       'Fortified milk and plant milks',
       'Egg yolks',
       'Fortified cereals',
@@ -192,12 +196,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Supports brain health'
     ],
     sources: [
-      'Sunflower seeds and almonds',
-      'Spinach and Swiss chard',
-      'Avocados',
+      'Nuts & seeds (almonds, sunflower seeds, hazelnuts)',
+      'Spinach, broccoli, beet & turnip greens',
+      'Asparagus, butternut squash and red bell peppers',
+      'Avocados, mangoes, kiwis and papaya',
       'Wheat germ oil',
       'Peanut butter',
-      'Red bell peppers'
     ],
     dailyValue: '15 mg'
   },
@@ -214,12 +218,11 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'May prevent calcification of arteries'
     ],
     sources: [
-      'Kale, spinach, and collard greens',
-      'Brussels sprouts and broccoli',
-      'Parsley and basil',
-      'Asparagus',
-      'Cabbage',
-      'Fermented foods (natto)'
+      'Kale, spinach, collard greens, and other leafy greens',
+      'Broccoli & brussels sprouts',
+      'Lettuce and cabbage',
+      'Blueberries, kiwi, avocado, figs, grapes, pumpkin',
+      'Meat, liver, eggs and dairy products (smaller amounts)',
     ],
     dailyValue: '120 µg (men), 90 µg (women)'
   },
@@ -236,12 +239,11 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'May improve mood and memory'
     ],
     sources: [
-      'Whole grains and fortified cereals',
-      'Pork and ham',
-      'Legumes and beans',
-      'Sunflower seeds',
-      'Nutritional yeast',
-      'Brown rice'
+      'Fortified cereals & grains (breads, pastas, rice)',
+      'Pork, Liver, eggs and fish',
+      'Legumes (beans, lentils), green peas',
+      'Sunflower seeds & macadamia nuts',
+      'Asparagus, cauliflower and potatoes',
     ],
     dailyValue: '1.2 mg (men), 1.1 mg (women)'
   },
@@ -258,12 +260,16 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Promotes growth and development'
     ],
     sources: [
-      'Dairy products (milk, yogurt)',
-      'Eggs',
-      'Lean meats and organ meats',
-      'Green vegetables',
-      'Fortified cereals',
-      'Almonds'
+      'Dairy products (milk, yogurt, cheese)',
+      'Eggs & chicken breast',
+      'Lean beef, pork and organ meats (liver)',
+      'Salmon, tuna, clams and oysters',
+      'Green vegetables ( asparagus, broccoli, leafy greens)',
+      'Mushrooms',
+      'Almonds & sunflower seeds',
+      'Beans and lentils',
+      'Quinoa and avocado',
+      'Fortified cereals and grains (bread, pasta, oats)',
     ],
     dailyValue: '1.3 mg (men), 1.1 mg (women)'
   },
@@ -281,12 +287,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Supports digestive health'
     ],
     sources: [
-      'Chicken, turkey, and tuna',
-      'Beef and liver',
-      'Peanuts and legumes',
-      'Whole grains',
-      'Mushrooms',
-      'Fortified cereals'
+      'Red meat(beef, beef liver, pork)',
+      'Poultry (chicken, turkey)',
+      'Fish (tuna, salmon, anchovies)',
+      'Nuts, seeds and legumes',
+      'Fortified cereals and grains (bread, pasta, rice)',
+      'Bananas',
     ],
     dailyValue: '16 mg (men), 14 mg (women)'
   },
@@ -304,12 +310,13 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Helps regulate hormones'
     ],
     sources: [
-      'Chickpeas and poultry',
+      'Beef liver',
+      'Poultry (chicken, turkey)',
       'Fish (salmon, tuna)',
-      'Potatoes and sweet potatoes',
-      'Bananas',
       'Fortified cereals',
-      'Spinach'
+      'Chickpeas',
+      'Dark leafy greens',
+      'Bananas and Orange fruits(papaya, cantaloupe, oranges)'
     ],
     dailyValue: '1.3-1.7 mg'
   },
@@ -328,11 +335,12 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
     ],
     sources: [
       'Leafy greens (spinach, kale)',
-      'Legumes and lentils',
-      'Asparagus and broccoli',
-      'Avocados',
-      'Fortified grains and cereals',
-      'Citrus fruits'
+      'Beans, peanuts and sunflower seeds',
+      'Fresh fruits and juices',
+      'Whole grains',
+      'Liver and eggs',
+      'Seafood',
+      'Fortified cereals and breads'
     ],
     dailyValue: '400 µg'
   },
@@ -350,12 +358,13 @@ export const nutrientDatabase: Record<string, NutrientInfo> = {
       'Supports bone health'
     ],
     sources: [
-      'Meat, poultry, and fish',
+      'Shellfish (clams, oysters, crab)',
+      'Organ meats (beef and turkey liver)',
+      'Fish (salmon, trout, tuna)',
+      'Meat (beef, turkey, chicken)',
       'Eggs and dairy products',
-      'Fortified plant milks',
-      'Fortified cereals',
-      'Nutritional yeast',
-      'Shellfish (clams, mussels)'
+      'Fortified plant milks and cereals',
+      'Nutritional yeast'
     ],
     dailyValue: '2.4 µg'
   },
