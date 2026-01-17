@@ -41,6 +41,7 @@ export default function SearchPage() {
   const [customServing, setCustomServing] = useState("");
   const [mealType, setMealType] = useState("Lunch");
   const [adding, setAdding] = useState(false);
+  const [savingFavorite, setSavingFavorite] = useState(false);
 
   async function handleSearch(event: React.FormEvent) {
     event.preventDefault();
@@ -204,6 +205,47 @@ export default function SearchPage() {
     router.push("/app");
   }
 
+  async function handleSaveFavorite() {
+    if (!selectedFood) return;
+
+    setSavingFavorite(true);
+    const multiplier = servingSize / 100;
+
+    const calories = getNutrient("Energy") * multiplier;
+    const protein = getNutrient("Protein") * multiplier;
+    const carbs = getNutrient("Carbohydrate, by difference") * multiplier;
+    const fat = getNutrient("Total lipid (fat)") * multiplier;
+
+    try {
+      const response = await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fdc_id: selectedFood.fdcId,
+          food_name: selectedFood.description,
+          calories,
+          protein,
+          carbs,
+          fat,
+          serving_size: servingSize,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(`${selectedFood.description} saved to favorites!`);
+        closeModal();
+      } else {
+        alert(data.error || "Failed to save favorite");
+      }
+    } catch (error) {
+      alert("Failed to save favorite");
+    } finally {
+      setSavingFavorite(false);
+    }
+  }
+
   function getNutrientValue(food: UsdaFood, name: string): string {
     const nutrient = food.foodNutrients?.find((n) => n.nutrientName === name);
     if (!nutrient) return "—";
@@ -355,9 +397,16 @@ export default function SearchPage() {
             <div className="mt-6 flex gap-2">
               <button
                 onClick={closeModal}
-                className="flex-1 rounded-full border border-[#D3D8E0] px-4 py-2 text-sm font-medium hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
+                className="rounded-full border border-[#D3D8E0] px-4 py-2 text-sm font-medium hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
               >
                 Cancel
+              </button>
+              <button
+                onClick={handleSaveFavorite}
+                disabled={savingFavorite}
+                className="rounded-full border border-yellow-500 bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-100 disabled:opacity-60 dark:border-yellow-600 dark:bg-yellow-950 dark:text-yellow-300 dark:hover:bg-yellow-900"
+              >
+                {savingFavorite ? "Saving..." : "⭐ Save"}
               </button>
               <button
                 onClick={handleAddFood}

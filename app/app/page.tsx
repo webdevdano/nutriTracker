@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type FoodLog = {
@@ -49,16 +49,26 @@ type UserGoal = {
   fat_goal: number | null;
 };
 
+type HistoricalData = {
+  date: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+};
+
 export default function TodayPage() {
   const [logs, setLogs] = useState<FoodLog[]>([]);
   const [goals, setGoals] = useState<UserGoal | null>(null);
   const [showAllNutrients, setShowAllNutrients] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [timeView, setTimeView] = useState<'today' | 'week' | 'month'>('today');
+  const [historicalData, setHistoricalData] = useState<HistoricalData[]>([]);
   
   const [editingLog, setEditingLog] = useState<FoodLog | null>(null);
   const [editServingSize, setEditServingSize] = useState<number>(100);
   const [editCustomServing, setEditCustomServing] = useState("");
-  const [foodData, setFoodData] = useState<any>(null);
+  const [foodData, setFoodData] = useState<{ description: string; foodNutrients: Array<{ nutrient?: { name: string }; nutrientName?: string; amount?: number; value?: number }> } | null>(null);
   const [updating, setUpdating] = useState(false);
 
   async function handleRemoveLog(logId: string) {
@@ -118,7 +128,7 @@ export default function TodayPage() {
 
     function getNutrient(name: string): number {
       if (!foodData?.foodNutrients) return 0;
-      const nutrient = foodData.foodNutrients.find((n: any) => 
+      const nutrient = foodData.foodNutrients.find((n) => 
         n.nutrient?.name === name || n.nutrientName === name
       );
       return nutrient?.amount || nutrient?.value || 0;
@@ -255,22 +265,58 @@ export default function TodayPage() {
       const supabase = createClient();
       const today = new Date().toISOString().split("T")[0];
 
-      const [logsResult, goalsResult] = await Promise.all([
+      // Calculate date range based on view
+      let startDate = today;
+      if (timeView === 'week') {
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        startDate = weekAgo.toISOString().split("T")[0];
+      } else if (timeView === 'month') {
+        const monthAgo = new Date();
+        monthAgo.setDate(monthAgo.getDate() - 30);
+        startDate = monthAgo.toISOString().split("T")[0];
+      }
+
+      const [logsResult, goalsResult, historicalResult] = await Promise.all([
         supabase
           .from("food_logs")
           .select("*")
           .eq("date", today)
           .order("time", { ascending: false }),
         supabase.from("user_goals").select("*").single(),
+        timeView !== 'today' ? supabase
+          .from("food_logs")
+          .select("date, calories, protein, carbs, fat, quantity")
+          .gte("date", startDate)
+          .lte("date", today)
+          .order("date", { ascending: true }) : Promise.resolve({ data: [] })
       ]);
 
       setLogs((logsResult.data || []) as FoodLog[]);
       setGoals(goalsResult.data as UserGoal | null);
+      
+      // Aggregate historical data by date
+      if (historicalResult.data && historicalResult.data.length > 0) {
+        const aggregated = historicalResult.data.reduce((acc: Record<string, HistoricalData>, item: { date: string; calories: number | null; protein: number | null; carbs: number | null; fat: number | null; quantity: number }) => {
+          if (!acc[item.date]) {
+            acc[item.date] = { date: item.date, calories: 0, protein: 0, carbs: 0, fat: 0 };
+          }
+          acc[item.date].calories += (item.calories || 0) * (item.quantity || 1);
+          acc[item.date].protein += (item.protein || 0) * (item.quantity || 1);
+          acc[item.date].carbs += (item.carbs || 0) * (item.quantity || 1);
+          acc[item.date].fat += (item.fat || 0) * (item.quantity || 1);
+          return acc;
+        }, {});
+        setHistoricalData(Object.values(aggregated));
+      } else {
+        setHistoricalData([]);
+      }
+      
       setLoading(false);
     }
 
     fetchData();
-  }, []);
+  }, [timeView]);
 
   useEffect(() => {
     console.log("Logs state updated:", logs.length, "items");
@@ -333,15 +379,117 @@ export default function TodayPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Today&apos;s Progress</h1>
-      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-        {new Date().toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}
-      </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Progress</h1>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+        
+        {/* Time View Toggle */}
+        <div className="flex items-center gap-1 rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
+          <button
+            onClick={() => setTimeView('today')}
+            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+              timeView === 'today'
+                ? 'bg-[#4169E1] text-white dark:bg-[#87CEEB] dark:text-black'
+                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+            }`}
+          >
+            Today
+          </button>
+          <button
+            onClick={() => setTimeView('week')}
+            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+              timeView === 'week'
+                ? 'bg-[#4169E1] text-white dark:bg-[#87CEEB] dark:text-black'
+                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+            }`}
+          >
+            7 Days
+          </button>
+          <button
+            onClick={() => setTimeView('month')}
+            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+              timeView === 'month'
+                ? 'bg-[#4169E1] text-white dark:bg-[#87CEEB] dark:text-black'
+                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+            }`}
+          >
+            30 Days
+          </button>
+        </div>
+      </div>
+
+      {/* Historical Charts - Only show for week/month views */}
+      {timeView !== 'today' && historicalData.length > 0 && (
+        <div className="mt-6 rounded-2xl border border-zinc-200/70 p-6 dark:border-zinc-800/80">
+          <h3 className="text-sm font-semibold mb-4">Trend Overview</h3>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Chart 
+              data={historicalData} 
+              metric="calories" 
+              label="Calories" 
+              goal={goals?.calories_goal} 
+              color="#4169E1"
+            />
+            <Chart 
+              data={historicalData} 
+              metric="protein" 
+              label="Protein (g)" 
+              goal={goals?.protein_goal}
+              color="#32CD32"
+            />
+            <Chart 
+              data={historicalData} 
+              metric="carbs" 
+              label="Carbs (g)" 
+              goal={goals?.carbs_goal}
+              color="#FFD700"
+            />
+            <Chart 
+              data={historicalData} 
+              metric="fat" 
+              label="Fat (g)" 
+              goal={goals?.fat_goal}
+              color="#FF6347"
+            />
+          </div>
+          
+          {/* Statistics Summary */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-4 border-t border-zinc-200 pt-6 dark:border-zinc-800">
+            <StatCard 
+              label="Avg Calories"
+              value={Math.round(historicalData.reduce((sum, d) => sum + d.calories, 0) / historicalData.length)}
+              goal={goals?.calories_goal}
+            />
+            <StatCard 
+              label="Avg Protein"
+              value={Math.round(historicalData.reduce((sum, d) => sum + d.protein, 0) / historicalData.length)}
+              goal={goals?.protein_goal}
+              unit="g"
+            />
+            <StatCard 
+              label="Avg Carbs"
+              value={Math.round(historicalData.reduce((sum, d) => sum + d.carbs, 0) / historicalData.length)}
+              goal={goals?.carbs_goal}
+              unit="g"
+            />
+            <StatCard 
+              label="Avg Fat"
+              value={Math.round(historicalData.reduce((sum, d) => sum + d.fat, 0) / historicalData.length)}
+              goal={goals?.fat_goal}
+              unit="g"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Main Macros */}
       <div className="mt-6 grid gap-4 sm:grid-cols-4">
@@ -660,6 +808,110 @@ function NutrientCard({
             />
           </div>
         </>
+      )}
+    </div>
+  );
+}
+
+function Chart({ 
+  data, 
+  metric, 
+  label, 
+  goal,
+  color = '#4169E1'
+}: { 
+  data: HistoricalData[]; 
+  metric: keyof Omit<HistoricalData, 'date'>; 
+  label: string; 
+  goal?: number | null;
+  color?: string;
+}) {
+  const maxValue = useMemo(() => {
+    const dataMax = Math.max(...data.map(d => d[metric]));
+    return goal && goal > dataMax ? goal * 1.1 : dataMax * 1.1;
+  }, [data, metric, goal]);
+
+  return (
+    <div className="rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800/50">
+      <div className="mb-3 flex items-center justify-between">
+        <h4 className="text-xs font-semibold">{label}</h4>
+        {goal && (
+          <div className="text-xs text-zinc-500">Goal: {goal}</div>
+        )}
+      </div>
+      <div className="relative h-32">
+        <div className="absolute inset-0 flex items-end justify-between gap-1">
+          {data.map((item, i) => {
+            const height = maxValue > 0 ? (item[metric] / maxValue) * 100 : 0;
+            const isGoalMet = goal ? item[metric] >= goal : false;
+            
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center justify-end h-full group relative">
+                <div
+                  className="w-full rounded-t transition-all hover:opacity-80"
+                  style={{ 
+                    height: `${height}%`,
+                    backgroundColor: isGoalMet ? '#22c55e' : color,
+                    minHeight: height > 0 ? '2px' : '0'
+                  }}
+                />
+                {/* Tooltip */}
+                <div className="absolute bottom-full mb-2 hidden group-hover:block bg-black/90 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+                  {new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}: {Math.round(item[metric])}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {/* Goal line */}
+        {goal && maxValue > 0 && (
+          <div 
+            className="absolute left-0 right-0 border-t-2 border-dashed border-zinc-400 dark:border-zinc-600"
+            style={{ bottom: `${(goal / maxValue) * 100}%` }}
+          />
+        )}
+      </div>
+      <div className="mt-2 flex items-center justify-between text-xs text-zinc-500">
+        <span>{data.length > 0 ? new Date(data[0].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
+        <span>{data.length > 0 ? new Date(data[data.length - 1].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
+      </div>
+    </div>
+  );
+}
+
+function StatCard({ 
+  label, 
+  value, 
+  goal,
+  unit = ''
+}: { 
+  label: string; 
+  value: number; 
+  goal?: number | null;
+  unit?: string;
+}) {
+  const percentage = goal && goal > 0 ? (value / goal) * 100 : 0;
+  const isOnTrack = percentage >= 90 && percentage <= 110;
+  
+  return (
+    <div className="rounded-lg bg-linear-to-br from-zinc-50 to-zinc-100 p-4 dark:from-zinc-800/50 dark:to-zinc-900/50">
+      <div className="text-xs text-zinc-600 dark:text-zinc-400">{label}</div>
+      <div className="mt-2 text-2xl font-bold">
+        {value}{unit}
+      </div>
+      {goal && (
+        <div className="mt-1 flex items-center gap-2">
+          <div className={`text-xs font-medium ${
+            isOnTrack 
+              ? 'text-green-600 dark:text-green-400' 
+              : percentage > 110 
+              ? 'text-orange-600 dark:text-orange-400'
+              : 'text-zinc-500'
+          }`}>
+            {Math.round(percentage)}% of goal
+          </div>
+          {isOnTrack && <span className="text-green-600">✓</span>}
+        </div>
       )}
     </div>
   );

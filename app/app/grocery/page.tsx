@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Toast from "@/components/Toast";
 
 type GroceryItem = {
   id: string;
@@ -11,14 +13,52 @@ type GroceryItem = {
   created_at: string;
 };
 
+type Favorite = {
+  id: string;
+  fdc_id: number;
+  food_name: string;
+  calories: number | null;
+  protein: number | null;
+  carbs: number | null;
+  fat: number | null;
+  serving_size: number;
+  created_at: string;
+};
+
+type MealPlanMeal = {
+  id: number;
+  title: string;
+  readyInMinutes: number;
+  servings: number;
+  sourceUrl: string;
+};
+
+type MealPlan = {
+  meals: MealPlanMeal[];
+  nutrients: {
+    calories: number;
+    protein: number;
+    fat: number;
+    carbohydrates: number;
+  };
+};
+
 export default function GroceryPage() {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'grocery' | 'favorites'>('grocery');
   const [items, setItems] = useState<GroceryItem[]>([]);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
   const [newItem, setNewItem] = useState("");
   const [addingItem, setAddingItem] = useState(false);
+  const [showMealPlan, setShowMealPlan] = useState(false);
+  const [generatingPlan, setGeneratingPlan] = useState(false);
+  const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   useEffect(() => {
     loadItems();
+    loadFavorites();
   }, []);
 
   async function loadItems() {
@@ -32,6 +72,18 @@ export default function GroceryPage() {
       console.error("Failed to load grocery list:", error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadFavorites() {
+    try {
+      const response = await fetch("/api/favorites");
+      const data = await response.json();
+      if (response.ok) {
+        setFavorites(data.favorites || []);
+      }
+    } catch (error) {
+      console.error("Failed to load favorites:", error);
     }
   }
 
@@ -93,19 +145,134 @@ export default function GroceryPage() {
     await Promise.all(purchasedItems.map((item) => deleteItem(item.id)));
   }
 
+  async function generateMealPlan() {
+    setGeneratingPlan(true);
+    try {
+      const response = await fetch("/api/meal-plan?timeFrame=day&targetCalories=2000");
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMealPlan(data);
+        setShowMealPlan(true);
+      }
+    } catch (error) {
+      console.error("Failed to generate meal plan:", error);
+    } finally {
+      setGeneratingPlan(false);
+    }
+  }
+
+  async function deleteFavorite(id: string) {
+    try {
+      const response = await fetch(`/api/favorites?id=${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setFavorites(favorites.filter((fav) => fav.id !== id));
+      }
+    } catch (error) {
+      console.error("Failed to delete favorite:", error);
+    }
+  }
+
+  async function addFavoriteToLog(favorite: Favorite) {
+    try {
+      const response = await fetch("/api/foods/log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fdc_id: favorite.fdc_id,
+          food_name: favorite.food_name,
+          calories: favorite.calories,
+          protein: favorite.protein,
+          carbs: favorite.carbs,
+          fat: favorite.fat,
+          quantity: favorite.serving_size / 100,
+          meal_type: "Snack",
+        }),
+      });
+
+      if (response.ok) {
+        setToast({ message: `${favorite.food_name} added to today's log!`, type: 'success' });
+        setTimeout(() => router.push("/app"), 1500);
+      }
+    } catch (error) {
+      console.error("Failed to add to log:", error);
+    }
+  }
+
+  async function addFavoriteToGrocery(favorite: Favorite) {
+    try {
+      const response = await fetch("/api/grocery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ food_name: favorite.food_name }),
+      });
+
+      if (response.ok) {
+        await loadItems();
+        setActiveTab('grocery');
+        setToast({ message: `${favorite.food_name} added to grocery list!`, type: 'success' });
+      }
+    } catch (error) {
+      console.error("Failed to add to grocery:", error);
+    }
+  }
+
   const unpurchasedItems = items.filter((item) => !item.purchased);
   const purchasedItems = items.filter((item) => item.purchased);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Grocery List</h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Keep track of foods you need to buy
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Lists</h1>
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+              Manage your grocery list and saved favorites
+            </p>
+          </div>
+          {activeTab === 'grocery' && (
+            <button
+              onClick={generateMealPlan}
+              disabled={generatingPlan}
+              className="h-10 rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+            >
+              {generatingPlan ? "Generating..." : "📅 Meal Plan"}
+            </button>
+          )}
+        </div>
       </div>
 
-      <form onSubmit={handleAddItem} className="mb-6">
+      {/* Tabs */}
+      <div className="mb-6 flex gap-2 rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
+        <button
+          onClick={() => setActiveTab('grocery')}
+          className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            activeTab === 'grocery'
+              ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900'
+              : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
+          }`}
+        >
+          🛒 Grocery List
+        </button>
+        <button
+          onClick={() => setActiveTab('favorites')}
+          className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            activeTab === 'favorites'
+              ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900'
+              : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
+          }`}
+        >
+          ⭐ Saved Favorites
+        </button>
+      </div>
+
+      {/* Grocery List Tab */}
+      {activeTab === 'grocery' && (
+        <>
+          <form onSubmit={handleAddItem} className="mb-6">
         <div className="flex gap-2">
           <input
             type="text"
@@ -214,6 +381,154 @@ export default function GroceryPage() {
             </div>
           )}
         </div>
+      )}
+        </>
+      )}
+
+      {/* Favorites Tab */}
+      {activeTab === 'favorites' && (
+        <>
+          {loading ? (
+            <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
+              Loading...
+            </div>
+          ) : favorites.length === 0 ? (
+            <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-zinc-800/80">
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                No saved favorites yet. Add favorites from the Search page for quick access!
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {favorites.map((favorite) => (
+                <div
+                  key={favorite.id}
+                  className="rounded-xl border border-zinc-200/70 p-4 dark:border-zinc-800/80"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-sm font-semibold">{favorite.food_name}</h3>
+                      <div className="mt-2 flex gap-4 text-xs text-zinc-600 dark:text-zinc-400">
+                        <span>{Math.round(favorite.calories || 0)} cal</span>
+                        <span>{Math.round(favorite.protein || 0)}g protein</span>
+                        <span>{Math.round(favorite.carbs || 0)}g carbs</span>
+                        <span>{Math.round(favorite.fat || 0)}g fat</span>
+                      </div>
+                      <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
+                        Per {favorite.serving_size}g serving
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => deleteFavorite(favorite.id)}
+                      className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      onClick={() => addFavoriteToLog(favorite)}
+                      className="flex-1 rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
+                    >
+                      📊 Add to Today
+                    </button>
+                    <button
+                      onClick={() => addFavoriteToGrocery(favorite)}
+                      className="flex-1 rounded-lg bg-green-50 px-3 py-2 text-xs font-medium text-green-700 hover:bg-green-100 dark:bg-green-950 dark:text-green-300 dark:hover:bg-green-900"
+                    >
+                      🛒 Add to Grocery
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Meal Plan Modal */}
+      {showMealPlan && mealPlan && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setShowMealPlan(false)}
+        >
+          <div
+            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Daily Meal Plan</h2>
+              <button
+                onClick={() => setShowMealPlan(false)}
+                className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mb-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+              <h3 className="mb-2 text-sm font-semibold">Daily Totals</h3>
+              <div className="grid grid-cols-4 gap-3 text-center">
+                <div>
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Calories</div>
+                  <div className="text-sm font-semibold">{Math.round(mealPlan.nutrients.calories)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Protein</div>
+                  <div className="text-sm font-semibold">{Math.round(mealPlan.nutrients.protein)}g</div>
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Carbs</div>
+                  <div className="text-sm font-semibold">{Math.round(mealPlan.nutrients.carbohydrates)}g</div>
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Fat</div>
+                  <div className="text-sm font-semibold">{Math.round(mealPlan.nutrients.fat)}g</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold">Meals</h3>
+              {mealPlan.meals.map((meal) => (
+                <div
+                  key={meal.id}
+                  className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
+                >
+                  <h4 className="font-medium">{meal.title}</h4>
+                  <div className="mt-2 flex gap-3 text-xs text-zinc-600 dark:text-zinc-400">
+                    <span>⏱️ {meal.readyInMinutes} min</span>
+                    <span>🍽️ {meal.servings} servings</span>
+                  </div>
+                  {meal.sourceUrl && (
+                    <a
+                      href={meal.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-block text-xs text-blue-600 hover:underline dark:text-blue-400"
+                    >
+                      View Recipe →
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 text-center text-xs text-zinc-600 dark:text-zinc-400">
+              Note: Add individual recipe ingredients to your grocery list from the Meals page
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );

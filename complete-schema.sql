@@ -282,6 +282,42 @@ CREATE INDEX IF NOT EXISTS idx_grocery_list_user_id ON grocery_list(user_id);
 CREATE INDEX IF NOT EXISTS idx_grocery_list_purchased ON grocery_list(user_id, purchased);
 
 
+-- 6. SAVED FAVORITES TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS saved_favorites (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  fdc_id INT NOT NULL,
+  food_name TEXT NOT NULL,
+  calories NUMERIC,
+  protein NUMERIC,
+  carbs NUMERIC,
+  fat NUMERIC,
+  serving_size NUMERIC DEFAULT 100,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE saved_favorites ENABLE ROW LEVEL SECURITY;
+
+-- Drop and recreate RLS policies
+DROP POLICY IF EXISTS "Users can view own favorites" ON saved_favorites;
+DROP POLICY IF EXISTS "Users can insert own favorites" ON saved_favorites;
+DROP POLICY IF EXISTS "Users can delete own favorites" ON saved_favorites;
+
+CREATE POLICY "Users can view own favorites" ON saved_favorites
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own favorites" ON saved_favorites
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own favorites" ON saved_favorites
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Create indexes for performance
+CREATE INDEX IF NOT EXISTS idx_saved_favorites_user_id ON saved_favorites(user_id);
+CREATE INDEX IF NOT EXISTS idx_saved_favorites_fdc_id ON saved_favorites(user_id, fdc_id);
+
+
 -- =====================================================
 -- SCHEMA SETUP COMPLETE
 -- =====================================================
