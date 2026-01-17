@@ -107,8 +107,9 @@ export default async function Home() {
                   Track nutrition without the busywork.
                 </h1>
                 <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
-                  Log foods, see daily totals, and review trends over time. Built as a web app first so
-                  the same backend can power a future iOS app.
+                  Log foods, see daily totals, and review trends over time... with a twist, <br/>
+                  find out the rest of your nutrition needs and learn all about how they affect your health. <br/>
+                  In hopes to help people replace their supplements with real food.
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -131,6 +132,7 @@ export default async function Home() {
         </section>
 
         <section id="features" className="mx-auto w-full max-w-5xl px-6 pb-16">
+          <h2 className="mb-8 text-center text-2xl font-semibold tracking-tight">Features</h2>
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80">
               <h2 className="text-sm font-semibold">Fast meal logging</h2>
