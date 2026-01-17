@@ -42,4 +42,4 @@ yarn-error.log*
 next-env.d.ts
 
 # etc 
-MVP_SUMMARY.md
+complete-schema.sql

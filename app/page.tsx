@@ -158,16 +158,16 @@ export default async function Home() {
             <h2 className="text-lg font-semibold tracking-tight">How it works</h2>
             <ol className="mt-4 grid gap-4 text-sm text-zinc-600 dark:text-zinc-400 sm:grid-cols-3">
               <li>
-                <div className="font-medium text-zinc-900 dark:text-zinc-50">1. Add foods</div>
-                <div className="mt-1 leading-6">Create foods with nutrition per serving.</div>
+                <div className="font-medium text-zinc-900 dark:text-zinc-50">1. Set goals</div>
+                <div className="mt-1 leading-6">Fill in your nutritional targets. See daily goals in your dashboard.</div>
               </li>
               <li>
-                <div className="font-medium text-zinc-900 dark:text-zinc-50">2. Log meals</div>
-                <div className="mt-1 leading-6">Record what you ate with a quantity.</div>
+                <div className="font-medium text-zinc-900 dark:text-zinc-50">2. Add foods</div>
+                <div className="mt-1 leading-6">Create food entries and save nutrition per serving to your daily log.</div>
               </li>
               <li>
                 <div className="font-medium text-zinc-900 dark:text-zinc-50">3. Review totals</div>
-                <div className="mt-1 leading-6">See daily totals and weekly trends.</div>
+                <div className="mt-1 leading-6">See daily totals for calories, macronutrients, micronutrients, and more.</div>
               </li>
             </ol>
           </div>
@@ -176,7 +176,7 @@ export default async function Home() {
 
       <footer className="border-t border-zinc-200/70 dark:border-zinc-800/80">
         <div className="mx-auto w-full max-w-5xl px-6 py-6 text-xs text-zinc-500 dark:text-zinc-500">
-          NutriTracker — built with Next.js + Tailwind.
+          NutriTracker — Powered by Websites by Dano
         </div>
       </footer>
     </div>

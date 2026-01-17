@@ -24,7 +24,7 @@ export default function SignupPage() {
         data: {
           full_name: fullName,
         },
-        emailRedirectTo: `${window.location.origin}/profile-setup`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/profile-setup`,
       },
     });
 
@@ -59,7 +59,10 @@ export default function SignupPage() {
                 We sent a confirmation link to <strong>{email}</strong>
               </p>
               <p className="mt-3 text-sm text-green-700 dark:text-green-300">
-                Click the link in the email to verify your account and log in.
+                Click the link in the email to verify your account.
+              </p>
+              <p className="mt-2 text-xs text-green-600 dark:text-green-400">
+                💡 Tip: Check your spam folder if you don't see the email within a few minutes.
               </p>
               <a
                 href="/login"
