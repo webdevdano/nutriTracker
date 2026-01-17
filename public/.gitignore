@@ -1,0 +1,4 @@
+# Ignore PWA generated files
+sw.js
+workbox-*.js
+*.js.map
