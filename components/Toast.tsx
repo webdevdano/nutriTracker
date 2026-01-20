@@ -5,18 +5,18 @@ import { useEffect } from "react";
 type ToastProps = {
   message: string;
   type?: "success" | "error" | "info";
-  onClose: () => void;
+  onCloseAction: () => void;
   duration?: number;
 };
 
-export default function Toast({ message, type = "success", onClose, duration = 3000 }: ToastProps) {
+export default function Toast({ message, type = "success", onCloseAction, duration = 3000 }: ToastProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      onClose();
+      onCloseAction();
     }, duration);
 
     return () => clearTimeout(timer);
-  }, [duration, onClose]);
+  }, [duration, onCloseAction]);
 
   const bgColor = {
     success: "bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-200",
@@ -36,7 +36,7 @@ export default function Toast({ message, type = "success", onClose, duration = 3
         <span className="text-lg">{icon[type]}</span>
         <p className="text-sm font-medium">{message}</p>
         <button
-          onClick={onClose}
+          onClick={onCloseAction}
           className="ml-2 text-sm opacity-70 hover:opacity-100"
         >
           ✕

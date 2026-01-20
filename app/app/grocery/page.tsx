@@ -527,7 +527,7 @@ export default function GroceryPage() {
         <Toast
           message={toast.message}
           type={toast.type}
-          onClose={() => setToast(null)}
+          onCloseAction={() => setToast(null)}
         />
       )}
     </div>

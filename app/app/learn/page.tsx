@@ -3,9 +3,118 @@
 import { useState } from 'react';
 import { getNutrientsByCategory, getAllNutrientsAlphabetically, type NutrientInfo } from '@/lib/nutrient-data';
 
+type Superfood = {
+  name: string;
+  emoji: string;
+  description: string;
+  nutrients: string[];
+  benefits: string[];
+  serving: string;
+};
+
+const SUPERFOODS: Superfood[] = [
+  {
+    name: "Spinach",
+    emoji: "🥬",
+    description: "Nutrient-dense leafy green powerhouse",
+    nutrients: ["Iron", "Calcium", "Vitamin A", "Vitamin K", "Vitamin C", "Folate", "Magnesium"],
+    benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"],
+    serving: "1 cup cooked (180g)"
+  },
+  {
+    name: "Salmon",
+    emoji: "🐟",
+    description: "Omega-3 rich fatty fish",
+    nutrients: ["Protein", "Omega-3 Fatty Acids", "Vitamin D", "Vitamin B12", "Selenium", "Niacin"],
+    benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"],
+    serving: "3 oz (85g)"
+  },
+  {
+    name: "Blueberries",
+    emoji: "🫐",
+    description: "Antioxidant-packed superfruit",
+    nutrients: ["Vitamin C", "Vitamin K", "Fiber", "Manganese"],
+    benefits: ["Brain health", "Anti-aging", "Supports heart health", "May improve memory"],
+    serving: "1 cup (148g)"
+  },
+  {
+    name: "Sweet Potato",
+    emoji: "🍠",
+    description: "Complex carb loaded with vitamins",
+    nutrients: ["Vitamin A", "Vitamin C", "Fiber", "Potassium", "Manganese", "Vitamin B6"],
+    benefits: ["Eye health", "Immune support", "Digestive health", "Stable energy"],
+    serving: "1 medium (150g)"
+  },
+  {
+    name: "Almonds",
+    emoji: "🌰",
+    description: "Heart-healthy nut with healthy fats",
+    nutrients: ["Vitamin E", "Magnesium", "Fiber", "Protein", "Calcium", "Zinc"],
+    benefits: ["Heart health", "Weight management", "Blood sugar control", "Brain function"],
+    serving: "1 oz / 23 almonds (28g)"
+  },
+  {
+    name: "Greek Yogurt",
+    emoji: "🥛",
+    description: "Protein-rich probiotic food",
+    nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"],
+    benefits: ["Gut health", "Bone strength", "Muscle building", "Immune support"],
+    serving: "1 cup (245g)"
+  },
+  {
+    name: "Quinoa",
+    emoji: "🌾",
+    description: "Complete protein grain alternative",
+    nutrients: ["Protein", "Fiber", "Magnesium", "Iron", "Zinc", "Folate", "Manganese"],
+    benefits: ["Complete protein", "Gluten-free", "Rich in minerals", "Supports digestion"],
+    serving: "1 cup cooked (185g)"
+  },
+  {
+    name: "Kale",
+    emoji: "🥗",
+    description: "Superfood leafy green champion",
+    nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Calcium", "Iron", "Folate"],
+    benefits: ["Bone health", "Anti-inflammatory", "Detoxification", "Cancer prevention"],
+    serving: "1 cup raw (67g)"
+  },
+  {
+    name: "Eggs",
+    emoji: "🥚",
+    description: "Complete protein with essential nutrients",
+    nutrients: ["Protein", "Vitamin B12", "Vitamin D", "Selenium", "Choline", "Riboflavin"],
+    benefits: ["Muscle building", "Brain health", "Eye health", "Nutrient-dense"],
+    serving: "1 large egg (50g)"
+  },
+  {
+    name: "Avocado",
+    emoji: "🥑",
+    description: "Healthy fat powerhouse",
+    nutrients: ["Healthy Fats", "Fiber", "Potassium", "Vitamin E", "Vitamin K", "Folate"],
+    benefits: ["Heart health", "Nutrient absorption", "Satiety", "Skin health"],
+    serving: "1/2 avocado (100g)"
+  },
+  {
+    name: "Broccoli",
+    emoji: "🥦",
+    description: "Cruciferous vegetable with cancer-fighting compounds",
+    nutrients: ["Vitamin C", "Vitamin K", "Folate", "Fiber", "Potassium", "Iron"],
+    benefits: ["Cancer prevention", "Bone health", "Digestive health", "Immune support"],
+    serving: "1 cup chopped (91g)"
+  },
+  {
+    name: "Chia Seeds",
+    emoji: "🌱",
+    description: "Tiny seeds packed with omega-3s",
+    nutrients: ["Omega-3 Fatty Acids", "Fiber", "Protein", "Calcium", "Magnesium", "Phosphorus"],
+    benefits: ["Heart health", "Digestive health", "Bone strength", "Blood sugar control"],
+    serving: "2 tbsp (28g)"
+  }
+];
+
 export default function LearnPage() {
-  const [view, setView] = useState<'category' | 'alphabetical'>('category');
+  const [view, setView] = useState<'category' | 'alphabetical' | 'superfoods'>('category');
   const [selectedNutrient, setSelectedNutrient] = useState<NutrientInfo | null>(null);
+  const [selectedSuperfood, setSelectedSuperfood] = useState<Superfood | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const nutrientsByCategory = getNutrientsByCategory();
@@ -63,6 +172,16 @@ export default function LearnPage() {
           >
             A-Z Directory
           </button>
+          <button
+            onClick={() => setView('superfoods')}
+            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+              view === 'superfoods'
+                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
+            }`}
+          >
+            🌟 Superfoods
+          </button>
         </div>
       )}
 
@@ -100,6 +219,25 @@ export default function LearnPage() {
             </div>
           ))}
         </div>
+      ) : view === 'superfoods' ? (
+        // Superfoods View
+        <div>
+          <div className="mb-6 rounded-xl bg-linear-to-r from-green-50 to-blue-50 p-6 dark:from-green-950/30 dark:to-blue-950/30">
+            <h2 className="mb-2 text-2xl font-bold">🌟 Superfoods</h2>
+            <p className="text-zinc-700 dark:text-zinc-300">
+              Foods packed with multiple essential nutrients to supercharge your health
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {SUPERFOODS.map((superfood) => (
+              <SuperfoodCard
+                key={superfood.name}
+                superfood={superfood}
+                onClick={() => setSelectedSuperfood(superfood)}
+              />
+            ))}
+          </div>
+        </div>
       ) : (
         // Alphabetical View
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -120,6 +258,126 @@ export default function LearnPage() {
           onClose={() => setSelectedNutrient(null)}
         />
       )}
+
+      {/* Superfood Modal */}
+      {selectedSuperfood && (
+        <SuperfoodModal
+          superfood={selectedSuperfood}
+          onClose={() => setSelectedSuperfood(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+function SuperfoodCard({ superfood, onClick }: { superfood: Superfood; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-green-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-green-700"
+    >
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-3xl">{superfood.emoji}</span>
+        <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-300">
+          {superfood.nutrients.length} nutrients
+        </span>
+      </div>
+      <h3 className="mb-1 font-semibold group-hover:text-green-700 dark:group-hover:text-green-400">
+        {superfood.name}
+      </h3>
+      <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">
+        {superfood.description}
+      </p>
+      <div className="flex flex-wrap gap-1">
+        {superfood.nutrients.slice(0, 3).map((nutrient, i) => (
+          <span
+            key={i}
+            className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+          >
+            {nutrient}
+          </span>
+        ))}
+        {superfood.nutrients.length > 3 && (
+          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+            +{superfood.nutrients.length - 3} more
+          </span>
+        )}
+      </div>
+    </button>
+  );
+}
+
+function SuperfoodModal({ superfood, onClose }: { superfood: Superfood; onClose: () => void }) {
+  return (
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose}
+    >
+      <div 
+        className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="mb-4 flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-5xl">{superfood.emoji}</span>
+            <div>
+              <h2 className="text-2xl font-bold">{superfood.name}</h2>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                {superfood.description}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Serving Size */}
+        <div className="mb-6 rounded-lg bg-blue-50 p-3 dark:bg-blue-950/30">
+          <p className="text-sm">
+            <span className="font-semibold text-blue-900 dark:text-blue-300">Serving Size:</span>{' '}
+            <span className="text-blue-800 dark:text-blue-200">{superfood.serving}</span>
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Nutrients */}
+          <div>
+            <h3 className="mb-3 text-lg font-semibold">Key Nutrients</h3>
+            <div className="flex flex-wrap gap-2">
+              {superfood.nutrients.map((nutrient, index) => (
+                <span
+                  key={index}
+                  className="rounded-full bg-green-100 px-3 py-1.5 text-sm font-medium text-green-800 dark:bg-green-950 dark:text-green-200"
+                >
+                  {nutrient}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Benefits */}
+          <div>
+            <h3 className="mb-3 text-lg font-semibold">Health Benefits</h3>
+            <ul className="space-y-2">
+              {superfood.benefits.map((benefit, index) => (
+                <li key={index} className="flex items-start gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                  <svg className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

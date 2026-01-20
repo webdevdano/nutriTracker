@@ -4,7 +4,9 @@ import { useEffect } from "react";
 
 export default function PWARegister() {
   useEffect(() => {
-    if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
+    // Disable for now - service worker not deployed to Vercel
+    // Will re-enable once we have proper SW setup
+    if (false && "serviceWorker" in navigator && process.env.NODE_ENV === "production") {
       navigator.serviceWorker
         .register("/sw.js")
         .then((registration) => {
