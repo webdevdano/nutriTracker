@@ -331,18 +331,23 @@ function SuperfoodModal({ superfoods, initialIndex, onClose }: { superfoods: Sup
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          item_name: superfood.name,
+          food_name: superfood.name,
           quantity: quantity,
-          category: 'Superfood'
+          unit: superfood.serving
         })
       });
       
       if (response.ok) {
         setShowAddSuccess(true);
         setTimeout(() => setShowAddSuccess(false), 2000);
+      } else {
+        const error = await response.json();
+        console.error('Error adding to grocery list:', error);
+        alert('Failed to add to grocery list. Please try again.');
       }
     } catch (error) {
       console.error('Error adding to grocery list:', error);
+      alert('Failed to add to grocery list. Please try again.');
     }
   };
   

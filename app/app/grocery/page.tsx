@@ -4,6 +4,22 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Toast from "@/components/Toast";
 
+// Superfood nutrient mapping
+const SUPERFOOD_NUTRIENTS: Record<string, string[]> = {
+  "Spinach": ["Iron", "Calcium", "Vitamin A", "Vitamin K", "Vitamin C", "Folate", "Magnesium"],
+  "Salmon": ["Protein", "Omega-3 Fatty Acids", "Vitamin D", "Vitamin B12", "Selenium", "Niacin"],
+  "Blueberries": ["Vitamin C", "Vitamin K", "Fiber", "Manganese"],
+  "Sweet Potato": ["Vitamin A", "Vitamin C", "Fiber", "Potassium", "Manganese", "Vitamin B6"],
+  "Almonds": ["Vitamin E", "Magnesium", "Fiber", "Protein", "Calcium", "Zinc"],
+  "Greek Yogurt": ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"],
+  "Quinoa": ["Protein", "Fiber", "Magnesium", "Iron", "Zinc", "Folate", "Manganese"],
+  "Kale": ["Vitamin K", "Vitamin A", "Vitamin C", "Calcium", "Iron", "Folate"],
+  "Eggs": ["Protein", "Vitamin B12", "Vitamin D", "Selenium", "Choline", "Riboflavin"],
+  "Avocado": ["Healthy Fats", "Fiber", "Potassium", "Vitamin E", "Vitamin K", "Folate"],
+  "Broccoli": ["Vitamin C", "Vitamin K", "Folate", "Fiber", "Potassium", "Iron"],
+  "Chia Seeds": ["Omega-3 Fatty Acids", "Fiber", "Protein", "Calcium", "Magnesium", "Phosphorus"]
+};
+
 type GroceryItem = {
   id: string;
   food_name: string;
@@ -55,6 +71,36 @@ export default function GroceryPage() {
   const [generatingPlan, setGeneratingPlan] = useState(false);
   const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [showNutrientChecklist, setShowNutrientChecklist] = useState(false);
+
+  // Get nutrients covered by grocery list
+  const getNutrientsCovered = () => {
+    const nutrientsMap = new Map<string, string[]>();
+    
+    items.forEach((item) => {
+      const foodName = item.food_name;
+      // Check if the food name matches or contains a superfood name
+      Object.keys(SUPERFOOD_NUTRIENTS).forEach((superfood) => {
+        if (foodName.toLowerCase().includes(superfood.toLowerCase())) {
+          SUPERFOOD_NUTRIENTS[superfood].forEach((nutrient) => {
+            if (!nutrientsMap.has(nutrient)) {
+              nutrientsMap.set(nutrient, []);
+            }
+            if (!nutrientsMap.get(nutrient)!.includes(foodName)) {
+              nutrientsMap.get(nutrient)!.push(foodName);
+            }
+          });
+        }
+      });
+    });
+    
+    return Array.from(nutrientsMap.entries()).map(([nutrient, foods]) => ({
+      nutrient,
+      foods
+    })).sort((a, b) => a.nutrient.localeCompare(b.nutrient));
+  };
+
+  const nutrientsCovered = getNutrientsCovered();
 
   useEffect(() => {
     loadItems();
@@ -375,6 +421,65 @@ export default function GroceryPage() {
                     >
                       Remove
                     </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+      
+      {/* Nutrient Checklist */}
+      {!loading && items.length > 0 && nutrientsCovered.length > 0 && (
+        <div className="mt-6">
+          <button
+            onClick={() => setShowNutrientChecklist(!showNutrientChecklist)}
+            className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-linear-to-r from-green-50 to-blue-50 p-4 text-left hover:from-green-100 hover:to-blue-100 dark:border-zinc-800 dark:from-green-950/30 dark:to-blue-950/30 dark:hover:from-green-950/40 dark:hover:to-blue-950/40"
+          >
+            <div>
+              <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+                🌟 Nutrients in Your List
+              </h3>
+              <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                {nutrientsCovered.length} nutrients covered by {items.filter(i => nutrientsCovered.some(n => n.foods.includes(i.food_name))).length} items
+              </p>
+            </div>
+            <svg
+              className={`h-5 w-5 transition-transform ${showNutrientChecklist ? 'rotate-180' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          {showNutrientChecklist && (
+            <div className="mt-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {nutrientsCovered.map(({ nutrient, foods }) => (
+                  <div
+                    key={nutrient}
+                    className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800"
+                  >
+                    <div className="flex items-start gap-2">
+                      <svg
+                        className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <div className="flex-1">
+                        <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                          {nutrient}
+                        </div>
+                        <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                          {foods.join(', ')}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
