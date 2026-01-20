@@ -3,6 +3,32 @@
 import { useState } from 'react';
 import { getNutrientsByCategory, getAllNutrientsAlphabetically, type NutrientInfo } from '@/lib/nutrient-data';
 
+// Sample food sources for each category
+const CARB_FOODS = [
+  { name: "Brown Rice", description: "Whole grain, high in complex carbs", image: "/images/brown-rice.jpg" },
+  { name: "Oats", description: "Rich in fiber and slow-digesting carbs", image: "/images/oats.jpg" },
+  { name: "Sweet Potato", description: "Vitamin-rich starchy root", image: "/images/sweet-potato.jpg" },
+  { name: "Quinoa", description: "Complete protein and carb source", image: "/images/quinoa.jpg" }
+];
+const PROTEIN_FOODS = [
+  { name: "Chicken Breast", description: "Lean animal protein", image: "/images/chicken.jpg" },
+  { name: "Lentils", description: "Plant-based protein and fiber", image: "/images/lentils.jpg" },
+  { name: "Greek Yogurt", description: "High-protein dairy", image: "/images/yogurt.jpg" },
+  { name: "Tofu", description: "Soy-based complete protein", image: "/images/tofu.jpg" }
+];
+const VITAMIN_FOODS = [
+  { name: "Spinach", description: "Rich in vitamin K, A, C", image: "/images/spinach.jpg" },
+  { name: "Citrus Fruits", description: "High in vitamin C", image: "/images/citrus.jpg" },
+  { name: "Carrots", description: "Excellent source of vitamin A", image: "/images/carrots.jpg" },
+  { name: "Red Peppers", description: "Vitamin C and antioxidants", image: "/images/red-pepper.jpg" },
+];
+const MINERAL_FOODS = [
+  { name: "Almonds", description: "Magnesium, calcium, iron", image: "/images/almonds.jpg" },
+  { name: "Pumpkin Seeds", description: "Zinc, magnesium, iron", image: "/images/pumpkin-seeds.jpg" },
+  { name: "Salmon", description: "Rich in selenium and iodine", image: "/images/salmon.jpg" },
+  { name: "Broccoli", description: "Calcium, potassium, iron", image: "/images/broccoli.jpg" },
+];
+
 type Superfood = {
   name: string;
   emoji: string;
@@ -165,48 +191,126 @@ export default function LearnPage() {
       )}
 
       {/* Content */}
+      {/* Content Views */}
       {searchQuery ? (
-        // Search Results
-        <div className="space-y-4">
-          {filteredNutrients.length === 0 ? (
-            <p className="text-sm text-zinc-500">No nutrients found matching &ldquo;{searchQuery}&rdquo;</p>
-          ) : (
-            filteredNutrients.map((nutrient) => (
-              <NutrientCard
-                key={nutrient.name}
-                nutrient={nutrient}
-                onClick={() => setSelectedNutrient(nutrient)}
-              />
-            ))
-          )}
-        </div>
-      ) : view === 'category' ? (
-        // Category View
-        <div className="space-y-8">
-          {Object.entries(nutrientsByCategory).map(([category, nutrients]) => (
-            <div key={category}>
-              <h2 className="mb-4 text-xl font-semibold tracking-tight">{category}</h2>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {nutrients.map((nutrient) => (
-                  <NutrientCard
-                    key={nutrient.name}
-                    nutrient={nutrient}
-                    onClick={() => setSelectedNutrient(nutrient)}
-                  />
-                ))}
+          // Search Results
+          <div className="space-y-4">
+            {filteredNutrients.length === 0 ? (
+              <p className="text-sm text-zinc-500">No nutrients found matching &ldquo;{searchQuery}&rdquo;</p>
+            ) : (
+              filteredNutrients.map((nutrient) => (
+                <NutrientCard
+                  key={nutrient.name}
+                  nutrient={nutrient}
+                  onClick={() => setSelectedNutrient(nutrient)}
+                />
+              ))
+            )}
+          </div>
+        ) : view === 'category' ? (
+          // Category View
+          <div className="space-y-8">
+            {Object.entries(nutrientsByCategory).map(([category, nutrients]) => (
+              <div key={category}>
+                <h2 className="mb-4 text-xl font-semibold tracking-tight">{category}</h2>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {nutrients.map((nutrient) => (
+                    <NutrientCard
+                      key={nutrient.name}
+                      nutrient={nutrient}
+                      onClick={() => setSelectedNutrient(nutrient)}
+                    />
+                  ))}
+                </div>
               </div>
+            ))}
+          </div>
+        ) : view === 'carbohydrates' ? (
+          // Carbohydrates Food Sources View
+          <div>
+            <div className="mb-6 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🍞 Carbohydrates</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates</p>
             </div>
-          ))}
-        </div>
-      ) : view === 'carbohydrates' ? (
-        // Carbohydrates View
-        <div>
-          <div className="mb-6 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
-            <h2 className="mb-2 text-2xl font-bold">🍞 Carbohydrates</h2>
-            <p className="text-zinc-700 dark:text-zinc-300">Key carbohydrate-rich foods and their nutrients</p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {CARB_FOODS.map((food) => (
+                <div key={food.name} className="rounded-lg bg-white dark:bg-zinc-800 shadow p-4 flex flex-col items-center">
+                  <h3 className="font-semibold text-lg mb-1">{food.name}</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
+        ) : view === 'proteins' ? (
+          // Proteins Food Sources View
+          <div>
+            <div className="mb-6 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in protein</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {PROTEIN_FOODS.map((food) => (
+                <div key={food.name} className="rounded-lg bg-white dark:bg-zinc-800 shadow p-4 flex flex-col items-center">
+                  <h3 className="font-semibold text-lg mb-1">{food.name}</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : view === 'vitamins' ? (
+          // Vitamins Food Sources View
+          <div>
+            <div className="mb-6 rounded-xl bg-green-50 p-6 dark:bg-green-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🍃 Vitamins</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in vitamins</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {VITAMIN_FOODS.map((food) => (
+                <div key={food.name} className="rounded-lg bg-white dark:bg-zinc-800 shadow p-4 flex flex-col items-center">
+                  <h3 className="font-semibold text-lg mb-1">{food.name}</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : view === 'minerals' ? (
+          // Minerals Food Sources View
+          <div>
+            <div className="mb-6 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in minerals</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {MINERAL_FOODS.map((food) => (
+                <div key={food.name} className="rounded-lg bg-white dark:bg-zinc-800 shadow p-4 flex flex-col items-center">                  <h3 className="font-semibold text-lg mb-1">{food.name}</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : view === 'superfoods' ? (
+          // Superfoods View
+          <div>
+            <div className="mb-6 rounded-xl bg-linear-to-r from-green-50 to-blue-50 p-6 dark:from-green-950/30 dark:to-blue-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🌟 Superfoods</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">
+                Foods packed with multiple essential nutrients to supercharge your health
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {SUPERFOODS.map((superfood, index) => (
+                <SuperfoodCard
+                  key={superfood.name}
+                  superfood={superfood}
+                  onClick={() => setSelectedSuperfoodIndex(index)}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          // Alphabetical View
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {allNutrients.filter(n => n.category === 'Macronutrients' && n.name.toLowerCase().includes('carb')).map((nutrient) => (
+            {allNutrients.map((nutrient) => (
               <NutrientCard
                 key={nutrient.name}
                 nutrient={nutrient}
@@ -214,90 +318,8 @@ export default function LearnPage() {
               />
             ))}
           </div>
-        </div>
-      ) : view === 'proteins' ? (
-        // Proteins View
-        <div>
-          <div className="mb-6 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
-            <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
-            <p className="text-zinc-700 dark:text-zinc-300">Key protein-rich foods and their nutrients</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {allNutrients.filter(n => n.category === 'Macronutrients' && n.name.toLowerCase().includes('protein')).map((nutrient) => (
-              <NutrientCard
-                key={nutrient.name}
-                nutrient={nutrient}
-                onClick={() => setSelectedNutrient(nutrient)}
-              />
-            ))}
-          </div>
-        </div>
-      ) : view === 'vitamins' ? (
-        // Vitamins View
-        <div>
-          <div className="mb-6 rounded-xl bg-green-50 p-6 dark:bg-green-950/30">
-            <h2 className="mb-2 text-2xl font-bold">🍃 Vitamins</h2>
-            <p className="text-zinc-700 dark:text-zinc-300">Essential vitamins and their food sources</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {allNutrients.filter(n => n.category === 'Vitamins').map((nutrient) => (
-              <NutrientCard
-                key={nutrient.name}
-                nutrient={nutrient}
-                onClick={() => setSelectedNutrient(nutrient)}
-              />
-            ))}
-          </div>
-        </div>
-      ) : view === 'minerals' ? (
-        // Minerals View
-        <div>
-          <div className="mb-6 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
-            <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
-            <p className="text-zinc-700 dark:text-zinc-300">Essential minerals and their food sources</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {allNutrients.filter(n => n.category === 'Minerals').map((nutrient) => (
-              <NutrientCard
-                key={nutrient.name}
-                nutrient={nutrient}
-                onClick={() => setSelectedNutrient(nutrient)}
-              />
-            ))}
-          </div>
-        </div>
-      ) : view === 'superfoods' ? (
-        // Superfoods View
-        <div>
-          <div className="mb-6 rounded-xl bg-linear-to-r from-green-50 to-blue-50 p-6 dark:from-green-950/30 dark:to-blue-950/30">
-            <h2 className="mb-2 text-2xl font-bold">🌟 Superfoods</h2>
-            <p className="text-zinc-700 dark:text-zinc-300">
-              Foods packed with multiple essential nutrients to supercharge your health
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {SUPERFOODS.map((superfood, index) => (
-              <SuperfoodCard
-                key={superfood.name}
-                superfood={superfood}
-                onClick={() => setSelectedSuperfoodIndex(index)}
-              />
-            ))}
-          </div>
-        </div>
-      ) : (
-        // Alphabetical View
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {allNutrients.map((nutrient) => (
-            <NutrientCard
-              key={nutrient.name}
-              nutrient={nutrient}
-              onClick={() => setSelectedNutrient(nutrient)}
-            />
-          ))}
-        </div>
-      )}
-
+        )}
+      
       {/* Detail Modal */}
       {selectedNutrient && (
         <NutrientModal
@@ -305,7 +327,6 @@ export default function LearnPage() {
           onClose={() => setSelectedNutrient(null)}
         />
       )}
-
       {/* Superfood Modal */}
       {selectedSuperfoodIndex !== null && (
         <SuperfoodModal
@@ -316,7 +337,6 @@ export default function LearnPage() {
       )}
     </div>
   );
-}
 
 function SuperfoodCard({ superfood, onClick }: { superfood: Superfood; onClick: () => void }) {
   return (
@@ -551,6 +571,7 @@ function SuperfoodModal({ superfoods, initialIndex, onClose }: { superfoods: Sup
       </div>
     </div>
   );
+}
 }
 
 function NutrientCard({ nutrient, onClick }: { nutrient: NutrientInfo; onClick: () => void }) {
