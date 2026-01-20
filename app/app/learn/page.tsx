@@ -114,7 +114,7 @@ const SUPERFOODS: Superfood[] = [
 export default function LearnPage() {
   const [view, setView] = useState<'category' | 'alphabetical' | 'superfoods'>('category');
   const [selectedNutrient, setSelectedNutrient] = useState<NutrientInfo | null>(null);
-  const [selectedSuperfood, setSelectedSuperfood] = useState<Superfood | null>(null);
+  const [selectedSuperfoodIndex, setSelectedSuperfoodIndex] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const nutrientsByCategory = getNutrientsByCategory();
@@ -229,11 +229,11 @@ export default function LearnPage() {
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {SUPERFOODS.map((superfood) => (
+            {SUPERFOODS.map((superfood, index) => (
               <SuperfoodCard
                 key={superfood.name}
                 superfood={superfood}
-                onClick={() => setSelectedSuperfood(superfood)}
+                onClick={() => setSelectedSuperfoodIndex(index)}
               />
             ))}
           </div>
@@ -260,10 +260,11 @@ export default function LearnPage() {
       )}
 
       {/* Superfood Modal */}
-      {selectedSuperfood && (
+      {selectedSuperfoodIndex !== null && (
         <SuperfoodModal
-          superfood={selectedSuperfood}
-          onClose={() => setSelectedSuperfood(null)}
+          superfoods={SUPERFOODS}
+          initialIndex={selectedSuperfoodIndex}
+          onClose={() => setSelectedSuperfoodIndex(null)}
         />
       )}
     </div>
@@ -307,24 +308,79 @@ function SuperfoodCard({ superfood, onClick }: { superfood: Superfood; onClick: 
   );
 }
 
-function SuperfoodModal({ superfood, onClose }: { superfood: Superfood; onClose: () => void }) {
+function SuperfoodModal({ superfoods, initialIndex, onClose }: { superfoods: Superfood[]; initialIndex: number; onClose: () => void }) {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [quantity, setQuantity] = useState(1);
+  const [showAddSuccess, setShowAddSuccess] = useState(false);
+  
+  const superfood = superfoods[currentIndex];
+  
+  const handlePrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? superfoods.length - 1 : prev - 1));
+    setQuantity(1);
+  };
+  
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === superfoods.length - 1 ? 0 : prev + 1));
+    setQuantity(1);
+  };
+  
+  const handleAddToGroceryList = async () => {
+    try {
+      const response = await fetch('/api/grocery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          item_name: superfood.name,
+          quantity: quantity,
+          category: 'Superfood'
+        })
+      });
+      
+      if (response.ok) {
+        setShowAddSuccess(true);
+        setTimeout(() => setShowAddSuccess(false), 2000);
+      }
+    } catch (error) {
+      console.error('Error adding to grocery list:', error);
+    }
+  };
+  
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={onClose}
     >
-      <div 
-        className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
+      <div className="relative flex w-full max-w-6xl items-center justify-center gap-4">
+        {/* Navigation Arrows - Outside Card */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePrevious();
+          }}
+          className="rounded-full bg-white p-3 shadow-lg transition-all hover:scale-110 hover:bg-zinc-50 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          aria-label="Previous superfood"
+        >
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <div 
+          className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
         <div className="mb-4 flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-5xl">{superfood.emoji}</span>
+            <span className="text-6xl">{superfood.emoji}</span>
             <div>
-              <h2 className="text-2xl font-bold">{superfood.name}</h2>
+              <h2 className="text-3xl font-bold">{superfood.name}</h2>
               <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                 {superfood.description}
+              </p>
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
+                {currentIndex + 1} of {superfoods.length}
               </p>
             </div>
           </div>
@@ -377,6 +433,69 @@ function SuperfoodModal({ superfood, onClose }: { superfood: Superfood; onClose:
             </ul>
           </div>
         </div>
+        
+        {/* Add to Grocery List Section */}
+        <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-700">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <label htmlFor="quantity" className="text-sm font-medium">
+                Quantity:
+              </label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                >
+                  −
+                </button>
+                <input
+                  id="quantity"
+                  type="number"
+                  min="1"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="w-16 rounded-lg border border-zinc-300 px-3 py-1.5 text-center dark:border-zinc-700 dark:bg-zinc-800"
+                />
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            
+            <button
+              onClick={handleAddToGroceryList}
+              className="flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2.5 font-semibold text-white transition-colors hover:bg-green-700"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Add to Grocery List
+            </button>
+          </div>
+          
+          {showAddSuccess && (
+            <div className="mt-3 rounded-lg bg-green-50 p-3 text-sm text-green-800 dark:bg-green-950/30 dark:text-green-200">
+              ✓ {superfood.name} added to grocery list!
+            </div>
+          )}
+        </div>
+      </div>
+      
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          handleNext();
+        }}
+        className="rounded-full bg-white p-3 shadow-lg transition-all hover:scale-110 hover:bg-zinc-50 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        aria-label="Next superfood"
+      >
+        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
       </div>
     </div>
   );
