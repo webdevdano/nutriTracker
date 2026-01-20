@@ -112,7 +112,9 @@ const SUPERFOODS: Superfood[] = [
 ];
 
 export default function LearnPage() {
-  const [view, setView] = useState<'category' | 'alphabetical' | 'superfoods'>('category');
+  const [view, setView] = useState<
+    'category' | 'alphabetical' | 'superfoods' | 'carbohydrates' | 'proteins' | 'vitamins' | 'minerals'
+  >('category');
   const [selectedNutrient, setSelectedNutrient] = useState<NutrientInfo | null>(null);
   const [selectedSuperfoodIndex, setSelectedSuperfoodIndex] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -152,36 +154,13 @@ export default function LearnPage() {
       {/* View Toggle */}
       {!searchQuery && (
         <div className="mb-6 flex gap-2">
-          <button
-            onClick={() => setView('category')}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-              view === 'category'
-                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
-            }`}
-          >
-            By Category
-          </button>
-          <button
-            onClick={() => setView('alphabetical')}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-              view === 'alphabetical'
-                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
-            }`}
-          >
-            A-Z Directory
-          </button>
-          <button
-            onClick={() => setView('superfoods')}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-              view === 'superfoods'
-                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
-            }`}
-          >
-            🌟 Superfoods
-          </button>
+          <button onClick={() => setView('category')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'category' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}>By Category</button>
+          <button onClick={() => setView('alphabetical')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'alphabetical' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}>A-Z Directory</button>
+          <button onClick={() => setView('carbohydrates')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'carbohydrates' ? 'bg-blue-900 text-white dark:bg-blue-100 dark:text-blue-900' : 'bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-700'}`}>Carbohydrates</button>
+          <button onClick={() => setView('proteins')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'proteins' ? 'bg-orange-900 text-white dark:bg-orange-100 dark:text-orange-900' : 'bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-800 dark:text-orange-300 dark:hover:bg-orange-700'}`}>Proteins</button>
+          <button onClick={() => setView('vitamins')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'vitamins' ? 'bg-green-900 text-white dark:bg-green-100 dark:text-green-900' : 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-800 dark:text-green-300 dark:hover:bg-green-700'}`}>Vitamins</button>
+          <button onClick={() => setView('minerals')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'minerals' ? 'bg-yellow-900 text-white dark:bg-yellow-100 dark:text-yellow-900' : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-800 dark:text-yellow-300 dark:hover:bg-yellow-700'}`}>Minerals</button>
+          <button onClick={() => setView('superfoods')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'superfoods' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}>🌟 Superfoods</button>
         </div>
       )}
 
@@ -218,6 +197,74 @@ export default function LearnPage() {
               </div>
             </div>
           ))}
+        </div>
+      ) : view === 'carbohydrates' ? (
+        // Carbohydrates View
+        <div>
+          <div className="mb-6 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
+            <h2 className="mb-2 text-2xl font-bold">🍞 Carbohydrates</h2>
+            <p className="text-zinc-700 dark:text-zinc-300">Key carbohydrate-rich foods and their nutrients</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {allNutrients.filter(n => n.category === 'Macronutrients' && n.name.toLowerCase().includes('carb')).map((nutrient) => (
+              <NutrientCard
+                key={nutrient.name}
+                nutrient={nutrient}
+                onClick={() => setSelectedNutrient(nutrient)}
+              />
+            ))}
+          </div>
+        </div>
+      ) : view === 'proteins' ? (
+        // Proteins View
+        <div>
+          <div className="mb-6 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
+            <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
+            <p className="text-zinc-700 dark:text-zinc-300">Key protein-rich foods and their nutrients</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {allNutrients.filter(n => n.category === 'Macronutrients' && n.name.toLowerCase().includes('protein')).map((nutrient) => (
+              <NutrientCard
+                key={nutrient.name}
+                nutrient={nutrient}
+                onClick={() => setSelectedNutrient(nutrient)}
+              />
+            ))}
+          </div>
+        </div>
+      ) : view === 'vitamins' ? (
+        // Vitamins View
+        <div>
+          <div className="mb-6 rounded-xl bg-green-50 p-6 dark:bg-green-950/30">
+            <h2 className="mb-2 text-2xl font-bold">🍃 Vitamins</h2>
+            <p className="text-zinc-700 dark:text-zinc-300">Essential vitamins and their food sources</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {allNutrients.filter(n => n.category === 'Vitamins').map((nutrient) => (
+              <NutrientCard
+                key={nutrient.name}
+                nutrient={nutrient}
+                onClick={() => setSelectedNutrient(nutrient)}
+              />
+            ))}
+          </div>
+        </div>
+      ) : view === 'minerals' ? (
+        // Minerals View
+        <div>
+          <div className="mb-6 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
+            <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
+            <p className="text-zinc-700 dark:text-zinc-300">Essential minerals and their food sources</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {allNutrients.filter(n => n.category === 'Minerals').map((nutrient) => (
+              <NutrientCard
+                key={nutrient.name}
+                nutrient={nutrient}
+                onClick={() => setSelectedNutrient(nutrient)}
+              />
+            ))}
+          </div>
         </div>
       ) : view === 'superfoods' ? (
         // Superfoods View

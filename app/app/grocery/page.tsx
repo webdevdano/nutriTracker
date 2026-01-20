@@ -20,6 +20,20 @@ const SUPERFOOD_NUTRIENTS: Record<string, string[]> = {
   "Chia Seeds": ["Omega-3 Fatty Acids", "Fiber", "Protein", "Calcium", "Magnesium", "Phosphorus"]
 };
 
+// Main protein sources and their nutrients
+const MAIN_PROTEINS: Record<string, string[]> = {
+  Chicken: ["Protein", "Vitamin B6", "Niacin", "Phosphorus", "Selenium"],
+  Beef: ["Protein", "Iron", "Zinc", "Vitamin B12", "Phosphorus", "Niacin"],
+  Pork: ["Protein", "Thiamin", "Niacin", "Vitamin B6", "Phosphorus", "Zinc"],
+  Legumes: ["Protein", "Fiber", "Iron", "Folate", "Magnesium", "Potassium"],
+  Tofu: ["Protein", "Calcium", "Iron", "Magnesium", "Phosphorus"],
+  Fish: ["Protein", "Omega-3 Fatty Acids", "Vitamin D", "Selenium", "Vitamin B12"],
+  Eggs: ["Protein", "Vitamin B12", "Vitamin D", "Selenium", "Choline", "Riboflavin"],
+  "Greek Yogurt": ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"],
+  Lentils: ["Protein", "Fiber", "Iron", "Folate", "Magnesium", "Potassium"],
+  Tempeh: ["Protein", "Calcium", "Iron", "Magnesium", "Phosphorus", "Manganese"],
+};
+
 type GroceryItem = {
   id: string;
   food_name: string;
@@ -289,6 +303,27 @@ export default function GroceryPage() {
                   {foods.length > 0 && (
                     <span className="ml-1 text-xs text-zinc-500 dark:text-zinc-400">({foods.join(', ')})</span>
                   )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Main Protein Sources Section */}
+          <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-4 shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+            <h3 className="mb-2 flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+              🍗 Main Protein Sources
+            </h3>
+            <div className="flex flex-col gap-3">
+              {Object.entries(MAIN_PROTEINS).map(([protein, nutrients]) => (
+                <div key={protein} className="">
+                  <div className="font-medium text-zinc-900 dark:text-zinc-100">{protein}</div>
+                  <div className="mt-1 flex flex-wrap gap-2">
+                    {nutrients.map((nutrient) => (
+                      <span key={nutrient} className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700">
+                        {nutrient}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
