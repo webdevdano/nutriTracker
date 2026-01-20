@@ -71,36 +71,33 @@ export default function GroceryPage() {
   const [generatingPlan, setGeneratingPlan] = useState(false);
   const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
-  const [showNutrientChecklist, setShowNutrientChecklist] = useState(false);
+  // Removed unused showNutrientChecklist state
 
-  // Get nutrients covered by grocery list
-  const getNutrientsCovered = () => {
-    const nutrientsMap = new Map<string, string[]>();
-    
-    items.forEach((item) => {
-      const foodName = item.food_name;
-      // Check if the food name matches or contains a superfood name
-      Object.keys(SUPERFOOD_NUTRIENTS).forEach((superfood) => {
-        if (foodName.toLowerCase().includes(superfood.toLowerCase())) {
-          SUPERFOOD_NUTRIENTS[superfood].forEach((nutrient) => {
-            if (!nutrientsMap.has(nutrient)) {
-              nutrientsMap.set(nutrient, []);
-            }
-            if (!nutrientsMap.get(nutrient)!.includes(foodName)) {
-              nutrientsMap.get(nutrient)!.push(foodName);
-            }
-          });
-        }
+  // Get all unique nutrients from superfoods
+  const ALL_SUPERFOOD_NUTRIENTS = Array.from(
+    new Set(Object.values(SUPERFOOD_NUTRIENTS).flat())
+  ).sort((a, b) => a.localeCompare(b));
+
+  // Map nutrient to foods in grocery list that provide it
+  const getNutrientChecklist = () => {
+    const checklist: { nutrient: string; foods: string[] }[] = [];
+    ALL_SUPERFOOD_NUTRIENTS.forEach((nutrient) => {
+      const foods: string[] = [];
+      items.forEach((item) => {
+        Object.entries(SUPERFOOD_NUTRIENTS).forEach(([superfood, nutrients]) => {
+          if (
+            item.food_name.toLowerCase().includes(superfood.toLowerCase()) &&
+            nutrients.includes(nutrient)
+          ) {
+            if (!foods.includes(item.food_name)) foods.push(item.food_name);
+          }
+        });
       });
+      checklist.push({ nutrient, foods });
     });
-    
-    return Array.from(nutrientsMap.entries()).map(([nutrient, foods]) => ({
-      nutrient,
-      foods
-    })).sort((a, b) => a.nutrient.localeCompare(b.nutrient));
+    return checklist;
   };
-
-  const nutrientsCovered = getNutrientsCovered();
+  const nutrientChecklist = getNutrientChecklist();
 
   useEffect(() => {
     loadItems();
@@ -270,287 +267,259 @@ export default function GroceryPage() {
   const purchasedItems = items.filter((item) => item.purchased);
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 py-8">
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Lists</h1>
-            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-              Manage your grocery list and saved favorites
-            </p>
-          </div>
-          {activeTab === 'grocery' && (
-            <button
-              onClick={generateMealPlan}
-              disabled={generatingPlan}
-              className="h-10 rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
-            >
-              {generatingPlan ? "Generating..." : "📅 Meal Plan"}
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="mb-6 flex gap-2 rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
-        <button
-          onClick={() => setActiveTab('grocery')}
-          className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-            activeTab === 'grocery'
-              ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900'
-              : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
-          }`}
-        >
-          🛒 Grocery List
-        </button>
-        <button
-          onClick={() => setActiveTab('favorites')}
-          className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-            activeTab === 'favorites'
-              ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900'
-              : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
-          }`}
-        >
-          ⭐ Saved Favorites
-        </button>
-      </div>
-
-      {/* Grocery List Tab */}
-      {activeTab === 'grocery' && (
-        <>
-          <form onSubmit={handleAddItem} className="mb-6">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            className="h-11 flex-1 rounded-xl border border-zinc-300 bg-transparent px-4 text-sm dark:border-zinc-700"
-            placeholder="Add item to grocery list..."
-            value={newItem}
-            onChange={(e) => setNewItem(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="h-11 rounded-full bg-zinc-900 px-6 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
-            disabled={addingItem || !newItem.trim()}
-          >
-            Add
-          </button>
-        </div>
-      </form>
-
-      {loading ? (
-        <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-          Loading...
-        </div>
-      ) : items.length === 0 ? (
-        <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-zinc-800/80">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Your grocery list is empty. Add items manually or from the search page.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {unpurchasedItems.length > 0 && (
-            <div>
-              <h2 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                To Buy ({unpurchasedItems.length})
-              </h2>
-              <div className="space-y-2">
-                {unpurchasedItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-3 rounded-xl border border-zinc-200/70 p-3 dark:border-zinc-800/80"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={item.purchased}
-                      onChange={() => togglePurchased(item)}
-                      className="h-4 w-4 cursor-pointer rounded border-zinc-300 dark:border-zinc-700"
-                    />
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{item.food_name}</div>
-                      <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                        {item.quantity} {item.unit}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => deleteItem(item.id)}
-                      className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {purchasedItems.length > 0 && (
-            <div>
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                  Purchased ({purchasedItems.length})
-                </h2>
-                <button
-                  onClick={clearPurchased}
-                  className="text-xs text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
-                >
-                  Clear All
-                </button>
-              </div>
-              <div className="space-y-2">
-                {purchasedItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-3 rounded-xl border border-zinc-200/70 p-3 opacity-60 dark:border-zinc-800/80"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={item.purchased}
-                      onChange={() => togglePurchased(item)}
-                      className="h-4 w-4 cursor-pointer rounded border-zinc-300 dark:border-zinc-700"
-                    />
-                    <div className="flex-1">
-                      <div className="text-sm font-medium line-through">{item.food_name}</div>
-                      <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                        {item.quantity} {item.unit}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => deleteItem(item.id)}
-                      className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-      
-      {/* Nutrient Checklist */}
-      {!loading && items.length > 0 && nutrientsCovered.length > 0 && (
-        <div className="mt-6">
-          <button
-            onClick={() => setShowNutrientChecklist(!showNutrientChecklist)}
-            className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-linear-to-r from-green-50 to-blue-50 p-4 text-left hover:from-green-100 hover:to-blue-100 dark:border-zinc-800 dark:from-green-950/30 dark:to-blue-950/30 dark:hover:from-green-950/40 dark:hover:to-blue-950/40"
-          >
-            <div>
-              <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
-                🌟 Nutrients in Your List
-              </h3>
-              <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-                {nutrientsCovered.length} nutrients covered by {items.filter(i => nutrientsCovered.some(n => n.foods.includes(i.food_name))).length} items
-              </p>
-            </div>
-            <svg
-              className={`h-5 w-5 transition-transform ${showNutrientChecklist ? 'rotate-180' : ''}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          
-          {showNutrientChecklist && (
-            <div className="mt-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="grid gap-3 sm:grid-cols-2">
-                {nutrientsCovered.map(({ nutrient, foods }) => (
-                  <div
-                    key={nutrient}
-                    className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800"
-                  >
-                    <div className="flex items-start gap-2">
-                      <svg
-                        className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <div className="flex-1">
-                        <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                          {nutrient}
-                        </div>
-                        <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-                          {foods.join(', ')}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-        </>
-      )}
-
-      {/* Favorites Tab */}
-      {activeTab === 'favorites' && (
-        <>
-          {loading ? (
-            <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-              Loading...
-            </div>
-          ) : favorites.length === 0 ? (
-            <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-zinc-800/80">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                No saved favorites yet. Add favorites from the Search page for quick access!
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {favorites.map((favorite) => (
-                <div
-                  key={favorite.id}
-                  className="rounded-xl border border-zinc-200/70 p-4 dark:border-zinc-800/80"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-sm font-semibold">{favorite.food_name}</h3>
-                      <div className="mt-2 flex gap-4 text-xs text-zinc-600 dark:text-zinc-400">
-                        <span>{Math.round(favorite.calories || 0)} cal</span>
-                        <span>{Math.round(favorite.protein || 0)}g protein</span>
-                        <span>{Math.round(favorite.carbs || 0)}g carbs</span>
-                        <span>{Math.round(favorite.fat || 0)}g fat</span>
-                      </div>
-                      <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-                        Per {favorite.serving_size}g serving
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => deleteFavorite(favorite.id)}
-                      className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                  
-                  <div className="mt-3 flex gap-2">
-                    <button
-                      onClick={() => addFavoriteToLog(favorite)}
-                      className="flex-1 rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
-                    >
-                      📊 Add to Today
-                    </button>
-                    <button
-                      onClick={() => addFavoriteToGrocery(favorite)}
-                      className="flex-1 rounded-lg bg-green-50 px-3 py-2 text-xs font-medium text-green-700 hover:bg-green-100 dark:bg-green-950 dark:text-green-300 dark:hover:bg-green-900"
-                    >
-                      🛒 Add to Grocery
-                    </button>
-                  </div>
+    <div className="mx-auto w-full max-w-7xl px-6 py-8">
+      <div className="flex flex-col md:flex-row md:items-start md:gap-6">
+        {/* Nutrient Checklist - Left Column, Sticky */}
+        <aside className="w-full md:w-64 lg:w-72 shrink-0 md:sticky md:top-28 mb-8 md:mb-0">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+            <h3 className="mb-2 flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+              🌟 Nutrient Checklist
+            </h3>
+            <div className="flex flex-col gap-2">
+              {nutrientChecklist.map(({ nutrient, foods }) => (
+                <div key={nutrient} className="flex items-center gap-2">
+                  {foods.length > 0 ? (
+                    <svg className="h-5 w-5 shrink-0 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <span className="inline-block h-5 w-5 shrink-0 rounded-full border-2 border-zinc-300 dark:border-zinc-700"></span>
+                  )}
+                  <span className={`text-sm font-medium ${foods.length > 0 ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400 dark:text-zinc-600'}`}>{nutrient}</span>
+                  {foods.length > 0 && (
+                    <span className="ml-1 text-xs text-zinc-500 dark:text-zinc-400">({foods.join(', ')})</span>
+                  )}
                 </div>
               ))}
             </div>
+          </div>
+        </aside>
+        {/* Main Content Area: Header, Tabs, Grocery List */}
+        <div className="flex-1 min-w-0">
+          <div className="mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight">Lists</h1>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  Manage your grocery list and saved favorites
+                </p>
+              </div>
+              {activeTab === 'grocery' && (
+                <button
+                  onClick={generateMealPlan}
+                  disabled={generatingPlan}
+                  className="h-10 rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+                >
+                  {generatingPlan ? "Generating..." : "📅 Meal Plan"}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="mb-6 flex gap-2 rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
+            <button
+              onClick={() => setActiveTab('grocery')}
+              className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'grocery'
+                  ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900'
+                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
+              }`}
+            >
+              🛒 Grocery List
+            </button>
+            <button
+              onClick={() => setActiveTab('favorites')}
+              className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'favorites'
+                  ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900'
+                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
+              }`}
+            >
+              ⭐ Saved Favorites
+            </button>
+          </div>
+
+          {/* Grocery List Tab */}
+          {activeTab === 'grocery' && (
+            <>
+              <form onSubmit={handleAddItem} className="mb-6">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    className="h-11 flex-1 rounded-xl border border-zinc-300 bg-transparent px-4 text-sm dark:border-zinc-700"
+                    placeholder="Add item to grocery list..."
+                    value={newItem}
+                    onChange={(e) => setNewItem(e.target.value)}
+                  />
+                  <button
+                    type="submit"
+                    className="h-11 rounded-full bg-zinc-900 px-6 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+                    disabled={addingItem || !newItem.trim()}
+                  >
+                    Add
+                  </button>
+                </div>
+              </form>
+
+              {loading ? (
+                <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
+                  Loading...
+                </div>
+              ) : items.length === 0 ? (
+                <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-zinc-800/80">
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    Your grocery list is empty. Add items manually or from the search page.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {unpurchasedItems.length > 0 && (
+                    <div>
+                      <h2 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                        To Buy ({unpurchasedItems.length})
+                      </h2>
+                      <div className="space-y-2">
+                        {unpurchasedItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center gap-3 rounded-xl border border-zinc-200/70 p-3 dark:border-zinc-800/80"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={item.purchased}
+                              onChange={() => togglePurchased(item)}
+                              className="h-4 w-4 cursor-pointer rounded border-zinc-300 dark:border-zinc-700"
+                            />
+                            <div className="flex-1">
+                              <div className="text-sm font-medium">{item.food_name}</div>
+                              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                                {item.quantity} {item.unit}
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => deleteItem(item.id)}
+                              className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {purchasedItems.length > 0 && (
+                    <div>
+                      <div className="mb-3 flex items-center justify-between">
+                        <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                          Purchased ({purchasedItems.length})
+                        </h2>
+                        <button
+                          onClick={clearPurchased}
+                          className="text-xs text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+                        >
+                          Clear All
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        {purchasedItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center gap-3 rounded-xl border border-zinc-200/70 p-3 opacity-60 dark:border-zinc-800/80"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={item.purchased}
+                              onChange={() => togglePurchased(item)}
+                              className="h-4 w-4 cursor-pointer rounded border-zinc-300 dark:border-zinc-700"
+                            />
+                            <div className="flex-1">
+                              <div className="text-sm font-medium line-through">{item.food_name}</div>
+                              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                                {item.quantity} {item.unit}
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => deleteItem(item.id)}
+                              className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </>
           )}
-        </>
-      )}
+
+          {/* Favorites Tab */}
+          {activeTab === 'favorites' && (
+            <>
+              {loading ? (
+                <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
+                  Loading...
+                </div>
+              ) : favorites.length === 0 ? (
+                <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-zinc-800/80">
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    No saved favorites yet. Add favorites from the Search page for quick access!
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {favorites.map((favorite) => (
+                    <div
+                      key={favorite.id}
+                      className="rounded-xl border border-zinc-200/70 p-4 dark:border-zinc-800/80"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-sm font-semibold">{favorite.food_name}</h3>
+                          <div className="mt-2 flex gap-4 text-xs text-zinc-600 dark:text-zinc-400">
+                            <span>{Math.round(favorite.calories || 0)} cal</span>
+                            <span>{Math.round(favorite.protein || 0)}g protein</span>
+                            <span>{Math.round(favorite.carbs || 0)}g carbs</span>
+                            <span>{Math.round(favorite.fat || 0)}g fat</span>
+                          </div>
+                          <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
+                            Per {favorite.serving_size}g serving
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => deleteFavorite(favorite.id)}
+                          className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          onClick={() => addFavoriteToGrocery(favorite)}
+                          className="rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+                        >
+                          Add to Grocery
+                        </button>
+                        <button
+                          onClick={() => addFavoriteToLog(favorite)}
+                          className="rounded-full bg-blue-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-blue-700 dark:bg-blue-400 dark:text-zinc-900 dark:hover:bg-blue-500"
+                        >
+                          Log Today
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+
 
       {/* Meal Plan Modal */}
       {showMealPlan && mealPlan && (
