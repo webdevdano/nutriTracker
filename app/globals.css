@@ -1,3 +1,11 @@
+/* Hide scrollbar utility for horizontal nav bar */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 @import "tailwindcss";
 
 @keyframes slide-up {
