@@ -1,7 +1,90 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { getNutrientsByCategory, getAllNutrientsAlphabetically, type NutrientInfo } from '@/lib/nutrient-data';
+import { useState } from "react";
+import { getNutrientsByCategory, getAllNutrientsAlphabetically, type NutrientInfo } from "@/lib/nutrient-data";
+
+// Modal for food cards (protein, carb, mineral, vitamin)
+function FoodModal({ food, onClose }: { food: { name: string; emoji: string; description: string; nutrients: string[]; serving?: string }; onClose: () => void }) {
+  const [quantity, setQuantity] = useState(1);
+  const [showAddSuccess, setShowAddSuccess] = useState(false);
+
+  const handleAddToGroceryList = async () => {
+    try {
+      const response = await fetch("/api/grocery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          food_name: food.name,
+          quantity: quantity,
+          unit: food.serving || "1 serving",
+        }),
+      });
+      if (response.ok) {
+        setShowAddSuccess(true);
+        setTimeout(() => setShowAddSuccess(false), 2000);
+      } else {
+        const error = await response.json();
+        console.error("Error adding to grocery list:", error);
+        alert("Failed to add to grocery list. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error adding to grocery list:", error);
+      alert("Failed to add to grocery list. Please try again.");
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
+      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900" onClick={e => e.stopPropagation()}>
+        <div className="mb-4 flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-5xl">{food.emoji}</span>
+            <div>
+              <h2 className="text-2xl font-bold">{food.name}</h2>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{food.description}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="mb-4">
+          <h3 className="mb-2 text-lg font-semibold">Key Nutrients</h3>
+          <div className="flex flex-wrap gap-2">
+            {food.nutrients.map((nutrient, i) => (
+              <span key={i} className="rounded-full bg-green-100 px-3 py-1.5 text-sm font-medium text-green-800 dark:bg-green-950 dark:text-green-200">{nutrient}</span>
+            ))}
+          </div>
+        </div>
+        <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-700">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <label htmlFor="quantity" className="text-sm font-medium">Quantity:</label>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">−</button>
+                <input id="quantity" type="number" min="1" value={quantity} onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))} className="w-16 rounded-lg border border-zinc-300 px-3 py-1.5 text-center dark:border-zinc-700 dark:bg-zinc-800" />
+                <button onClick={() => setQuantity(quantity + 1)} className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">+</button>
+              </div>
+            </div>
+            <button onClick={handleAddToGroceryList} className="flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2.5 font-semibold text-white transition-colors hover:bg-green-700">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Add to Grocery List
+            </button>
+          </div>
+          {showAddSuccess && (
+            <div className="mt-3 rounded-lg bg-green-50 p-3 text-sm text-green-800 dark:bg-green-950/30 dark:text-green-200">
+              ✓ {food.name} added to grocery list!
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Sample food sources for each category
 const CARB_FOODS = [
@@ -137,6 +220,13 @@ function LearnPage() {
   const [view, setView] = useState<'category' | 'alphabetical' | 'carbohydrates' | 'proteins' | 'vitamins' | 'minerals' | 'superfoods'>('category');
   const [selectedNutrient, setSelectedNutrient] = useState<NutrientInfo | null>(null);
   const [selectedSuperfoodIndex, setSelectedSuperfoodIndex] = useState<number | null>(null);
+  const [selectedFood, setSelectedFood] = useState<{
+    name: string;
+    emoji: string;
+    description: string;
+    nutrients: string[];
+    serving?: string;
+  } | null>(null);
 
   const filteredNutrients = searchQuery
     ? allNutrients.filter(n => 
@@ -184,7 +274,8 @@ function LearnPage() {
       {/* Content */}
       {/* Content Views */}
       {searchQuery ? (
-          // Search Results
+        <>
+          {/* Search Results */}
           <div className="space-y-4">
             {filteredNutrients.length === 0 ? (
               <p className="text-sm text-zinc-500">No nutrients found matching &ldquo;{searchQuery}&rdquo;</p>
@@ -198,96 +289,15 @@ function LearnPage() {
               ))
             )}
           </div>
-        ) : view === 'category' ? (
-          // Category View
-          <div className="space-y-8">
-            {Object.entries(nutrientsByCategory).map(([category, nutrients]) => (
-              <div key={category}>
-                <h2 className="mb-4 text-xl font-semibold tracking-tight">{category}</h2>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {nutrients.map((nutrient) => (
-                    <NutrientCard
-                      key={nutrient.name}
-                      nutrient={nutrient}
-                      onClick={() => setSelectedNutrient(nutrient)}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : view === 'carbohydrates' ? (
-          // Carbohydrates Food Sources View (SuperfoodCard style)
-          <div>
-            <div className="mb-6 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
-              <h2 className="mb-2 text-2xl font-bold">🍞 Carbohydrates</h2>
-              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  name: "Brown Rice",
-                  emoji: "🍚",
-                  description: "Whole grain, high in complex carbs",
-                  nutrients: ["Carbohydrates", "Fiber", "Manganese", "Magnesium", "Selenium", "B Vitamins"]
-                },
-                {
-                  name: "Oats",
-                  emoji: "🌾",
-                  description: "Rich in fiber and slow-digesting carbs",
-                  nutrients: ["Carbohydrates", "Fiber", "Manganese", "Phosphorus", "Magnesium", "Iron"]
-                },
-                {
-                  name: "Sweet Potato",
-                  emoji: "🍠",
-                  description: "Vitamin-rich starchy root",
-                  nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Fiber", "Potassium", "Vitamin B6"]
-                },
-                {
-                  name: "Quinoa",
-                  emoji: "🌱",
-                  description: "Complete protein and carb source",
-                  nutrients: ["Carbohydrates", "Protein", "Fiber", "Magnesium", "Iron", "Zinc", "Folate"]
-                }
-              ].map((carb) => (
-                <button
-                  key={carb.name}
-                  className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-blue-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-blue-700"
-                  type="button"
-                  tabIndex={0}
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-3xl">{carb.emoji}</span>
-                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
-                      {carb.nutrients.length} nutrients
-                    </span>
-                  </div>
-                  <h3 className="mb-1 font-semibold group-hover:text-blue-700 dark:group-hover:text-blue-400">
-                    {carb.name}
-                  </h3>
-                  <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">
-                    {carb.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1">
-                    {carb.nutrients.slice(0, 3).map((nutrient, i) => (
-                      <span
-                        key={i}
-                        className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                      >
-                        {nutrient}
-                      </span>
-                    ))}
-                    {carb.nutrients.length > 3 && (
-                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-                        +{carb.nutrients.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : view === 'proteins' ? (
+          {/* Food Modal for all food cards */}
+          {selectedFood && (
+            <FoodModal
+              food={selectedFood}
+              onClose={() => setSelectedFood(null)}
+            />
+          )}
+        </>
+      ) : view === 'proteins' ? (
           // Proteins Food Sources View (SuperfoodCard style)
           <div>
             <div className="mb-6 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
@@ -326,6 +336,7 @@ function LearnPage() {
                   className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-orange-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-orange-700"
                   type="button"
                   tabIndex={0}
+                  onClick={() => setSelectedFood({ ...protein, serving: '1 serving' })}
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-3xl">{protein.emoji}</span>
@@ -359,24 +370,76 @@ function LearnPage() {
             </div>
           </div>
         ) : view === 'vitamins' ? (
-          // Vitamins Food Sources View
+          // Vitamins Food Sources View (SuperfoodCard style)
           <div>
             <div className="mb-6 rounded-xl bg-green-50 p-6 dark:bg-green-950/30">
               <h2 className="mb-2 text-2xl font-bold">🍃 Vitamins</h2>
               <p className="text-zinc-700 dark:text-zinc-300">Foods rich in vitamins</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {VITAMIN_FOODS.map((food) => (
-                <div key={food.name} className="rounded-lg bg-white dark:bg-zinc-800 shadow p-4 flex flex-col items-center">
-                  <h3 className="font-semibold text-lg mb-1">{food.name}</h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
-                </div>
+              {[
+                {
+                  name: "Spinach",
+                  emoji: "🥬",
+                  description: "Rich in vitamin K, A, C",
+                  nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"]
+                },
+                {
+                  name: "Citrus Fruits",
+                  emoji: "🍋",
+                  description: "High in vitamin C",
+                  nutrients: ["Vitamin C", "Folate", "Potassium", "Fiber", "Antioxidants"]
+                },
+                {
+                  name: "Carrots",
+                  emoji: "🥕",
+                  description: "Excellent source of vitamin A",
+                  nutrients: ["Vitamin A", "Vitamin K", "Fiber", "Potassium", "Vitamin C"]
+                },
+                {
+                  name: "Red Peppers",
+                  emoji: "🫑",
+                  description: "Vitamin C and antioxidants",
+                  nutrients: ["Vitamin C", "Vitamin A", "Vitamin B6", "Folate", "Antioxidants"]
+                }
+              ].map((vitamin) => (
+                <button
+                  key={vitamin.name}
+                  className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-green-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-green-700"
+                  type="button"
+                  tabIndex={0}
+                  onClick={() => setSelectedFood({ ...vitamin, serving: '1 serving' })}
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-3xl">{vitamin.emoji}</span>
+                    <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-300">
+                      {vitamin.nutrients.length} nutrients
+                    </span>
+                  </div>
+                  <h3 className="mb-1 font-semibold group-hover:text-green-700 dark:group-hover:text-green-400">{vitamin.name}</h3>
+                  <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">{vitamin.description}</p>
+                  <div className="flex flex-wrap gap-1">
+                    {vitamin.nutrients.slice(0, 3).map((nutrient, i) => (
+                      <span
+                        key={i}
+                        className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                      >
+                        {nutrient}
+                      </span>
+                    ))}
+                    {vitamin.nutrients.length > 3 && (
+                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                        +{vitamin.nutrients.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                </button>
               ))}
             </div>
           </div>
         ) : view === 'minerals' ? (
           // Minerals Food Sources View (SuperfoodCard style)
-          <div>
+          <>
             <div className="mb-6 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
               <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
               <p className="text-zinc-700 dark:text-zinc-300">Foods rich in minerals</p>
@@ -413,6 +476,7 @@ function LearnPage() {
                   className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-yellow-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-yellow-700"
                   type="button"
                   tabIndex={0}
+                  onClick={() => setSelectedFood({ ...mineral, serving: '1 serving' })}
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-3xl">{mineral.emoji}</span>
@@ -444,7 +508,14 @@ function LearnPage() {
                 </button>
               ))}
             </div>
-          </div>
+            {/* Food Modal for minerals */}
+            {selectedFood && (
+              <FoodModal
+                food={selectedFood}
+                onClose={() => setSelectedFood(null)}
+              />
+            )}
+        </>
         ) : view === 'superfoods' ? (
           // Superfoods View
           <div>
