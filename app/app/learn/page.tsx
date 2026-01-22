@@ -1,11 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { getNutrientsByCategory, getAllNutrientsAlphabetically, type NutrientInfo } from "@/lib/nutrient-data";
+import { getAllNutrientsAlphabetically, type NutrientInfo } from "@/lib/nutrient-data";
 
 // Modal for food cards (protein, carb, mineral, vitamin)
-function FoodModal({ food, onClose }: { food: { name: string; emoji: string; description: string; nutrients: string[]; serving?: string }; onClose: () => void }) {
-  const [quantity, setQuantity] = useState(1);
+type FoodModalProps = {
+  food: {
+    name: string;
+    emoji: string;
+    description: string;
+    nutrients: string[];
+    benefits: string[];
+    serving?: string;
+  };
+  onClose: () => void;
+};
+function FoodModal({ food, onClose }: FoodModalProps) {
+  const [quantity] = useState(1);
   const [showAddSuccess, setShowAddSuccess] = useState(false);
 
   const handleAddToGroceryList = async () => {
@@ -36,7 +47,7 @@ function FoodModal({ food, onClose }: { food: { name: string; emoji: string; des
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
       <div
-        className="relative w-full max-w-md rounded-2xl border border-zinc-200 bg-gradient-to-br from-yellow-50 via-white to-green-50 p-0 shadow-2xl dark:border-zinc-800 dark:from-yellow-950/30 dark:via-zinc-900 dark:to-green-950/30"
+        className="relative w-full max-w-md rounded-2xl border border-zinc-200 bg-linear-to-br from-yellow-50 via-white to-green-50 p-0 shadow-2xl dark:border-zinc-800 dark:from-yellow-950/30 dark:via-zinc-900 dark:to-green-950/30"
         onClick={e => e.stopPropagation()}
       >
         <button className="absolute right-4 top-4 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200" onClick={onClose}>
@@ -44,7 +55,7 @@ function FoodModal({ food, onClose }: { food: { name: string; emoji: string; des
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <div className="flex flex-col items-center gap-2 rounded-t-2xl bg-gradient-to-r from-yellow-100 via-green-50 to-blue-100 px-8 pb-4 pt-8 dark:from-yellow-950/40 dark:via-zinc-900 dark:to-green-950/40">
+        <div className="flex flex-col items-center gap-2 rounded-t-2xl bg-linear-to-r from-yellow-100 via-green-50 to-blue-100 px-8 pb-4 pt-8 dark:from-yellow-950/40 dark:via-zinc-900 dark:to-green-950/40">
           <span className="text-4xl">{food.emoji}</span>
           <h2 className="mb-1 text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-white">{food.name}</h2>
           <p className="mb-2 text-base text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
@@ -60,7 +71,7 @@ function FoodModal({ food, onClose }: { food: { name: string; emoji: string; des
           <div className="mb-4 text-xs text-green-700 dark:text-green-300">
             <span className="font-semibold">Benefits:</span>
             <ul className="mt-1 space-y-1">
-              {food.benefits?.map((benefit, i) => (
+              {food.benefits?.map((benefit: string, i: number) => (
                 <li key={i} className="flex items-center gap-2">
                   <svg className="h-4 w-4 text-green-500 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -92,30 +103,6 @@ function FoodModal({ food, onClose }: { food: { name: string; emoji: string; des
 }
 
 // Sample food sources for each category
-const CARB_FOODS = [
-  { name: "Brown Rice", description: "Whole grain, high in complex carbs", image: "/images/brown-rice.jpg" },
-  { name: "Oats", description: "Rich in fiber and slow-digesting carbs", image: "/images/oats.jpg" },
-  { name: "Sweet Potato", description: "Vitamin-rich starchy root", image: "/images/sweet-potato.jpg" },
-  { name: "Quinoa", description: "Complete protein and carb source", image: "/images/quinoa.jpg" }
-];
-const PROTEIN_FOODS = [
-  { name: "Chicken Breast", description: "Lean animal protein", image: "/images/chicken.jpg" },
-  { name: "Lentils", description: "Plant-based protein and fiber", image: "/images/lentils.jpg" },
-  { name: "Greek Yogurt", description: "High-protein dairy", image: "/images/yogurt.jpg" },
-  { name: "Tofu", description: "Soy-based complete protein", image: "/images/tofu.jpg" }
-];
-const VITAMIN_FOODS = [
-  { name: "Spinach", description: "Rich in vitamin K, A, C", image: "/images/spinach.jpg" },
-  { name: "Citrus Fruits", description: "High in vitamin C", image: "/images/citrus.jpg" },
-  { name: "Carrots", description: "Excellent source of vitamin A", image: "/images/carrots.jpg" },
-  { name: "Red Peppers", description: "Vitamin C and antioxidants", image: "/images/red-pepper.jpg" },
-];
-const MINERAL_FOODS = [
-  { name: "Almonds", description: "Magnesium, calcium, iron", image: "/images/almonds.jpg" },
-  { name: "Pumpkin Seeds", description: "Zinc, magnesium, iron", image: "/images/pumpkin-seeds.jpg" },
-  { name: "Salmon", description: "Rich in selenium and iodine", image: "/images/salmon.jpg" },
-  { name: "Broccoli", description: "Calcium, potassium, iron", image: "/images/broccoli.jpg" },
-];
 
 type Superfood = {
   name: string;
@@ -216,7 +203,6 @@ const SUPERFOODS: Superfood[] = [
     serving: "2 tbsp (28g)"
   }
 ];
-const nutrientsByCategory = getNutrientsByCategory();
 const allNutrients = getAllNutrientsAlphabetically();
 
 function LearnPage() {
@@ -297,7 +283,227 @@ function LearnPage() {
           {/* Food Modal for all food cards */}
           {selectedFood && (
             <FoodModal
-              food={selectedFood}
+              food={{
+                ...selectedFood,
+                benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
+              }}
+              onClose={() => setSelectedFood(null)}
+            />
+          )}
+        </>
+      ) : view === 'category' ? (
+        <>
+          {/* Carbohydrates Section */}
+          <div className="mb-10">
+            <div className="mb-4 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🍚 Carbohydrates</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[{
+                name: "Brown Rice",
+                emoji: "🍚",
+                description: "Whole grain, high in complex carbs",
+                nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Manganese", "Selenium"],
+                benefits: ["Sustained energy", "Digestive health", "Gluten-free", "Rich in minerals"],
+                serving: "1 cup cooked (195g)"
+              },
+              {
+                name: "Oats",
+                emoji: "🌾",
+                description: "Rich in fiber and slow-digesting carbs",
+                nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Phosphorus", "Zinc"],
+                benefits: ["Heart health", "Blood sugar control", "Satiety", "Digestive health"],
+                serving: "1 cup cooked (156g)"
+              },
+              {
+                name: "Sweet Potato",
+                emoji: "🍠",
+                description: "Vitamin-rich starchy root",
+                nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Potassium", "Fiber"],
+                benefits: ["Eye health", "Immune support", "Stable energy", "Digestive health"],
+                serving: "1 medium (150g)"
+              },
+              {
+                name: "Quinoa",
+                emoji: "🍥",
+                description: "Complete protein and carb source",
+                nutrients: ["Carbohydrates", "Protein", "Fiber", "Magnesium", "Iron"],
+                benefits: ["Complete protein", "Gluten-free", "Rich in minerals", "Supports digestion"],
+                serving: "1 cup cooked (185g)"
+              }].map((carb) => (
+                <SuperfoodCard
+                  key={carb.name}
+                  superfood={carb}
+                  onClick={() => setSelectedFood(carb)}
+                />
+              ))}
+            </div>
+          </div>
+          {/* Proteins Section */}
+          <div className="mb-10">
+            <div className="mb-4 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in protein</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[{
+                name: "Chicken Breast",
+                emoji: "🍗",
+                description: "Lean animal protein",
+                nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Low Fat"],
+                benefits: ["Muscle building", "Weight management", "Supports metabolism", "Low in fat"],
+                serving: "3 oz (85g)"
+              },
+              {
+                name: "Lentils",
+                emoji: "🥣",
+                description: "Plant-based protein and fiber",
+                nutrients: ["Protein", "Fiber", "Iron", "Folate", "Manganese", "Low Fat"],
+                benefits: ["Heart health", "Digestive health", "Blood sugar control", "Rich in iron"],
+                serving: "1 cup cooked (198g)"
+              },
+              {
+                name: "Greek Yogurt",
+                emoji: "🥛",
+                description: "High-protein dairy",
+                nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"],
+                benefits: ["Gut health", "Bone strength", "Muscle building", "Immune support"],
+                serving: "1 cup (245g)"
+              },
+              {
+                name: "Tofu",
+                emoji: "🍥",
+                description: "Soy-based complete protein",
+                nutrients: ["Protein", "Calcium", "Iron", "Magnesium", "Low Fat", "Isoflavones"],
+                benefits: ["Heart health", "Bone health", "Plant-based protein", "Low in fat"],
+                serving: "3 oz (85g)"
+              }].map((protein) => (
+                <SuperfoodCard
+                  key={protein.name}
+                  superfood={protein}
+                  onClick={() => setSelectedFood(protein)}
+                />
+              ))}
+            </div>
+          </div>
+          {/* Vitamins Section */}
+          <div className="mb-10">
+            <div className="mb-4 rounded-xl bg-green-50 p-6 dark:bg-green-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🍃 Vitamins</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in vitamins</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[{
+                name: "Spinach",
+                emoji: "🥬",
+                description: "Rich in vitamin K, A, C",
+                nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"],
+                benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"],
+                serving: "1 cup cooked (180g)"
+              },
+              {
+                name: "Citrus Fruits",
+                emoji: "🍋",
+                description: "High in vitamin C",
+                nutrients: ["Vitamin C", "Folate", "Potassium", "Fiber", "Antioxidants"],
+                benefits: ["Boosts immune system", "Improves skin health", "Aids iron absorption", "Antioxidant-rich"],
+                serving: "1 medium orange (130g)"
+              },
+              {
+                name: "Carrots",
+                emoji: "🥕",
+                description: "Excellent source of vitamin A",
+                nutrients: ["Vitamin A", "Vitamin K", "Fiber", "Potassium", "Vitamin C"],
+                benefits: ["Eye health", "Immune support", "Digestive health", "Antioxidant-rich"],
+                serving: "1 medium (61g)"
+              },
+              {
+                name: "Red Peppers",
+                emoji: "🫑",
+                description: "Vitamin C and antioxidants",
+                nutrients: ["Vitamin C", "Vitamin A", "Vitamin B6", "Folate", "Antioxidants"],
+                benefits: ["Boosts immune system", "Supports eye health", "Rich in antioxidants", "Aids iron absorption"],
+                serving: "1 medium (119g)"
+              }].map((vitamin) => (
+                <SuperfoodCard
+                  key={vitamin.name}
+                  superfood={vitamin}
+                  onClick={() => setSelectedFood(vitamin)}
+                />
+              ))}
+            </div>
+          </div>
+          {/* Minerals Section */}
+          <div className="mb-10">
+            <div className="mb-4 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in minerals</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[{
+                name: "Almonds",
+                emoji: "🥜",
+                description: "Magnesium, calcium, iron",
+                nutrients: ["Magnesium", "Calcium", "Iron", "Fiber", "Vitamin E", "Protein"],
+                benefits: ["Supports heart health", "Bone strength", "Rich in antioxidants", "Helps control blood sugar"],
+                serving: "1 oz (28g)"
+              },
+              {
+                name: "Pumpkin Seeds",
+                emoji: "🎃",
+                description: "Zinc, magnesium, iron",
+                nutrients: ["Zinc", "Magnesium", "Iron", "Copper", "Manganese", "Healthy Fats"],
+                benefits: ["Improves sleep", "Boosts immune system", "Supports prostate health", "Rich in antioxidants"],
+                serving: "1 oz (28g)"
+              },
+              {
+                name: "Salmon",
+                emoji: "🐟",
+                description: "Rich in selenium and iodine",
+                nutrients: ["Selenium", "Iodine", "Phosphorus", "Potassium", "Magnesium", "Vitamin D"],
+                benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"],
+                serving: "3 oz (85g)"
+              },
+              {
+                name: "Broccoli",
+                emoji: "🥦",
+                description: "Calcium, potassium, iron",
+                nutrients: ["Calcium", "Potassium", "Iron", "Vitamin C", "Folate", "Fiber"],
+                benefits: ["Cancer prevention", "Bone health", "Digestive health", "Immune support"],
+                serving: "1 cup chopped (91g)"
+              }].map((mineral) => (
+                <SuperfoodCard
+                  key={mineral.name}
+                  superfood={mineral}
+                  onClick={() => setSelectedFood(mineral)}
+                />
+              ))}
+            </div>
+          </div>
+          {/* Superfoods Section */}
+          <div className="mb-10">
+            <div className="mb-4 rounded-xl bg-linear-to-r from-green-50 to-blue-50 p-6 dark:from-green-950/30 dark:to-blue-950/30">
+              <h2 className="mb-2 text-2xl font-bold">🌟 Superfoods</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods packed with multiple essential nutrients to supercharge your health</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {SUPERFOODS.map((superfood, index) => (
+                <SuperfoodCard
+                  key={superfood.name}
+                  superfood={superfood}
+                  onClick={() => setSelectedSuperfoodIndex(index)}
+                />
+              ))}
+            </div>
+          </div>
+          {/* Food Modal for all food cards */}
+          {selectedFood && (
+            <FoodModal
+              food={{
+                ...selectedFood,
+                benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
+              }}
               onClose={() => setSelectedFood(null)}
             />
           )}
@@ -354,7 +560,10 @@ function LearnPage() {
           {/* Food Modal for proteins */}
           {selectedFood && (
             <FoodModal
-              food={selectedFood}
+              food={{
+                ...selectedFood,
+                benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
+              }}
               onClose={() => setSelectedFood(null)}
             />
           )}
@@ -437,7 +646,10 @@ function LearnPage() {
             {/* Food Modal for vitamins */}
             {selectedFood && (
               <FoodModal
-                food={selectedFood}
+                food={{
+                  ...selectedFood,
+                  benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
+                }}
                 onClose={() => setSelectedFood(null)}
               />
             )}
@@ -494,7 +706,10 @@ function LearnPage() {
             {/* Food Modal for minerals */}
             {selectedFood && (
               <FoodModal
-                food={selectedFood}
+                food={{
+                  ...selectedFood,
+                  benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
+                }}
                 onClose={() => setSelectedFood(null)}
               />
             )}
