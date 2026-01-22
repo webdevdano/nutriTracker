@@ -351,6 +351,13 @@ function LearnPage() {
               />
             ))}
           </div>
+          {/* Food Modal for proteins */}
+          {selectedFood && (
+            <FoodModal
+              food={selectedFood}
+              onClose={() => setSelectedFood(null)}
+            />
+          )}
         </div>
         ) : view === 'vitamins' ? (
           // Vitamins Food Sources View (SuperfoodCard style)
@@ -399,7 +406,7 @@ function LearnPage() {
                   className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-green-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-green-700"
                   type="button"
                   tabIndex={0}
-                  onClick={() => setSelectedFood({ ...vitamin, serving: '1 serving' })}
+                  onClick={() => setSelectedFood(vitamin)}
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-3xl">{vitamin.emoji}</span>
@@ -427,6 +434,13 @@ function LearnPage() {
                 </button>
               ))}
             </div>
+            {/* Food Modal for vitamins */}
+            {selectedFood && (
+              <FoodModal
+                food={selectedFood}
+                onClose={() => setSelectedFood(null)}
+              />
+            )}
           </div>
         ) : view === 'minerals' ? (
           // Minerals Food Sources View (SuperfoodCard style)
