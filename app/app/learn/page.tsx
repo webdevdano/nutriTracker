@@ -57,7 +57,19 @@ function FoodModal({ food, onClose }: { food: { name: string; emoji: string; des
             ))}
           </div>
           <div className="mb-2 text-xs text-zinc-500 dark:text-zinc-400">Serving: {food.serving}</div>
-          <div className="mb-4 text-xs text-green-700 dark:text-green-300">Benefits: {food.benefits?.join(", ")}</div>
+          <div className="mb-4 text-xs text-green-700 dark:text-green-300">
+            <span className="font-semibold">Benefits:</span>
+            <ul className="mt-1 space-y-1">
+              {food.benefits?.map((benefit, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <svg className="h-4 w-4 text-green-500 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>{benefit}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-700">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
