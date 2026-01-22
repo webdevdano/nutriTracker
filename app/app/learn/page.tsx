@@ -72,14 +72,6 @@ const SUPERFOODS: Superfood[] = [
     serving: "1 medium (150g)"
   },
   {
-    name: "Almonds",
-    emoji: "🌰",
-    description: "Heart-healthy nut with healthy fats",
-    nutrients: ["Vitamin E", "Magnesium", "Fiber", "Protein", "Calcium", "Zinc"],
-    benefits: ["Heart health", "Weight management", "Blood sugar control", "Brain function"],
-    serving: "1 oz / 23 almonds (28g)"
-  },
-  {
     name: "Greek Yogurt",
     emoji: "🥛",
     description: "Protein-rich probiotic food",
@@ -136,19 +128,16 @@ const SUPERFOODS: Superfood[] = [
     serving: "2 tbsp (28g)"
   }
 ];
+const nutrientsByCategory = getNutrientsByCategory();
+const allNutrients = getAllNutrientsAlphabetically();
 
-export default function LearnPage() {
-  const [view, setView] = useState<
-    'category' | 'alphabetical' | 'superfoods' | 'carbohydrates' | 'proteins' | 'vitamins' | 'minerals'
-  >('category');
+function LearnPage() {
+  // Filter nutrients based on search
+  const [searchQuery, setSearchQuery] = useState('');
+  const [view, setView] = useState<'category' | 'alphabetical' | 'carbohydrates' | 'proteins' | 'vitamins' | 'minerals' | 'superfoods'>('category');
   const [selectedNutrient, setSelectedNutrient] = useState<NutrientInfo | null>(null);
   const [selectedSuperfoodIndex, setSelectedSuperfoodIndex] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
 
-  const nutrientsByCategory = getNutrientsByCategory();
-  const allNutrients = getAllNutrientsAlphabetically();
-
-  // Filter nutrients based on search
   const filteredNutrients = searchQuery
     ? allNutrients.filter(n => 
         n.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -228,34 +217,144 @@ export default function LearnPage() {
             ))}
           </div>
         ) : view === 'carbohydrates' ? (
-          // Carbohydrates Food Sources View
+          // Carbohydrates Food Sources View (SuperfoodCard style)
           <div>
             <div className="mb-6 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
               <h2 className="mb-2 text-2xl font-bold">🍞 Carbohydrates</h2>
               <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {CARB_FOODS.map((food) => (
-                <div key={food.name} className="rounded-lg bg-white dark:bg-zinc-800 shadow p-4 flex flex-col items-center">
-                  <h3 className="font-semibold text-lg mb-1">{food.name}</h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
-                </div>
+              {[
+                {
+                  name: "Brown Rice",
+                  emoji: "🍚",
+                  description: "Whole grain, high in complex carbs",
+                  nutrients: ["Carbohydrates", "Fiber", "Manganese", "Magnesium", "Selenium", "B Vitamins"]
+                },
+                {
+                  name: "Oats",
+                  emoji: "🌾",
+                  description: "Rich in fiber and slow-digesting carbs",
+                  nutrients: ["Carbohydrates", "Fiber", "Manganese", "Phosphorus", "Magnesium", "Iron"]
+                },
+                {
+                  name: "Sweet Potato",
+                  emoji: "🍠",
+                  description: "Vitamin-rich starchy root",
+                  nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Fiber", "Potassium", "Vitamin B6"]
+                },
+                {
+                  name: "Quinoa",
+                  emoji: "🌱",
+                  description: "Complete protein and carb source",
+                  nutrients: ["Carbohydrates", "Protein", "Fiber", "Magnesium", "Iron", "Zinc", "Folate"]
+                }
+              ].map((carb) => (
+                <button
+                  key={carb.name}
+                  className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-blue-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-blue-700"
+                  type="button"
+                  tabIndex={0}
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-3xl">{carb.emoji}</span>
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                      {carb.nutrients.length} nutrients
+                    </span>
+                  </div>
+                  <h3 className="mb-1 font-semibold group-hover:text-blue-700 dark:group-hover:text-blue-400">
+                    {carb.name}
+                  </h3>
+                  <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">
+                    {carb.description}
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {carb.nutrients.slice(0, 3).map((nutrient, i) => (
+                      <span
+                        key={i}
+                        className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                      >
+                        {nutrient}
+                      </span>
+                    ))}
+                    {carb.nutrients.length > 3 && (
+                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                        +{carb.nutrients.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                </button>
               ))}
             </div>
           </div>
         ) : view === 'proteins' ? (
-          // Proteins Food Sources View
+          // Proteins Food Sources View (SuperfoodCard style)
           <div>
             <div className="mb-6 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
               <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
               <p className="text-zinc-700 dark:text-zinc-300">Foods rich in protein</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {PROTEIN_FOODS.map((food) => (
-                <div key={food.name} className="rounded-lg bg-white dark:bg-zinc-800 shadow p-4 flex flex-col items-center">
-                  <h3 className="font-semibold text-lg mb-1">{food.name}</h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
-                </div>
+              {[
+                {
+                  name: "Chicken Breast",
+                  emoji: "🍗",
+                  description: "Lean animal protein",
+                  nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Low Fat"]
+                },
+                {
+                  name: "Lentils",
+                  emoji: "🥣",
+                  description: "Plant-based protein and fiber",
+                  nutrients: ["Protein", "Fiber", "Iron", "Folate", "Manganese", "Low Fat"]
+                },
+                {
+                  name: "Greek Yogurt",
+                  emoji: "🥛",
+                  description: "High-protein dairy",
+                  nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"]
+                },
+                {
+                  name: "Tofu",
+                  emoji: "🍥",
+                  description: "Soy-based complete protein",
+                  nutrients: ["Protein", "Calcium", "Iron", "Magnesium", "Low Fat", "Isoflavones"]
+                }
+              ].map((protein) => (
+                <button
+                  key={protein.name}
+                  className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-orange-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-orange-700"
+                  type="button"
+                  tabIndex={0}
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-3xl">{protein.emoji}</span>
+                    <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-700 dark:bg-orange-950 dark:text-orange-300">
+                      {protein.nutrients.length} nutrients
+                    </span>
+                  </div>
+                  <h3 className="mb-1 font-semibold group-hover:text-orange-700 dark:group-hover:text-orange-400">
+                    {protein.name}
+                  </h3>
+                  <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">
+                    {protein.description}
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {protein.nutrients.slice(0, 3).map((nutrient, i) => (
+                      <span
+                        key={i}
+                        className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                      >
+                        {nutrient}
+                      </span>
+                    ))}
+                    {protein.nutrients.length > 3 && (
+                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                        +{protein.nutrients.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                </button>
               ))}
             </div>
           </div>
@@ -339,6 +438,7 @@ export default function LearnPage() {
       )}
     </div>
   );
+}
 
 function SuperfoodCard({ superfood, onClick }: { superfood: Superfood; onClick: () => void }) {
   return (
@@ -574,7 +674,7 @@ function SuperfoodModal({ superfoods, initialIndex, onClose }: { superfoods: Sup
     </div>
   );
 }
-}
+ 
 
 function NutrientCard({ nutrient, onClick }: { nutrient: NutrientInfo; onClick: () => void }) {
   return (
@@ -709,3 +809,6 @@ function NutrientModal({ nutrient, onClose }: { nutrient: NutrientInfo; onClose:
     </div>
   );
 }
+
+// Export the main page component as default
+export default LearnPage;

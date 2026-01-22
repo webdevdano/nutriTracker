@@ -491,61 +491,31 @@ export default function TodayPage() {
         </div>
       )}
 
-      {/* Main Macros */}
+      {/* Main Macros - Use StatCard for consistency */}
       <div className="mt-6 grid gap-4 sm:grid-cols-4">
-        <div className="rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80">
-          <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            Calories
-          </div>
-          <div className="mt-2 text-2xl font-semibold tracking-tight">
-            {Math.round(totals.calories)}
-          </div>
-          {goals?.calories_goal ? (
-            <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-              / {goals.calories_goal} goal
-            </div>
-          ) : null}
-        </div>
-
-        <div className="rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80">
-          <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            Protein
-          </div>
-          <div className="mt-2 text-2xl font-semibold tracking-tight">
-            {Math.round(totals.protein)}g
-          </div>
-          {goals?.protein_goal ? (
-            <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-              / {goals.protein_goal}g goal
-            </div>
-          ) : null}
-        </div>
-
-        <div className="rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80">
-          <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            Carbs
-          </div>
-          <div className="mt-2 text-2xl font-semibold tracking-tight">
-            {Math.round(totals.carbs)}g
-          </div>
-          {goals?.carbs_goal ? (
-            <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-              / {goals.carbs_goal}g goal
-            </div>
-          ) : null}
-        </div>
-
-        <div className="rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80">
-          <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Fat</div>
-          <div className="mt-2 text-2xl font-semibold tracking-tight">
-            {Math.round(totals.fat)}g
-          </div>
-          {goals?.fat_goal ? (
-            <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-              / {goals.fat_goal}g goal
-            </div>
-          ) : null}
-        </div>
+        <StatCard 
+          label="Calories"
+          value={Math.round(totals.calories)}
+          goal={goals?.calories_goal}
+        />
+        <StatCard 
+          label="Protein"
+          value={Math.round(totals.protein)}
+          goal={goals?.protein_goal}
+          unit="g"
+        />
+        <StatCard 
+          label="Carbs"
+          value={Math.round(totals.carbs)}
+          goal={goals?.carbs_goal}
+          unit="g"
+        />
+        <StatCard 
+          label="Fat"
+          value={Math.round(totals.fat)}
+          goal={goals?.fat_goal}
+          unit="g"
+        />
       </div>
 
       {/* Additional Nutrients Section */}
@@ -567,10 +537,10 @@ export default function TodayPage() {
 
         {/* Preview - Always show 4 nutrients */}
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <NutrientCard label="Fiber" value={totals.fiber} unit="g" goal={28} />
-          <NutrientCard label="Sodium" value={totals.sodium} unit="mg" goal={2300} limit />
-          <NutrientCard label="Vitamin C" value={totals.vitamin_c} unit="mg" goal={90} />
-          <NutrientCard label="Calcium" value={totals.calcium} unit="mg" goal={1000} />
+          <StatCard label="Fiber" value={Math.round(totals.fiber * 10) / 10} goal={28} unit="g" />
+          <StatCard label="Sodium" value={Math.round(totals.sodium)} goal={2300} unit="mg" />
+          <StatCard label="Vitamin C" value={Math.round(totals.vitamin_c)} goal={90} unit="mg" />
+          <StatCard label="Calcium" value={Math.round(totals.calcium)} goal={1000} unit="mg" />
         </div>
 
         {/* Expanded - Show all nutrients */}
@@ -601,16 +571,16 @@ export default function TodayPage() {
             <div>
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Vitamins</h4>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <NutrientCard label="Vitamin A" value={totals.vitamin_a} unit="µg" goal={900} />
-                <NutrientCard label="Vitamin D" value={totals.vitamin_d} unit="µg" goal={20} />
-                <NutrientCard label="Vitamin E" value={totals.vitamin_e} unit="mg" goal={15} />
-                <NutrientCard label="Vitamin K" value={totals.vitamin_k} unit="µg" goal={120} />
-                <NutrientCard label="Thiamin (B1)" value={totals.thiamin} unit="mg" goal={1.2} />
-                <NutrientCard label="Riboflavin (B2)" value={totals.riboflavin} unit="mg" goal={1.3} />
-                <NutrientCard label="Niacin (B3)" value={totals.niacin} unit="mg" goal={16} />
-                <NutrientCard label="Vitamin B6" value={totals.vitamin_b6} unit="mg" goal={1.7} />
-                <NutrientCard label="Folate" value={totals.folate} unit="µg" goal={400} />
-                <NutrientCard label="Vitamin B12" value={totals.vitamin_b12} unit="µg" goal={2.4} />
+                <StatCard label="Vitamin A" value={Math.round(totals.vitamin_a)} goal={900} unit="µg" />
+                <StatCard label="Vitamin D" value={Math.round(totals.vitamin_d)} goal={20} unit="µg" />
+                <StatCard label="Vitamin E" value={Math.round(totals.vitamin_e)} goal={15} unit="mg" />
+                <StatCard label="Vitamin K" value={Math.round(totals.vitamin_k)} goal={120} unit="µg" />
+                <StatCard label="Thiamin (B1)" value={Math.round(totals.thiamin * 10) / 10} goal={1.2} unit="mg" />
+                <StatCard label="Riboflavin (B2)" value={Math.round(totals.riboflavin * 10) / 10} goal={1.3} unit="mg" />
+                <StatCard label="Niacin (B3)" value={Math.round(totals.niacin * 10) / 10} goal={16} unit="mg" />
+                <StatCard label="Vitamin B6" value={Math.round(totals.vitamin_b6 * 10) / 10} goal={1.7} unit="mg" />
+                <StatCard label="Folate" value={Math.round(totals.folate)} goal={400} unit="µg" />
+                <StatCard label="Vitamin B12" value={Math.round(totals.vitamin_b12 * 10) / 10} goal={2.4} unit="µg" />
               </div>
             </div>
 
@@ -618,12 +588,12 @@ export default function TodayPage() {
             <div>
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Minerals</h4>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <NutrientCard label="Iron" value={totals.iron} unit="mg" goal={8} />
-                <NutrientCard label="Magnesium" value={totals.magnesium} unit="mg" goal={420} />
-                <NutrientCard label="Phosphorus" value={totals.phosphorus} unit="mg" goal={700} />
-                <NutrientCard label="Potassium" value={totals.potassium} unit="mg" goal={3400} />
-                <NutrientCard label="Zinc" value={totals.zinc} unit="mg" goal={11} />
-                <NutrientCard label="Selenium" value={totals.selenium} unit="µg" goal={55} />
+                <StatCard label="Iron" value={Math.round(totals.iron * 10) / 10} goal={8} unit="mg" />
+                <StatCard label="Magnesium" value={Math.round(totals.magnesium)} goal={420} unit="mg" />
+                <StatCard label="Phosphorus" value={Math.round(totals.phosphorus)} goal={700} unit="mg" />
+                <StatCard label="Potassium" value={Math.round(totals.potassium)} goal={3400} unit="mg" />
+                <StatCard label="Zinc" value={Math.round(totals.zinc * 10) / 10} goal={11} unit="mg" />
+                <StatCard label="Selenium" value={Math.round(totals.selenium)} goal={55} unit="µg" />
               </div>
             </div>
           </div>
@@ -893,10 +863,71 @@ function StatCard({
   const percentage = goal && goal > 0 ? (value / goal) * 100 : 0;
   const isOnTrack = percentage >= 90 && percentage <= 110;
   
+  // Choose a color based on label
+  const colorMap = {
+    Calories: 'from-yellow-200 to-yellow-400 border-yellow-300',
+    Protein: 'from-green-200 to-green-400 border-green-300',
+    Carbs: 'from-blue-200 to-blue-400 border-blue-300',
+    Fat: 'from-pink-200 to-pink-400 border-pink-300',
+    Fiber: 'from-teal-200 to-teal-400 border-teal-300',
+    Sodium: 'from-indigo-200 to-indigo-400 border-indigo-300',
+    Calcium: 'from-purple-200 to-purple-400 border-purple-300',
+    Iron: 'from-red-200 to-red-400 border-red-300',
+    'Vitamin C': 'from-orange-200 to-orange-400 border-orange-300',
+    'Vitamin D': 'from-yellow-100 to-yellow-300 border-yellow-200',
+    'Vitamin A': 'from-orange-100 to-orange-300 border-orange-200',
+    'Vitamin E': 'from-lime-200 to-lime-400 border-lime-300',
+    'Vitamin K': 'from-green-100 to-green-300 border-green-200',
+    'Thiamin (B1)': 'from-cyan-200 to-cyan-400 border-cyan-300',
+    'Riboflavin (B2)': 'from-blue-100 to-blue-300 border-blue-200',
+    'Niacin (B3)': 'from-pink-100 to-pink-300 border-pink-200',
+    'Vitamin B6': 'from-yellow-200 to-yellow-400 border-yellow-300',
+    Folate: 'from-green-200 to-green-400 border-green-300',
+    'Vitamin B12': 'from-indigo-200 to-indigo-400 border-indigo-300',
+    Magnesium: 'from-purple-200 to-purple-400 border-purple-300',
+    Phosphorus: 'from-teal-200 to-teal-400 border-teal-300',
+    Potassium: 'from-pink-200 to-pink-400 border-pink-300',
+    Zinc: 'from-gray-200 to-gray-400 border-gray-300',
+    Selenium: 'from-blue-200 to-blue-400 border-blue-300',
+  };
+  const colorClass = colorMap[label] || 'from-zinc-50 to-zinc-100 border-zinc-200';
+
+  // Simple icon based on nutrient type
+  const iconMap = {
+    Calories: '🔥',
+    Protein: '🍗',
+    Carbs: '🍞',
+    Fat: '🥑',
+    Fiber: '🌾',
+    Sodium: '🧂',
+    Calcium: '🥛',
+    Iron: '🩸',
+    'Vitamin C': '🍊',
+    'Vitamin D': '☀️',
+    'Vitamin A': '🥕',
+    'Vitamin E': '🥜',
+    'Vitamin K': '🥬',
+    'Thiamin (B1)': '🌽',
+    'Riboflavin (B2)': '🥚',
+    'Niacin (B3)': '🐟',
+    'Vitamin B6': '🍌',
+    Folate: '🥦',
+    'Vitamin B12': '🥩',
+    Magnesium: '🥒',
+    Phosphorus: '🍖',
+    Potassium: '🍌',
+    Zinc: '🧀',
+    Selenium: '🥚',
+  };
+  const icon = iconMap[label] || '🍽️';
+
   return (
-    <div className="rounded-lg bg-linear-to-br from-zinc-50 to-zinc-100 p-4 dark:from-zinc-800/50 dark:to-zinc-900/50">
-      <div className="text-xs text-zinc-600 dark:text-zinc-400">{label}</div>
-      <div className="mt-2 text-2xl font-bold">
+    <div className={`rounded-xl border-2 p-4 shadow-md bg-gradient-to-br ${colorClass} transition-all duration-300`}> 
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-xl">{icon}</span>
+        <span className="text-xs font-bold uppercase tracking-wide text-zinc-700 dark:text-zinc-200">{label}</span>
+      </div>
+      <div className="mt-2 text-2xl font-bold text-zinc-900 dark:text-zinc-50">
         {value}{unit}
       </div>
       {goal && (
