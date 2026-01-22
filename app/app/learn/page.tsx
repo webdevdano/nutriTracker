@@ -375,17 +375,73 @@ function LearnPage() {
             </div>
           </div>
         ) : view === 'minerals' ? (
-          // Minerals Food Sources View
+          // Minerals Food Sources View (SuperfoodCard style)
           <div>
             <div className="mb-6 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
               <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
               <p className="text-zinc-700 dark:text-zinc-300">Foods rich in minerals</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {MINERAL_FOODS.map((food) => (
-                <div key={food.name} className="rounded-lg bg-white dark:bg-zinc-800 shadow p-4 flex flex-col items-center">                  <h3 className="font-semibold text-lg mb-1">{food.name}</h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
-                </div>
+              {[
+                {
+                  name: "Almonds",
+                  emoji: "🥜",
+                  description: "Magnesium, calcium, iron",
+                  nutrients: ["Magnesium", "Calcium", "Iron", "Fiber", "Vitamin E", "Protein"]
+                },
+                {
+                  name: "Pumpkin Seeds",
+                  emoji: "🎃",
+                  description: "Zinc, magnesium, iron",
+                  nutrients: ["Zinc", "Magnesium", "Iron", "Copper", "Manganese", "Healthy Fats"]
+                },
+                {
+                  name: "Salmon",
+                  emoji: "🐟",
+                  description: "Rich in selenium and iodine",
+                  nutrients: ["Selenium", "Iodine", "Phosphorus", "Potassium", "Magnesium", "Vitamin D"]
+                },
+                {
+                  name: "Broccoli",
+                  emoji: "🥦",
+                  description: "Calcium, potassium, iron",
+                  nutrients: ["Calcium", "Potassium", "Iron", "Vitamin C", "Folate", "Fiber"]
+                }
+              ].map((mineral) => (
+                <button
+                  key={mineral.name}
+                  className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-yellow-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-yellow-700"
+                  type="button"
+                  tabIndex={0}
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-3xl">{mineral.emoji}</span>
+                    <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300">
+                      {mineral.nutrients.length} nutrients
+                    </span>
+                  </div>
+                  <h3 className="mb-1 font-semibold group-hover:text-yellow-700 dark:group-hover:text-yellow-400">
+                    {mineral.name}
+                  </h3>
+                  <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">
+                    {mineral.description}
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {mineral.nutrients.slice(0, 3).map((nutrient, i) => (
+                      <span
+                        key={i}
+                        className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                      >
+                        {nutrient}
+                      </span>
+                    ))}
+                    {mineral.nutrients.length > 3 && (
+                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                        +{mineral.nutrients.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                </button>
               ))}
             </div>
           </div>
