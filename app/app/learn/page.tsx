@@ -35,51 +35,52 @@ function FoodModal({ food, onClose }: { food: { name: string; emoji: string; des
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900" onClick={e => e.stopPropagation()}>
-        <div className="mb-4 flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-5xl">{food.emoji}</span>
-            <div>
-              <h2 className="text-2xl font-bold">{food.name}</h2>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{food.description}</p>
-            </div>
-          </div>
-          <button onClick={onClose} className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800">
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+      <div
+        className="relative w-full max-w-md rounded-2xl border border-zinc-200 bg-gradient-to-br from-yellow-50 via-white to-green-50 p-0 shadow-2xl dark:border-zinc-800 dark:from-yellow-950/30 dark:via-zinc-900 dark:to-green-950/30"
+        onClick={e => e.stopPropagation()}
+      >
+        <button className="absolute right-4 top-4 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200" onClick={onClose}>
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div className="flex flex-col items-center gap-2 rounded-t-2xl bg-gradient-to-r from-yellow-100 via-green-50 to-blue-100 px-8 pb-4 pt-8 dark:from-yellow-950/40 dark:via-zinc-900 dark:to-green-950/40">
+          <span className="text-4xl">{food.emoji}</span>
+          <h2 className="mb-1 text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-white">{food.name}</h2>
+          <p className="mb-2 text-base text-zinc-600 dark:text-zinc-300 text-center">{food.description}</p>
         </div>
-        <div className="mb-4">
+        <div className="px-8 pb-6 pt-2">
           <h3 className="mb-2 text-lg font-semibold">Key Nutrients</h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-4">
             {food.nutrients.map((nutrient, i) => (
               <span key={i} className="rounded-full bg-green-100 px-3 py-1.5 text-sm font-medium text-green-800 dark:bg-green-950 dark:text-green-200">{nutrient}</span>
             ))}
           </div>
-        </div>
-        <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-700">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <label htmlFor="quantity" className="text-sm font-medium">Quantity:</label>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">−</button>
-                <input id="quantity" type="number" min="1" value={quantity} onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))} className="w-16 rounded-lg border border-zinc-300 px-3 py-1.5 text-center dark:border-zinc-700 dark:bg-zinc-800" />
-                <button onClick={() => setQuantity(quantity + 1)} className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">+</button>
+          <div className="mb-2 text-xs text-zinc-500 dark:text-zinc-400">Serving: {food.serving}</div>
+          <div className="mb-4 text-xs text-green-700 dark:text-green-300">Benefits: {food.benefits?.join(", ")}</div>
+          <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-700">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <label htmlFor="quantity" className="text-sm font-medium">Quantity:</label>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">−</button>
+                  <input id="quantity" type="number" min="1" value={quantity} onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))} className="w-16 rounded-lg border border-zinc-300 px-3 py-1.5 text-center dark:border-zinc-700 dark:bg-zinc-800" />
+                  <button onClick={() => setQuantity(quantity + 1)} className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">+</button>
+                </div>
               </div>
+              <button onClick={handleAddToGroceryList} className="flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2.5 font-semibold text-white transition-colors hover:bg-green-700">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                Add to Grocery List
+              </button>
             </div>
-            <button onClick={handleAddToGroceryList} className="flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2.5 font-semibold text-white transition-colors hover:bg-green-700">
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              Add to Grocery List
-            </button>
+            {showAddSuccess && (
+              <div className="mt-3 rounded-lg bg-green-50 p-3 text-sm text-green-800 dark:bg-green-950/30 dark:text-green-200">
+                ✓ {food.name} added to grocery list!
+              </div>
+            )}
           </div>
-          {showAddSuccess && (
-            <div className="mt-3 rounded-lg bg-green-50 p-3 text-sm text-green-800 dark:bg-green-950/30 dark:text-green-200">
-              ✓ {food.name} added to grocery list!
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -298,77 +299,55 @@ function LearnPage() {
           )}
         </>
       ) : view === 'proteins' ? (
-          // Proteins Food Sources View (SuperfoodCard style)
-          <div>
-            <div className="mb-6 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
-              <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
-              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in protein</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  name: "Chicken Breast",
-                  emoji: "🍗",
-                  description: "Lean animal protein",
-                  nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Low Fat"]
-                },
-                {
-                  name: "Lentils",
-                  emoji: "🥣",
-                  description: "Plant-based protein and fiber",
-                  nutrients: ["Protein", "Fiber", "Iron", "Folate", "Manganese", "Low Fat"]
-                },
-                {
-                  name: "Greek Yogurt",
-                  emoji: "🥛",
-                  description: "High-protein dairy",
-                  nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"]
-                },
-                {
-                  name: "Tofu",
-                  emoji: "🍥",
-                  description: "Soy-based complete protein",
-                  nutrients: ["Protein", "Calcium", "Iron", "Magnesium", "Low Fat", "Isoflavones"]
-                }
-              ].map((protein) => (
-                <button
-                  key={protein.name}
-                  className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-orange-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-orange-700"
-                  type="button"
-                  tabIndex={0}
-                  onClick={() => setSelectedFood({ ...protein, serving: '1 serving' })}
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-3xl">{protein.emoji}</span>
-                    <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-700 dark:bg-orange-950 dark:text-orange-300">
-                      {protein.nutrients.length} nutrients
-                    </span>
-                  </div>
-                  <h3 className="mb-1 font-semibold group-hover:text-orange-700 dark:group-hover:text-orange-400">
-                    {protein.name}
-                  </h3>
-                  <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">
-                    {protein.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1">
-                    {protein.nutrients.slice(0, 3).map((nutrient, i) => (
-                      <span
-                        key={i}
-                        className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                      >
-                        {nutrient}
-                      </span>
-                    ))}
-                    {protein.nutrients.length > 3 && (
-                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-                        +{protein.nutrients.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
+        // Proteins Food Sources View (SuperfoodCard style)
+        <div>
+          <div className="mb-6 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
+            <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
+            <p className="text-zinc-700 dark:text-zinc-300">Foods rich in protein</p>
           </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                name: "Chicken Breast",
+                emoji: "🍗",
+                description: "Lean animal protein",
+                nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Low Fat"],
+                benefits: ["Muscle building", "Weight management", "Supports metabolism", "Low in fat"],
+                serving: "3 oz (85g)"
+              },
+              {
+                name: "Lentils",
+                emoji: "🥣",
+                description: "Plant-based protein and fiber",
+                nutrients: ["Protein", "Fiber", "Iron", "Folate", "Manganese", "Low Fat"],
+                benefits: ["Heart health", "Digestive health", "Blood sugar control", "Rich in iron"],
+                serving: "1 cup cooked (198g)"
+              },
+              {
+                name: "Greek Yogurt",
+                emoji: "🥛",
+                description: "High-protein dairy",
+                nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"],
+                benefits: ["Gut health", "Bone strength", "Muscle building", "Immune support"],
+                serving: "1 cup (245g)"
+              },
+              {
+                name: "Tofu",
+                emoji: "🍥",
+                description: "Soy-based complete protein",
+                nutrients: ["Protein", "Calcium", "Iron", "Magnesium", "Low Fat", "Isoflavones"],
+                benefits: ["Heart health", "Bone health", "Plant-based protein", "Low in fat"],
+                serving: "3 oz (85g)"
+              }
+            ].map((protein) => (
+              <SuperfoodCard
+                key={protein.name}
+                superfood={protein}
+                onClick={() => setSelectedFood(protein)}
+              />
+            ))}
+          </div>
+        </div>
         ) : view === 'vitamins' ? (
           // Vitamins Food Sources View (SuperfoodCard style)
           <div>
@@ -382,25 +361,33 @@ function LearnPage() {
                   name: "Spinach",
                   emoji: "🥬",
                   description: "Rich in vitamin K, A, C",
-                  nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"]
+                  nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"],
+                  benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"],
+                  serving: "1 cup cooked (180g)"
                 },
                 {
                   name: "Citrus Fruits",
                   emoji: "🍋",
                   description: "High in vitamin C",
-                  nutrients: ["Vitamin C", "Folate", "Potassium", "Fiber", "Antioxidants"]
+                  nutrients: ["Vitamin C", "Folate", "Potassium", "Fiber", "Antioxidants"],
+                  benefits: ["Boosts immune system", "Improves skin health", "Aids iron absorption", "Antioxidant-rich"],
+                  serving: "1 medium orange (130g)"
                 },
                 {
                   name: "Carrots",
                   emoji: "🥕",
                   description: "Excellent source of vitamin A",
-                  nutrients: ["Vitamin A", "Vitamin K", "Fiber", "Potassium", "Vitamin C"]
+                  nutrients: ["Vitamin A", "Vitamin K", "Fiber", "Potassium", "Vitamin C"],
+                  benefits: ["Eye health", "Immune support", "Digestive health", "Antioxidant-rich"],
+                  serving: "1 medium (61g)"
                 },
                 {
                   name: "Red Peppers",
                   emoji: "🫑",
                   description: "Vitamin C and antioxidants",
-                  nutrients: ["Vitamin C", "Vitamin A", "Vitamin B6", "Folate", "Antioxidants"]
+                  nutrients: ["Vitamin C", "Vitamin A", "Vitamin B6", "Folate", "Antioxidants"],
+                  benefits: ["Boosts immune system", "Supports eye health", "Rich in antioxidants", "Aids iron absorption"],
+                  serving: "1 medium (119g)"
                 }
               ].map((vitamin) => (
                 <button
@@ -439,7 +426,7 @@ function LearnPage() {
           </div>
         ) : view === 'minerals' ? (
           // Minerals Food Sources View (SuperfoodCard style)
-          <>
+          <div>
             <div className="mb-6 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
               <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
               <p className="text-zinc-700 dark:text-zinc-300">Foods rich in minerals</p>
@@ -450,62 +437,40 @@ function LearnPage() {
                   name: "Almonds",
                   emoji: "🥜",
                   description: "Magnesium, calcium, iron",
-                  nutrients: ["Magnesium", "Calcium", "Iron", "Fiber", "Vitamin E", "Protein"]
+                  nutrients: ["Magnesium", "Calcium", "Iron", "Fiber", "Vitamin E", "Protein"],
+                  benefits: ["Supports heart health", "Bone strength", "Rich in antioxidants", "Helps control blood sugar"],
+                  serving: "1 oz (28g)"
                 },
                 {
                   name: "Pumpkin Seeds",
                   emoji: "🎃",
                   description: "Zinc, magnesium, iron",
-                  nutrients: ["Zinc", "Magnesium", "Iron", "Copper", "Manganese", "Healthy Fats"]
+                  nutrients: ["Zinc", "Magnesium", "Iron", "Copper", "Manganese", "Healthy Fats"],
+                  benefits: ["Improves sleep", "Boosts immune system", "Supports prostate health", "Rich in antioxidants"],
+                  serving: "1 oz (28g)"
                 },
                 {
                   name: "Salmon",
                   emoji: "🐟",
                   description: "Rich in selenium and iodine",
-                  nutrients: ["Selenium", "Iodine", "Phosphorus", "Potassium", "Magnesium", "Vitamin D"]
+                  nutrients: ["Selenium", "Iodine", "Phosphorus", "Potassium", "Magnesium", "Vitamin D"],
+                  benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"],
+                  serving: "3 oz (85g)"
                 },
                 {
                   name: "Broccoli",
                   emoji: "🥦",
                   description: "Calcium, potassium, iron",
-                  nutrients: ["Calcium", "Potassium", "Iron", "Vitamin C", "Folate", "Fiber"]
+                  nutrients: ["Calcium", "Potassium", "Iron", "Vitamin C", "Folate", "Fiber"],
+                  benefits: ["Cancer prevention", "Bone health", "Digestive health", "Immune support"],
+                  serving: "1 cup chopped (91g)"
                 }
               ].map((mineral) => (
-                <button
+                <SuperfoodCard
                   key={mineral.name}
-                  className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-yellow-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-yellow-700"
-                  type="button"
-                  tabIndex={0}
-                  onClick={() => setSelectedFood({ ...mineral, serving: '1 serving' })}
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-3xl">{mineral.emoji}</span>
-                    <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300">
-                      {mineral.nutrients.length} nutrients
-                    </span>
-                  </div>
-                  <h3 className="mb-1 font-semibold group-hover:text-yellow-700 dark:group-hover:text-yellow-400">
-                    {mineral.name}
-                  </h3>
-                  <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">
-                    {mineral.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1">
-                    {mineral.nutrients.slice(0, 3).map((nutrient, i) => (
-                      <span
-                        key={i}
-                        className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                      >
-                        {nutrient}
-                      </span>
-                    ))}
-                    {mineral.nutrients.length > 3 && (
-                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-                        +{mineral.nutrients.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                </button>
+                  superfood={mineral}
+                  onClick={() => setSelectedFood(mineral)}
+                />
               ))}
             </div>
             {/* Food Modal for minerals */}
@@ -515,7 +480,7 @@ function LearnPage() {
                 onClose={() => setSelectedFood(null)}
               />
             )}
-        </>
+          </div>
         ) : view === 'superfoods' ? (
           // Superfoods View
           <div>
@@ -570,22 +535,14 @@ function LearnPage() {
 function SuperfoodCard({ superfood, onClick }: { superfood: Superfood; onClick: () => void }) {
   return (
     <button
+      className="flex flex-col items-start rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
       onClick={onClick}
-      className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-green-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-green-700"
+      type="button"
     >
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-3xl">{superfood.emoji}</span>
-        <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-300">
-          {superfood.nutrients.length} nutrients
-        </span>
-      </div>
-      <h3 className="mb-1 font-semibold group-hover:text-green-700 dark:group-hover:text-green-400">
-        {superfood.name}
-      </h3>
-      <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">
-        {superfood.description}
-      </p>
-      <div className="flex flex-wrap gap-1">
+      <span className="mb-2 text-3xl">{superfood.emoji}</span>
+      <span className="mb-1 text-lg font-bold">{superfood.name}</span>
+      <span className="mb-2 text-sm text-zinc-600 dark:text-zinc-300">{superfood.description}</span>
+      <div className="mb-2 flex flex-wrap gap-2">
         {superfood.nutrients.slice(0, 3).map((nutrient, i) => (
           <span
             key={i}
@@ -600,6 +557,8 @@ function SuperfoodCard({ superfood, onClick }: { superfood: Superfood; onClick: 
           </span>
         )}
       </div>
+      <div className="mb-2 text-xs text-zinc-500 dark:text-zinc-400">Serving: {superfood.serving}</div>
+      <div className="mb-2 text-xs text-green-700 dark:text-green-300">Benefits: {superfood.benefits.join(", ")}</div>
     </button>
   );
 }
@@ -632,7 +591,6 @@ function SuperfoodModal({ superfoods, initialIndex, onClose }: { superfoods: Sup
           unit: superfood.serving
         })
       });
-      
       if (response.ok) {
         setShowAddSuccess(true);
         setTimeout(() => setShowAddSuccess(false), 2000);
