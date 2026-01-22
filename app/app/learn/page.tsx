@@ -71,15 +71,7 @@ function FoodModal({ food, onClose }: { food: { name: string; emoji: string; des
             </ul>
           </div>
           <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-700">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <label htmlFor="quantity" className="text-sm font-medium">Quantity:</label>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">−</button>
-                  <input id="quantity" type="number" min="1" value={quantity} onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))} className="w-16 rounded-lg border border-zinc-300 px-3 py-1.5 text-center dark:border-zinc-700 dark:bg-zinc-800" />
-                  <button onClick={() => setQuantity(quantity + 1)} className="rounded-lg bg-zinc-100 px-3 py-1.5 text-lg font-semibold hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">+</button>
-                </div>
-              </div>
+            <div className="flex justify-center">
               <button onClick={handleAddToGroceryList} className="flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2.5 font-semibold text-white transition-colors hover:bg-green-700">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
