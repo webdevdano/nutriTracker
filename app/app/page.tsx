@@ -398,8 +398,8 @@ export default function TodayPage() {
             onClick={() => setTimeView('today')}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               timeView === 'today'
-                ? 'bg-[#4169E1] text-white dark:bg-[#87CEEB] dark:text-black'
-                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                ? 'bg-[#4169E1] text-white dark:bg-blue-900 dark:text-white'
+                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-blue-950/60'
             }`}
           >
             Today
@@ -408,8 +408,8 @@ export default function TodayPage() {
             onClick={() => setTimeView('week')}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               timeView === 'week'
-                ? 'bg-[#4169E1] text-white dark:bg-[#87CEEB] dark:text-black'
-                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                ? 'bg-[#4169E1] text-white dark:bg-blue-900 dark:text-white'
+                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-blue-950/60'
             }`}
           >
             7 Days
@@ -418,8 +418,8 @@ export default function TodayPage() {
             onClick={() => setTimeView('month')}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               timeView === 'month'
-                ? 'bg-[#4169E1] text-white dark:bg-[#87CEEB] dark:text-black'
-                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                ? 'bg-[#4169E1] text-white dark:bg-blue-900 dark:text-white'
+                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-blue-950/60'
             }`}
           >
             30 Days
@@ -429,7 +429,7 @@ export default function TodayPage() {
 
       {/* Historical Charts - Only show for week/month views */}
       {timeView !== 'today' && historicalData.length > 0 && (
-        <div className="mt-6 rounded-2xl border border-zinc-200/70 p-6 dark:border-zinc-800/80">
+        <div className="mt-6 rounded-2xl border border-zinc-200/70 p-6 dark:border-blue-950/70 bg-white dark:bg-zinc-900">
           <h3 className="text-sm font-semibold mb-4">Trend Overview</h3>
           <div className="grid gap-6 lg:grid-cols-2">
             <Chart 
@@ -463,7 +463,7 @@ export default function TodayPage() {
           </div>
           
           {/* Statistics Summary */}
-          <div className="mt-6 grid gap-4 sm:grid-cols-4 border-t border-zinc-200 pt-6 dark:border-zinc-800">
+          <div className="mt-6 grid gap-4 sm:grid-cols-4 border-t border-zinc-200 pt-6 dark:border-blue-950/70">
             <StatCard 
               label="Avg Calories"
               value={Math.round(historicalData.reduce((sum, d) => sum + d.calories, 0) / historicalData.length)}
@@ -519,7 +519,7 @@ export default function TodayPage() {
       </div>
 
       {/* Additional Nutrients Section */}
-      <div className="mt-6 rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80">
+      <div className="mt-6 rounded-2xl border border-zinc-200/70 p-5 dark:border-blue-950/70 bg-white dark:bg-zinc-900">
         <button
           onClick={() => setShowAllNutrients(!showAllNutrients)}
           className="flex w-full items-center justify-between text-left"
@@ -545,7 +545,7 @@ export default function TodayPage() {
 
         {/* Expanded - Show all nutrients */}
         {showAllNutrients && (
-          <div className="mt-3 space-y-6 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+          <div className="mt-3 space-y-6 border-t border-zinc-200 pt-4 dark:border-blue-950/70">
             {/* Fats */}
             <div>
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Fats</h4>
@@ -612,7 +612,7 @@ export default function TodayPage() {
         </div>
 
         {logs.length === 0 ? (
-          <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-zinc-800/80">
+          <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-blue-950/70 bg-white dark:bg-zinc-900">
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
               No meals logged yet today. Start by searching for foods!
             </p>
@@ -622,7 +622,7 @@ export default function TodayPage() {
             {logs.map((log) => (
               <div
                 key={log.id}
-                className="flex items-center justify-between rounded-xl border border-zinc-200/70 p-4 dark:border-zinc-800/80"
+                className="flex items-center justify-between rounded-xl border border-zinc-200/70 p-4 dark:border-blue-950/70 bg-white dark:bg-zinc-900"
               >
                 <div>
                   <div className="text-sm font-medium">{log.food_name}</div>
@@ -640,7 +640,7 @@ export default function TodayPage() {
                   </div>
                   <button
                     onClick={() => handleEditLog(log)}
-                    className="rounded-full p-1.5 text-zinc-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/30 dark:hover:text-blue-400"
+                    className="rounded-full p-1.5 text-zinc-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/60 dark:hover:text-blue-300"
                     title="Edit"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -649,7 +649,7 @@ export default function TodayPage() {
                   </button>
                   <button
                     onClick={() => handleRemoveLog(log.id)}
-                    className="rounded-full p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30 dark:hover:text-red-400"
+                    className="rounded-full p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/60 dark:hover:text-red-300"
                     title="Remove"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -670,7 +670,7 @@ export default function TodayPage() {
           onClick={closeEditModal}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-[#B0C4DE] bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-900"
+            className="w-full max-w-md rounded-2xl border border-[#B0C4DE] bg-white p-6 shadow-xl dark:border-blue-950/70 dark:bg-zinc-900"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-lg font-semibold">Edit Serving Size</h2>
@@ -694,8 +694,8 @@ export default function TodayPage() {
                     }}
                     className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
                       editServingSize === size.grams && !editCustomServing
-                        ? "border-[#4169E1] bg-[#4169E1] text-white dark:border-[#87CEEB] dark:bg-[#87CEEB] dark:text-black"
-                        : "border-[#D3D8E0] hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
+                        ? "border-[#4169E1] bg-[#4169E1] text-white dark:border-blue-900 dark:bg-blue-900 dark:text-white"
+                        : "border-[#D3D8E0] hover:bg-[#E0E0E0] dark:border-blue-950/70 dark:hover:bg-blue-950/60"
                     }`}
                   >
                     {size.label}
@@ -863,37 +863,37 @@ function StatCard({
   const percentage = goal && goal > 0 ? (value / goal) * 100 : 0;
   const isOnTrack = percentage >= 90 && percentage <= 110;
   
-  // Choose a color based on label
-  const colorMap = {
-    Calories: 'from-yellow-200 to-yellow-400 border-yellow-300',
-    Protein: 'from-green-200 to-green-400 border-green-300',
-    Carbs: 'from-blue-200 to-blue-400 border-blue-300',
-    Fat: 'from-pink-200 to-pink-400 border-pink-300',
-    Fiber: 'from-teal-200 to-teal-400 border-teal-300',
-    Sodium: 'from-indigo-200 to-indigo-400 border-indigo-300',
-    Calcium: 'from-purple-200 to-purple-400 border-purple-300',
-    Iron: 'from-red-200 to-red-400 border-red-300',
-    'Vitamin C': 'from-orange-200 to-orange-400 border-orange-300',
-    'Vitamin D': 'from-yellow-100 to-yellow-300 border-yellow-200',
-    'Vitamin A': 'from-orange-100 to-orange-300 border-orange-200',
-    'Vitamin E': 'from-lime-200 to-lime-400 border-lime-300',
-    'Vitamin K': 'from-green-100 to-green-300 border-green-200',
-    'Thiamin (B1)': 'from-cyan-200 to-cyan-400 border-cyan-300',
-    'Riboflavin (B2)': 'from-blue-100 to-blue-300 border-blue-200',
-    'Niacin (B3)': 'from-pink-100 to-pink-300 border-pink-200',
-    'Vitamin B6': 'from-yellow-200 to-yellow-400 border-yellow-300',
-    Folate: 'from-green-200 to-green-400 border-green-300',
-    'Vitamin B12': 'from-indigo-200 to-indigo-400 border-indigo-300',
-    Magnesium: 'from-purple-200 to-purple-400 border-purple-300',
-    Phosphorus: 'from-teal-200 to-teal-400 border-teal-300',
-    Potassium: 'from-pink-200 to-pink-400 border-pink-300',
-    Zinc: 'from-gray-200 to-gray-400 border-gray-300',
-    Selenium: 'from-blue-200 to-blue-400 border-blue-300',
+  // Choose a color based on label, with dark mode overrides
+  const colorMap: Record<string, string> = {
+    Calories: 'from-yellow-200 to-yellow-400 border-yellow-300 dark:from-yellow-900 dark:to-yellow-800 dark:border-yellow-900',
+    Protein: 'from-green-200 to-green-400 border-green-300 dark:from-green-900 dark:to-green-800 dark:border-green-900',
+    Carbs: 'from-blue-200 to-blue-400 border-blue-300 dark:from-blue-900 dark:to-blue-800 dark:border-blue-900',
+    Fat: 'from-pink-200 to-pink-400 border-pink-300 dark:from-pink-900 dark:to-pink-800 dark:border-pink-900',
+    Fiber: 'from-teal-200 to-teal-400 border-teal-300 dark:from-teal-900 dark:to-teal-800 dark:border-teal-900',
+    Sodium: 'from-indigo-200 to-indigo-400 border-indigo-300 dark:from-indigo-900 dark:to-indigo-800 dark:border-indigo-900',
+    Calcium: 'from-purple-200 to-purple-400 border-purple-300 dark:from-purple-900 dark:to-purple-800 dark:border-purple-900',
+    Iron: 'from-red-200 to-red-400 border-red-300 dark:from-red-900 dark:to-red-800 dark:border-red-900',
+    'Vitamin C': 'from-orange-200 to-orange-400 border-orange-300 dark:from-orange-900 dark:to-orange-800 dark:border-orange-900',
+    'Vitamin D': 'from-yellow-100 to-yellow-300 border-yellow-200 dark:from-yellow-900 dark:to-yellow-800 dark:border-yellow-900',
+    'Vitamin A': 'from-orange-100 to-orange-300 border-orange-200 dark:from-orange-900 dark:to-orange-800 dark:border-orange-900',
+    'Vitamin E': 'from-lime-200 to-lime-400 border-lime-300 dark:from-lime-900 dark:to-lime-800 dark:border-lime-900',
+    'Vitamin K': 'from-green-100 to-green-300 border-green-200 dark:from-green-900 dark:to-green-800 dark:border-green-900',
+    'Thiamin (B1)': 'from-cyan-200 to-cyan-400 border-cyan-300 dark:from-cyan-900 dark:to-cyan-800 dark:border-cyan-900',
+    'Riboflavin (B2)': 'from-blue-100 to-blue-300 border-blue-200 dark:from-blue-900 dark:to-blue-800 dark:border-blue-900',
+    'Niacin (B3)': 'from-pink-100 to-pink-300 border-pink-200 dark:from-pink-900 dark:to-pink-800 dark:border-pink-900',
+    'Vitamin B6': 'from-yellow-200 to-yellow-400 border-yellow-300 dark:from-yellow-900 dark:to-yellow-800 dark:border-yellow-900',
+    Folate: 'from-green-200 to-green-400 border-green-300 dark:from-green-900 dark:to-green-800 dark:border-green-900',
+    'Vitamin B12': 'from-indigo-200 to-indigo-400 border-indigo-300 dark:from-indigo-900 dark:to-indigo-800 dark:border-indigo-900',
+    Magnesium: 'from-purple-200 to-purple-400 border-purple-300 dark:from-purple-900 dark:to-purple-800 dark:border-purple-900',
+    Phosphorus: 'from-teal-200 to-teal-400 border-teal-300 dark:from-teal-900 dark:to-teal-800 dark:border-teal-900',
+    Potassium: 'from-pink-200 to-pink-400 border-pink-300 dark:from-pink-900 dark:to-pink-800 dark:border-pink-900',
+    Zinc: 'from-gray-200 to-gray-400 border-gray-300 dark:from-gray-900 dark:to-gray-800 dark:border-gray-900',
+    Selenium: 'from-blue-200 to-blue-400 border-blue-300 dark:from-blue-900 dark:to-blue-800 dark:border-blue-900',
   };
-  const colorClass = colorMap[label] || 'from-zinc-50 to-zinc-100 border-zinc-200';
+  const colorClass = colorMap[label] || 'from-zinc-50 to-zinc-100 border-zinc-200 dark:from-zinc-900 dark:to-zinc-800 dark:border-zinc-900';
 
   // Simple icon based on nutrient type
-  const iconMap = {
+  const iconMap: Record<string, string> = {
     Calories: '🔥',
     Protein: '🍗',
     Carbs: '🍞',
@@ -922,7 +922,7 @@ function StatCard({
   const icon = iconMap[label] || '🍽️';
 
   return (
-    <div className={`rounded-xl border-2 p-4 shadow-md bg-gradient-to-br ${colorClass} transition-all duration-300`}> 
+    <div className={`rounded-xl border-2 p-4 shadow-md bg-linear-to-br ${colorClass} transition-all duration-300`}>
       <div className="flex items-center gap-2 mb-1">
         <span className="text-xl">{icon}</span>
         <span className="text-xs font-bold uppercase tracking-wide text-zinc-700 dark:text-zinc-200">{label}</span>
