@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getAllNutrientsAlphabetically, type NutrientInfo } from "@/lib/nutrient-data";
+import { getAllNutrientsAlphabetically, getNutrientsByCategory, type NutrientInfo } from "@/lib/nutrient-data";
 
 // Modal for food cards (protein, carb, mineral, vitamin)
 type FoodModalProps = {
@@ -209,6 +209,7 @@ function LearnPage() {
   // Filter nutrients based on search
   const [searchQuery, setSearchQuery] = useState('');
   const [view, setView] = useState<'category' | 'alphabetical' | 'carbohydrates' | 'proteins' | 'vitamins' | 'minerals' | 'superfoods'>('category');
+  const nutrientsByCategory = getNutrientsByCategory();
   const [selectedNutrient, setSelectedNutrient] = useState<NutrientInfo | null>(null);
   const [selectedSuperfoodIndex, setSelectedSuperfoodIndex] = useState<number | null>(null);
   const [selectedFood, setSelectedFood] = useState<{
@@ -734,15 +735,66 @@ function LearnPage() {
             </div>
           </div>
         ) : (
-          // Alphabetical View
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {allNutrients.map((nutrient) => (
-              <NutrientCard
-                key={nutrient.name}
-                nutrient={nutrient}
-                onClick={() => setSelectedNutrient(nutrient)}
-              />
-            ))}
+          // Alphabetical View grouped by Macros and Micros with subgroups
+          <div className="space-y-14">
+            {/* Macros Section */}
+            <div>
+              <h1 className="mb-6 text-3xl font-extrabold text-zinc-900 dark:text-zinc-50">Macronutrients</h1>
+              {/* Main Macros */}
+              <h2 className="mb-3 text-xl font-bold text-zinc-800 dark:text-zinc-100">Main Macronutrients</h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+                {['Carbohydrates', 'Protein', 'Dietary Fiber', 'Total Fat'].map((macroName) => {
+                  const nutrient = Object.values(nutrientsByCategory['Macronutrients']).find(n => n.name === macroName);
+                  return nutrient ? (
+                    <NutrientCard
+                      key={nutrient.name}
+                      nutrient={nutrient}
+                      onClick={() => setSelectedNutrient(nutrient)}
+                    />
+                  ) : null;
+                })}
+              </div>
+              {/* Other Macros */}
+              <h2 className="mb-3 text-xl font-bold text-zinc-800 dark:text-zinc-100">Other Macronutrients</h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {['Total Sugars', 'Cholesterol', 'Saturated Fat'].map((macroName) => {
+                  const nutrient = Object.values(nutrientsByCategory['Macronutrients']).find(n => n.name === macroName);
+                  return nutrient ? (
+                    <NutrientCard
+                      key={nutrient.name}
+                      nutrient={nutrient}
+                      onClick={() => setSelectedNutrient(nutrient)}
+                    />
+                  ) : null;
+                })}
+              </div>
+            </div>
+            {/* Micros Section */}
+            <div>
+              <h1 className="mb-6 text-3xl font-extrabold text-zinc-900 dark:text-zinc-50">Micronutrients</h1>
+              {/* Vitamins */}
+              <h2 className="mb-3 text-xl font-bold text-zinc-800 dark:text-zinc-100">Vitamins</h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+                {nutrientsByCategory['Vitamins'].map((nutrient) => (
+                  <NutrientCard
+                    key={nutrient.name}
+                    nutrient={nutrient}
+                    onClick={() => setSelectedNutrient(nutrient)}
+                  />
+                ))}
+              </div>
+              {/* Minerals */}
+              <h2 className="mb-3 text-xl font-bold text-zinc-800 dark:text-zinc-100">Minerals</h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {nutrientsByCategory['Minerals'].map((nutrient) => (
+                  <NutrientCard
+                    key={nutrient.name}
+                    nutrient={nutrient}
+                    onClick={() => setSelectedNutrient(nutrient)}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         )}
       
