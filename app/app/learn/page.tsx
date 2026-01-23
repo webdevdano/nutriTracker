@@ -208,7 +208,7 @@ const allNutrients = getAllNutrientsAlphabetically();
 function LearnPage() {
   // Filter nutrients based on search
   const [searchQuery, setSearchQuery] = useState('');
-  const [view, setView] = useState<'category' | 'alphabetical' | 'carbohydrates' | 'proteins' | 'vitamins' | 'minerals' | 'superfoods'>('category');
+  const [view, setView] = useState<'alphabetical' | 'category' | 'carbohydrates' | 'proteins' | 'vitamins' | 'minerals' | 'superfoods'>('category');
   const nutrientsByCategory = getNutrientsByCategory();
   const [selectedNutrient, setSelectedNutrient] = useState<NutrientInfo | null>(null);
   const [selectedSuperfoodIndex, setSelectedSuperfoodIndex] = useState<number | null>(null);
@@ -220,12 +220,7 @@ function LearnPage() {
     serving?: string;
   } | null>(null);
 
-  const filteredNutrients = searchQuery
-    ? allNutrients.filter(n => 
-        n.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        n.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : allNutrients;
+  // (filteredNutrients removed, not used)
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-8">
@@ -252,8 +247,8 @@ function LearnPage() {
       {!searchQuery && (
         <div className="mb-6 flex gap-2 overflow-x-auto scrollbar-hide -mx-2 px-2" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="flex gap-2 min-w-max">
-            <button onClick={() => setView('category')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'category' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}>A-Z Directory</button>
-            <button onClick={() => setView('alphabetical')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'alphabetical' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}>By Category</button>
+            <button onClick={() => setView('alphabetical')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'alphabetical' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}>A-Z Directory</button>
+            <button onClick={() => setView('category')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'category' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}>By Category</button>
             <button onClick={() => setView('carbohydrates')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'carbohydrates' ? 'bg-blue-900 text-white dark:bg-blue-100 dark:text-blue-900' : 'bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-700'}`}>Carbohydrates</button>
             <button onClick={() => setView('proteins')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'proteins' ? 'bg-orange-900 text-white dark:bg-orange-100 dark:text-orange-900' : 'bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-800 dark:text-orange-300 dark:hover:bg-orange-700'}`}>Proteins</button>
             <button onClick={() => setView('vitamins')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'vitamins' ? 'bg-green-900 text-white dark:bg-green-100 dark:text-green-900' : 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-800 dark:text-green-300 dark:hover:bg-green-700'}`}>Vitamins</button>
@@ -269,16 +264,39 @@ function LearnPage() {
         <>
           {/* Search Results */}
           <div className="space-y-4">
-            {filteredNutrients.length === 0 ? (
-              <p className="text-sm text-zinc-500">No nutrients found matching &ldquo;{searchQuery}&rdquo;</p>
-            ) : (
-              filteredNutrients.map((nutrient) => (
-                <NutrientCard
-                  key={nutrient.name}
-                  nutrient={nutrient}
-                  onClick={() => setSelectedNutrient(nutrient)}
-                />
-              ))
+            {/* Alphabetical View: flat A-Z list, filtered by search if present */}
+            {view === 'alphabetical' && (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {getAllNutrientsAlphabetically()
+                  .filter((nutrient) =>
+                    nutrient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    nutrient.description.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map((nutrient) => (
+                    <NutrientCard
+                      key={nutrient.name}
+                      nutrient={nutrient}
+                      onClick={() => setSelectedNutrient(nutrient)}
+                    />
+                  ))}
+              </div>
+            )}
+            {/* Category view for search: show all nutrients matching search, grouped not needed */}
+            {view === 'category' && (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {getAllNutrientsAlphabetically()
+                  .filter((nutrient) =>
+                    nutrient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    nutrient.description.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map((nutrient) => (
+                    <NutrientCard
+                      key={nutrient.name}
+                      nutrient={nutrient}
+                      onClick={() => setSelectedNutrient(nutrient)}
+                    />
+                  ))}
+              </div>
             )}
           </div>
           {/* Food Modal for all food cards */}
@@ -292,225 +310,27 @@ function LearnPage() {
             />
           )}
         </>
-      ) : view === 'category' ? (
-        <>
-          {/* Carbohydrates Section */}
-          <div className="mb-10">
-            <div className="mb-4 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
-              <h2 className="mb-2 text-2xl font-bold">🍚 Carbohydrates</h2>
-              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[{
-                name: "Brown Rice",
-                emoji: "🍚",
-                description: "Whole grain, high in complex carbs",
-                nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Manganese", "Selenium"],
-                benefits: ["Sustained energy", "Digestive health", "Gluten-free", "Rich in minerals"],
-                serving: "1 cup cooked (195g)"
-              },
-              {
-                name: "Oats",
-                emoji: "🌾",
-                description: "Rich in fiber and slow-digesting carbs",
-                nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Phosphorus", "Zinc"],
-                benefits: ["Heart health", "Blood sugar control", "Satiety", "Digestive health"],
-                serving: "1 cup cooked (156g)"
-              },
-              {
-                name: "Sweet Potato",
-                emoji: "🍠",
-                description: "Vitamin-rich starchy root",
-                nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Potassium", "Fiber"],
-                benefits: ["Eye health", "Immune support", "Stable energy", "Digestive health"],
-                serving: "1 medium (150g)"
-              },
-              {
-                name: "Quinoa",
-                emoji: "🍥",
-                description: "Complete protein and carb source",
-                nutrients: ["Carbohydrates", "Protein", "Fiber", "Magnesium", "Iron"],
-                benefits: ["Complete protein", "Gluten-free", "Rich in minerals", "Supports digestion"],
-                serving: "1 cup cooked (185g)"
-              }].map((carb) => (
-                <SuperfoodCard
-                  key={carb.name}
-                  superfood={carb}
-                  onClick={() => setSelectedFood(carb)}
+      ) : view === 'carbohydrates' ? (
+        // Carbohydrates View: show only the Carbohydrates nutrient card
+        <div>
+          <div className="mb-6 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
+            <h2 className="mb-2 text-2xl font-bold">🍞 Carbohydrates</h2>
+            <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Object.values(nutrientsByCategory['Macronutrients'])
+              .filter(n => n.name === 'Carbohydrates')
+              .map((nutrient) => (
+                <NutrientCard
+                  key={nutrient.name}
+                  nutrient={nutrient}
+                  onClick={() => setSelectedNutrient(nutrient)}
                 />
               ))}
-            </div>
           </div>
-          {/* Proteins Section */}
-          <div className="mb-10">
-            <div className="mb-4 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
-              <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
-              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in protein</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[{
-                name: "Chicken Breast",
-                emoji: "🍗",
-                description: "Lean animal protein",
-                nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Low Fat"],
-                benefits: ["Muscle building", "Weight management", "Supports metabolism", "Low in fat"],
-                serving: "3 oz (85g)"
-              },
-              {
-                name: "Lentils",
-                emoji: "🥣",
-                description: "Plant-based protein and fiber",
-                nutrients: ["Protein", "Fiber", "Iron", "Folate", "Manganese", "Low Fat"],
-                benefits: ["Heart health", "Digestive health", "Blood sugar control", "Rich in iron"],
-                serving: "1 cup cooked (198g)"
-              },
-              {
-                name: "Greek Yogurt",
-                emoji: "🥛",
-                description: "High-protein dairy",
-                nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"],
-                benefits: ["Gut health", "Bone strength", "Muscle building", "Immune support"],
-                serving: "1 cup (245g)"
-              },
-              {
-                name: "Tofu",
-                emoji: "🍥",
-                description: "Soy-based complete protein",
-                nutrients: ["Protein", "Calcium", "Iron", "Magnesium", "Low Fat", "Isoflavones"],
-                benefits: ["Heart health", "Bone health", "Plant-based protein", "Low in fat"],
-                serving: "3 oz (85g)"
-              }].map((protein) => (
-                <SuperfoodCard
-                  key={protein.name}
-                  superfood={protein}
-                  onClick={() => setSelectedFood(protein)}
-                />
-              ))}
-            </div>
-          </div>
-          {/* Vitamins Section */}
-          <div className="mb-10">
-            <div className="mb-4 rounded-xl bg-green-50 p-6 dark:bg-green-950/30">
-              <h2 className="mb-2 text-2xl font-bold">🍃 Vitamins</h2>
-              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in vitamins</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[{
-                name: "Spinach",
-                emoji: "🥬",
-                description: "Rich in vitamin K, A, C",
-                nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"],
-                benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"],
-                serving: "1 cup cooked (180g)"
-              },
-              {
-                name: "Citrus Fruits",
-                emoji: "🍋",
-                description: "High in vitamin C",
-                nutrients: ["Vitamin C", "Folate", "Potassium", "Fiber", "Antioxidants"],
-                benefits: ["Boosts immune system", "Improves skin health", "Aids iron absorption", "Antioxidant-rich"],
-                serving: "1 medium orange (130g)"
-              },
-              {
-                name: "Carrots",
-                emoji: "🥕",
-                description: "Excellent source of vitamin A",
-                nutrients: ["Vitamin A", "Vitamin K", "Fiber", "Potassium", "Vitamin C"],
-                benefits: ["Eye health", "Immune support", "Digestive health", "Antioxidant-rich"],
-                serving: "1 medium (61g)"
-              },
-              {
-                name: "Red Peppers",
-                emoji: "🫑",
-                description: "Vitamin C and antioxidants",
-                nutrients: ["Vitamin C", "Vitamin A", "Vitamin B6", "Folate", "Antioxidants"],
-                benefits: ["Boosts immune system", "Supports eye health", "Rich in antioxidants", "Aids iron absorption"],
-                serving: "1 medium (119g)"
-              }].map((vitamin) => (
-                <SuperfoodCard
-                  key={vitamin.name}
-                  superfood={vitamin}
-                  onClick={() => setSelectedFood(vitamin)}
-                />
-              ))}
-            </div>
-          </div>
-          {/* Minerals Section */}
-          <div className="mb-10">
-            <div className="mb-4 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
-              <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
-              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in minerals</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[{
-                name: "Almonds",
-                emoji: "🥜",
-                description: "Magnesium, calcium, iron",
-                nutrients: ["Magnesium", "Calcium", "Iron", "Fiber", "Vitamin E", "Protein"],
-                benefits: ["Supports heart health", "Bone strength", "Rich in antioxidants", "Helps control blood sugar"],
-                serving: "1 oz (28g)"
-              },
-              {
-                name: "Pumpkin Seeds",
-                emoji: "🎃",
-                description: "Zinc, magnesium, iron",
-                nutrients: ["Zinc", "Magnesium", "Iron", "Copper", "Manganese", "Healthy Fats"],
-                benefits: ["Improves sleep", "Boosts immune system", "Supports prostate health", "Rich in antioxidants"],
-                serving: "1 oz (28g)"
-              },
-              {
-                name: "Salmon",
-                emoji: "🐟",
-                description: "Rich in selenium and iodine",
-                nutrients: ["Selenium", "Iodine", "Phosphorus", "Potassium", "Magnesium", "Vitamin D"],
-                benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"],
-                serving: "3 oz (85g)"
-              },
-              {
-                name: "Broccoli",
-                emoji: "🥦",
-                description: "Calcium, potassium, iron",
-                nutrients: ["Calcium", "Potassium", "Iron", "Vitamin C", "Folate", "Fiber"],
-                benefits: ["Cancer prevention", "Bone health", "Digestive health", "Immune support"],
-                serving: "1 cup chopped (91g)"
-              }].map((mineral) => (
-                <SuperfoodCard
-                  key={mineral.name}
-                  superfood={mineral}
-                  onClick={() => setSelectedFood(mineral)}
-                />
-              ))}
-            </div>
-          </div>
-          {/* Superfoods Section */}
-          <div className="mb-10">
-            <div className="mb-4 rounded-xl bg-linear-to-r from-green-50 to-blue-50 p-6 dark:from-green-950/30 dark:to-blue-950/30">
-              <h2 className="mb-2 text-2xl font-bold">🌟 Superfoods</h2>
-              <p className="text-zinc-700 dark:text-zinc-300">Foods packed with multiple essential nutrients to supercharge your health</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {SUPERFOODS.map((superfood, index) => (
-                <SuperfoodCard
-                  key={superfood.name}
-                  superfood={superfood}
-                  onClick={() => setSelectedSuperfoodIndex(index)}
-                />
-              ))}
-            </div>
-          </div>
-          {/* Food Modal for all food cards */}
-          {selectedFood && (
-            <FoodModal
-              food={{
-                ...selectedFood,
-                benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
-              }}
-              onClose={() => setSelectedFood(null)}
-            />
-          )}
-        </>
+        </div>
       ) : view === 'proteins' ? (
-        // Proteins Food Sources View (SuperfoodCard style)
+        // Proteins Food Sources View
         <div>
           <div className="mb-6 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
             <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
@@ -570,7 +390,7 @@ function LearnPage() {
           )}
         </div>
         ) : view === 'vitamins' ? (
-          // Vitamins Food Sources View (SuperfoodCard style)
+          // Vitamins Food Sources View 
           <div>
             <div className="mb-6 rounded-xl bg-green-50 p-6 dark:bg-green-950/30">
               <h2 className="mb-2 text-2xl font-bold">🍃 Vitamins</h2>
@@ -656,7 +476,7 @@ function LearnPage() {
             )}
           </div>
         ) : view === 'minerals' ? (
-          // Minerals Food Sources View (SuperfoodCard style)
+          // Minerals Food Sources View 
           <div>
             <div className="mb-6 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
               <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
@@ -735,7 +555,7 @@ function LearnPage() {
             </div>
           </div>
         ) : (
-          // Alphabetical View grouped by Macros and Micros with subgroups
+          // By Category: grouped view with headings
           <div className="space-y-14">
             {/* Macros Section */}
             <div>
