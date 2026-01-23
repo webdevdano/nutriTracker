@@ -260,7 +260,17 @@ function LearnPage() {
 
       {/* Content */}
       {/* Content Views */}
-      {searchQuery ? (
+      {view === 'alphabetical' && !searchQuery ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {getAllNutrientsAlphabetically().map((nutrient) => (
+            <NutrientCard
+              key={nutrient.name}
+              nutrient={nutrient}
+              onClick={() => setSelectedNutrient(nutrient)}
+            />
+          ))}
+        </div>
+      ) : searchQuery ? (
         <>
           {/* Search Results */}
           <div className="space-y-4">
