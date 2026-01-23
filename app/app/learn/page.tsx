@@ -321,23 +321,80 @@ function LearnPage() {
           )}
         </>
       ) : view === 'carbohydrates' ? (
-        // Carbohydrates View: show only the Carbohydrates nutrient card
+        // Carbohydrates View: show food card UI like proteins, vitamins, minerals, superfoods
         <div>
           <div className="mb-6 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
             <h2 className="mb-2 text-2xl font-bold">🍞 Carbohydrates</h2>
             <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Object.values(nutrientsByCategory['Macronutrients'])
-              .filter(n => n.name === 'Carbohydrates')
-              .map((nutrient) => (
-                <NutrientCard
-                  key={nutrient.name}
-                  nutrient={nutrient}
-                  onClick={() => setSelectedNutrient(nutrient)}
-                />
-              ))}
+            {[
+              {
+                name: "Oats",
+                emoji: "🌾",
+                description: "Whole grain high in fiber and complex carbs",
+                nutrients: ["Carbohydrates", "Fiber", "Protein", "Magnesium", "Iron", "Zinc"],
+                benefits: ["Sustained energy", "Digestive health", "Heart health", "Blood sugar control"],
+                serving: "1 cup cooked (156g)"
+              },
+              {
+                name: "Sweet Potato",
+                emoji: "🍠",
+                description: "Complex carb loaded with vitamins",
+                nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Fiber", "Potassium", "Manganese"],
+                benefits: ["Eye health", "Immune support", "Digestive health", "Stable energy"],
+                serving: "1 medium (150g)"
+              },
+              {
+                name: "Brown Rice",
+                emoji: "🍚",
+                description: "Whole grain source of complex carbs",
+                nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Phosphorus", "Selenium"],
+                benefits: ["Long-lasting energy", "Digestive health", "Supports metabolism"],
+                serving: "1 cup cooked (195g)"
+              },
+              {
+                name: "Banana",
+                emoji: "🍌",
+                description: "Natural sugars and potassium",
+                nutrients: ["Carbohydrates", "Potassium", "Vitamin B6", "Vitamin C", "Fiber"],
+                benefits: ["Quick energy", "Muscle function", "Digestive health"],
+                serving: "1 medium (118g)"
+              },
+              {
+                name: "Quinoa",
+                emoji: "🌱",
+                description: "Gluten-free whole grain alternative",
+                nutrients: ["Carbohydrates", "Protein", "Fiber", "Magnesium", "Iron", "Zinc"],
+                benefits: ["Complete protein", "Sustained energy", "Rich in minerals"],
+                serving: "1 cup cooked (185g)"
+              },
+              {
+                name: "Black Beans",
+                emoji: "🫘",
+                description: "Legume high in fiber and complex carbs",
+                nutrients: ["Carbohydrates", "Protein", "Fiber", "Folate", "Magnesium", "Iron"],
+                benefits: ["Digestive health", "Blood sugar control", "Heart health"],
+                serving: "1 cup cooked (172g)"
+              }
+            ].map((carb) => (
+              <SuperfoodCard
+                key={carb.name}
+                superfood={carb}
+                onClick={() => setSelectedFood(carb)}
+              />
+            ))}
           </div>
+          {/* Food Modal for carbohydrates */}
+          {selectedFood && (
+            <FoodModal
+              food={{
+                ...selectedFood,
+                benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
+              }}
+              onClose={() => setSelectedFood(null)}
+            />
+          )}
         </div>
       ) : view === 'proteins' ? (
         // Proteins Food Sources View
