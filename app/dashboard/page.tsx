@@ -69,14 +69,28 @@ export default function DashboardPage() {
 
   const isStd = form.measurement_units === "std";
 
+  // Macro progress rows with nutrient info
   const macroRows = useMemo(() => {
     const table = data?.macronutrients_table?.["macronutrients-table"];
     if (!table || table.length < 2) return [];
-
+    // Import nutrient info
+    const nutrientInfo = require("@/lib/nutrient-data");
     return table
       .slice(1)
-      .map((row) => ({ name: row[0], value: row[1] }))
-      .filter((row) => row.name && row.value);
+      .map((row) => {
+        const info = Object.values(nutrientInfo.nutrientDatabase).find(n => n.name === row[0]);
+        // Parse value and goal
+        let value = parseFloat(row[1]);
+        let goal = 0;
+        let unit = info?.unit || "g";
+        if (info?.dailyValue) {
+          // Extract numeric goal from dailyValue string
+          const match = info.dailyValue.match(/([\d\.]+)/);
+          if (match) goal = parseFloat(match[1]);
+        }
+        return { name: row[0], value, goal, unit };
+      })
+      .filter((row) => row.name && row.value !== undefined);
   }, [data]);
 
   async function onSubmit(event: React.FormEvent) {
@@ -316,18 +330,28 @@ export default function DashboardPage() {
 
             <div className="rounded-2xl border border-zinc-200/70 p-6 dark:border-zinc-800/80">
               <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Macros</div>
-              <div className="mt-3 grid gap-2">
+              <div className="mt-3 grid gap-4">
                 {macroRows.length ? (
-                  macroRows.map((row) => (
-                    <div key={row.name} className="flex items-start justify-between gap-4">
-                      <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                        {row.name}
+                  macroRows.map((row) => {
+                    const consumed = row.value ?? 0;
+                    const goal = row.goal ?? 0;
+                    const percent = goal > 0 ? Math.min(100, (consumed / goal) * 100) : 0;
+                    return (
+                      <div key={row.name} className="rounded-xl border border-zinc-100 dark:border-zinc-800 p-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{row.name}</div>
+                          <div className="text-xs text-zinc-500 dark:text-zinc-400">{consumed} / {goal} {row.unit}</div>
+                        </div>
+                        {/* Progress Bar - always visible, even at 0 */}
+                        <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-800">
+                          <div
+                            className="h-2 rounded-full bg-green-500 dark:bg-green-400 transition-all"
+                            style={{ width: `${percent}%`, minWidth: percent === 0 ? '8px' : undefined }}
+                          />
+                        </div>
                       </div>
-                      <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                        {row.value}
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   <div className="text-sm text-zinc-600 dark:text-zinc-400">
                     {nutritionError

@@ -932,16 +932,21 @@ function StatCard({
       </div>
       {goal && (
         <div className="mt-1 flex items-center gap-2">
-          <div className={`text-xs font-medium ${
-            isOnTrack 
-              ? 'text-green-600 dark:text-green-400' 
-              : percentage > 110 
-              ? 'text-orange-600 dark:text-orange-400'
-              : 'text-zinc-500'
-          }`}>
-            {Math.round(percentage)}% of goal
+          <div className="text-xs text-zinc-500 dark:text-zinc-400">
+            {value} / {goal} {unit}
           </div>
-          {isOnTrack && <span className="text-green-600">✓</span>}
+        </div>
+      )}
+      {/* Progress Bar - always visible, even at 0% */}
+      {goal && (
+        <div className="mt-3">
+          <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-800">
+            <div
+              className="h-2 rounded-full bg-green-500 dark:bg-green-400 transition-all"
+              style={{ width: `${Math.min(100, percentage)}%`, minWidth: percentage === 0 ? '8px' : undefined }}
+            />
+          </div>
+          <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{Math.round(percentage)}% of goal</div>
         </div>
       )}
     </div>
