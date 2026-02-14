@@ -13,7 +13,8 @@
     "@supabase/supabase-js": "^2.90.1",
     "next": "16.1.2",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-qr-barcode-scanner": "^2.1.23"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

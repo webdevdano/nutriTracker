@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { nutrientDatabase, type NutrientInfo } from "@/lib/nutrient-data";
 
 type BmiResponse = {
   bmi?: string;
@@ -73,18 +74,14 @@ export default function DashboardPage() {
   const macroRows = useMemo(() => {
     const table = data?.macronutrients_table?.["macronutrients-table"];
     if (!table || table.length < 2) return [];
-    // Import nutrient info
-    const nutrientInfo = require("@/lib/nutrient-data");
     return table
       .slice(1)
       .map((row) => {
-        const info = Object.values(nutrientInfo.nutrientDatabase).find(n => n.name === row[0]);
-        // Parse value and goal
-        let value = parseFloat(row[1]);
+        const info = Object.values(nutrientDatabase).find(n => (n as NutrientInfo).name === row[0]) as NutrientInfo | undefined;
+        const value = parseFloat(row[1]);
         let goal = 0;
-        let unit = info?.unit || "g";
+        const unit = info?.unit || "g";
         if (info?.dailyValue) {
-          // Extract numeric goal from dailyValue string
           const match = info.dailyValue.match(/([\d\.]+)/);
           if (match) goal = parseFloat(match[1]);
         }
@@ -329,37 +326,121 @@ export default function DashboardPage() {
             </div>
 
             <div className="rounded-2xl border border-zinc-200/70 p-6 dark:border-zinc-800/80">
-              <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Macros</div>
-              <div className="mt-3 grid gap-4">
-                {macroRows.length ? (
-                  macroRows.map((row) => {
-                    const consumed = row.value ?? 0;
-                    const goal = row.goal ?? 0;
-                    const percent = goal > 0 ? Math.min(100, (consumed / goal) * 100) : 0;
-                    return (
-                      <div key={row.name} className="rounded-xl border border-zinc-100 dark:border-zinc-800 p-3">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{row.name}</div>
-                          <div className="text-xs text-zinc-500 dark:text-zinc-400">{consumed} / {goal} {row.unit}</div>
+              <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-2">Macros & Key Nutrients</div>
+              {macroRows.length ? (
+                <>
+                  {/* Carbohydrates Group */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-blue-700 dark:text-blue-300">Carbohydrates</span>
+                      <button title="Primary energy source for the body. Includes sugars, starches, and fiber." className="text-blue-400 hover:text-blue-700 dark:hover:text-blue-200 focus:outline-none">
+                        <svg className="inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" /></svg>
+                      </button>
+                    </div>
+                    {macroRows.filter(r => r.name === 'Carbohydrates' || r.name === 'Total Sugars' || r.name === 'Dietary Fiber').map(row => {
+                      const color = row.name === 'Carbohydrates' ? 'bg-blue-500 dark:bg-blue-400' : row.name === 'Total Sugars' ? 'bg-pink-500 dark:bg-pink-400' : 'bg-purple-500 dark:bg-purple-400';
+                      const consumed = row.value ?? 0;
+                      const goal = row.goal ?? 0;
+                      const percent = goal > 0 ? Math.min(100, (consumed / goal) * 100) : 0;
+                      return (
+                        <div key={row.name} className="rounded-xl border border-zinc-100 dark:border-zinc-800 p-3 mb-2">
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{row.name}</div>
+                            <div className="text-xs text-zinc-500 dark:text-zinc-400">{consumed} / {goal} {row.unit}</div>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-800">
+                            <div className={`h-2 rounded-full transition-all ${color}`} style={{ width: `${percent}%`, minWidth: percent === 0 ? '8px' : undefined }} />
+                          </div>
                         </div>
-                        {/* Progress Bar - always visible, even at 0 */}
-                        <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-800">
-                          <div
-                            className="h-2 rounded-full bg-green-500 dark:bg-green-400 transition-all"
-                            style={{ width: `${percent}%`, minWidth: percent === 0 ? '8px' : undefined }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                    {nutritionError
-                      ? "Recommendations unavailable."
-                      : "No macro data."}
+                      );
+                    })}
                   </div>
-                )}
-              </div>
+                  {/* Fats Group */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-yellow-700 dark:text-yellow-300">Fats</span>
+                      <button title="Essential for energy, cell growth, and vitamin absorption. Includes total, saturated, and other fats." className="text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-200 focus:outline-none">
+                        <svg className="inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" /></svg>
+                      </button>
+                    </div>
+                    {macroRows.filter(r => r.name === 'Total Fat' || r.name === 'Saturated Fat').map(row => {
+                      const color = row.name === 'Total Fat' ? 'bg-yellow-500 dark:bg-yellow-400' : 'bg-orange-500 dark:bg-orange-400';
+                      const consumed = row.value ?? 0;
+                      const goal = row.goal ?? 0;
+                      const percent = goal > 0 ? Math.min(100, (consumed / goal) * 100) : 0;
+                      return (
+                        <div key={row.name} className="rounded-xl border border-zinc-100 dark:border-zinc-800 p-3 mb-2">
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{row.name}</div>
+                            <div className="text-xs text-zinc-500 dark:text-zinc-400">{consumed} / {goal} {row.unit}</div>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-800">
+                            <div className={`h-2 rounded-full transition-all ${color}`} style={{ width: `${percent}%`, minWidth: percent === 0 ? '8px' : undefined }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* Cholesterol Group */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-rose-700 dark:text-rose-300">Cholesterol</span>
+                      <button title="Waxy substance found in animal products. Important for hormones, but excess can increase heart risk." className="text-rose-400 hover:text-rose-700 dark:hover:text-rose-200 focus:outline-none">
+                        <svg className="inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" /></svg>
+                      </button>
+                    </div>
+                    {macroRows.filter(r => r.name === 'Cholesterol').map(row => {
+                      const color = 'bg-rose-500 dark:bg-rose-400';
+                      const consumed = row.value ?? 0;
+                      const goal = row.goal ?? 0;
+                      const percent = goal > 0 ? Math.min(100, (consumed / goal) * 100) : 0;
+                      return (
+                        <div key={row.name} className="rounded-xl border border-zinc-100 dark:border-zinc-800 p-3 mb-2">
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{row.name}</div>
+                            <div className="text-xs text-zinc-500 dark:text-zinc-400">{consumed} / {goal} {row.unit}</div>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-800">
+                            <div className={`h-2 rounded-full transition-all ${color}`} style={{ width: `${percent}%`, minWidth: percent === 0 ? '8px' : undefined }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* Protein Group (for completeness) */}
+                  <div className="mb-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-orange-700 dark:text-orange-300">Protein</span>
+                      <button title="Essential for building and repairing tissues, and supporting immune function." className="text-orange-400 hover:text-orange-700 dark:hover:text-orange-200 focus:outline-none">
+                        <svg className="inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" /></svg>
+                      </button>
+                    </div>
+                    {macroRows.filter(r => r.name === 'Protein').map(row => {
+                      const color = 'bg-orange-500 dark:bg-orange-400';
+                      const consumed = row.value ?? 0;
+                      const goal = row.goal ?? 0;
+                      const percent = goal > 0 ? Math.min(100, (consumed / goal) * 100) : 0;
+                      return (
+                        <div key={row.name} className="rounded-xl border border-zinc-100 dark:border-zinc-800 p-3 mb-2">
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{row.name}</div>
+                            <div className="text-xs text-zinc-500 dark:text-zinc-400">{consumed} / {goal} {row.unit}</div>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-800">
+                            <div className={`h-2 rounded-full transition-all ${color}`} style={{ width: `${percent}%`, minWidth: percent === 0 ? '8px' : undefined }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                  {nutritionError
+                    ? "Recommendations unavailable."
+                    : "No macro data."}
+                </div>
+              )}
             </div>
           </section>
         ) : null}

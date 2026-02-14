@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+const BarcodeScannerComponent = dynamic(() => import("react-qr-barcode-scanner"), { ssr: false });
 
 type UsdaFood = {
   fdcId: number;
@@ -42,6 +44,8 @@ export default function SearchPage() {
   const [mealType, setMealType] = useState("Lunch");
   const [adding, setAdding] = useState(false);
   const [savingFavorite, setSavingFavorite] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [scannedBarcode, setScannedBarcode] = useState<string | null>(null);
 
   async function handleSearch(event: React.FormEvent) {
     event.preventDefault();
@@ -74,6 +78,41 @@ export default function SearchPage() {
       setResults(deduped.slice(0, 5));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Search failed");
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleBarcodeDetected(barcode: string) {
+    setShowScanner(false);
+    setScannedBarcode(barcode);
+    setLoading(true);
+    setError(null);
+    try {
+      // Example: Open Food Facts API
+      const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+      const data = await response.json();
+      if (data.status === 1 && data.product) {
+        // Map Open Food Facts product to UsdaFood type (basic mapping)
+        const food: UsdaFood = {
+          fdcId: barcode,
+          description: data.product.product_name || "Unknown Product",
+          brandOwner: data.product.brands,
+          foodNutrients: [
+            { nutrientName: "Energy", value: data.product.nutriments.energy_100g || 0, unitName: "kcal" },
+            { nutrientName: "Protein", value: data.product.nutriments.proteins_100g || 0, unitName: "g" },
+            { nutrientName: "Carbohydrate, by difference", value: data.product.nutriments.carbohydrates_100g || 0, unitName: "g" },
+            { nutrientName: "Total lipid (fat)", value: data.product.nutriments.fat_100g || 0, unitName: "g" },
+          ],
+        };
+        setResults([food]);
+      } else {
+        setError("No product found for this barcode.");
+        setResults([]);
+      }
+    } catch (err) {
+      setError("Failed to fetch product info.");
       setResults([]);
     } finally {
       setLoading(false);
@@ -276,6 +315,13 @@ export default function SearchPage() {
           >
             {loading ? "Searching…" : "Search"}
           </button>
+          <button
+            type="button"
+            className="h-12 rounded-full bg-green-600 px-6 text-sm font-medium text-white hover:bg-green-800 disabled:opacity-60 ml-2"
+            onClick={() => setShowScanner(true)}
+          >
+            Scan Barcode
+          </button>
         </div>
       </form>
 
@@ -416,6 +462,29 @@ export default function SearchPage() {
                 {adding ? "Adding..." : "Add to Log"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showScanner && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-white p-4 rounded-xl shadow-xl relative">
+            <button
+              className="absolute top-2 right-2 text-lg font-bold"
+              onClick={() => setShowScanner(false)}
+            >
+              ×
+            </button>
+            <BarcodeScannerComponent
+              width={400}
+              height={300}
+              onUpdate={(err, result) => {
+                if (result) {
+                  handleBarcodeDetected(result.text);
+                }
+              }}
+            />
+            <div className="mt-2 text-center text-sm text-zinc-600">Point your camera at a barcode</div>
           </div>
         </div>
       )}

@@ -751,34 +751,50 @@ function NutrientCard({
 }) {
   const percentage = goal ? Math.min((value / goal) * 100, 100) : 0;
   const isOverLimit = limit && goal && value > goal;
-  
+  // Icon and color by nutrient
+  let icon = null;
+  let color = 'bg-zinc-400';
+  let barColor = color;
+  let labelType = 'none';
+  if (label.toLowerCase().includes('saturated')) {
+    icon = '🥩'; color = 'bg-orange-100 dark:bg-orange-900'; barColor = 'bg-orange-400'; labelType = 'limit';
+  } else if (label.toLowerCase().includes('trans')) {
+    icon = '🍟'; color = 'bg-pink-100 dark:bg-pink-900'; barColor = 'bg-pink-500'; labelType = 'limit';
+  } else if (label.toLowerCase().includes('poly')) {
+    icon = '🌻'; color = 'bg-yellow-100 dark:bg-yellow-900'; barColor = 'bg-yellow-400';
+  } else if (label.toLowerCase().includes('mono')) {
+    icon = '🥑'; color = 'bg-green-100 dark:bg-green-900'; barColor = 'bg-green-500';
+  } else if (label.toLowerCase().includes('sugar')) {
+    icon = '🍬'; color = 'bg-pink-50 dark:bg-pink-950'; barColor = 'bg-pink-400';
+    if (label.toLowerCase().includes('added')) labelType = 'limit';
+  } else if (label.toLowerCase().includes('cholesterol')) {
+    icon = '🩸'; color = 'bg-rose-100 dark:bg-rose-900'; barColor = 'bg-rose-500'; labelType = 'limit';
+  }
   return (
-    <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/50">
-      <div className="text-xs text-zinc-600 dark:text-zinc-400">{label}</div>
+    <div className={`rounded-lg p-3 ${color} dark:bg-opacity-60`}>
+      <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+        {icon && <span className="text-lg">{icon}</span>}
+        {label}
+      </div>
       <div className="mt-1 text-lg font-semibold">
         {Math.round(value * 10) / 10}{unit}
       </div>
-      {goal && (
-        <>
-          <div className="mt-2 text-xs text-zinc-500">
-            {limit ? 'Limit: ' : 'Goal: '}{goal}{unit}
-          </div>
-          <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
-            <div
-              className={`h-full transition-all ${
-                isOverLimit
-                  ? 'bg-red-500'
-                  : percentage >= 100
-                  ? 'bg-green-500'
-                  : percentage >= 70
-                  ? 'bg-blue-500'
-                  : 'bg-zinc-400'
-              }`}
-              style={{ width: `${Math.min(percentage, 100)}%` }}
-            />
-          </div>
-        </>
-      )}
+      <div className="mt-2 text-xs text-zinc-500">
+        {goal ? (
+          <>
+            {labelType === 'limit' || limit ? 'Limit: ' : 'Goal: '}{goal}{unit}
+            {isOverLimit && <span className="ml-1 font-bold text-red-600 dark:text-red-400">Over!</span>}
+          </>
+        ) : (
+          <span className="italic text-red-600 dark:text-red-400">Limit: 0 (avoid if possible)</span>
+        )}
+      </div>
+      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+        <div
+          className={`h-full transition-all ${isOverLimit ? 'bg-red-500' : barColor}`}
+          style={{ width: `${goal ? Math.min(percentage, 100) : 100}%` }}
+        />
+      </div>
     </div>
   );
 }
