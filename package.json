@@ -14,7 +14,8 @@
     "next": "16.1.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-qr-barcode-scanner": "^2.1.23"
+    "react-qr-barcode-scanner": "^2.1.23",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

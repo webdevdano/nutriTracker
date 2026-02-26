@@ -317,9 +317,11 @@ export default function SearchPage() {
           </button>
           <button
             type="button"
-            className="h-12 rounded-full bg-green-600 px-6 text-sm font-medium text-white hover:bg-green-800 disabled:opacity-60 ml-2"
+            className="h-12 rounded-full bg-emerald-500 px-6 text-sm font-semibold text-white shadow-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 disabled:opacity-60 ml-2 transition-colors duration-150"
             onClick={() => setShowScanner(true)}
+            style={{ boxShadow: '0 2px 8px rgba(16, 185, 129, 0.15)' }}
           >
+            <svg className="inline-block mr-2 -mt-1" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="2" strokeWidth="2"/><rect x="14" y="3" width="7" height="7" rx="2" strokeWidth="2"/><rect x="14" y="14" width="7" height="7" rx="2" strokeWidth="2"/><rect x="3" y="14" width="7" height="7" rx="2" strokeWidth="2"/></svg>
             Scan Barcode
           </button>
         </div>
@@ -470,10 +472,27 @@ export default function SearchPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
           <div className="bg-white p-4 rounded-xl shadow-xl relative">
             <button
-              className="absolute top-2 right-2 text-lg font-bold"
+              className="absolute top-2 right-2 w-10 h-10 rounded-full bg-black/80 text-white text-2xl font-extrabold shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+              style={{ zIndex: 10, position: 'absolute', padding: 0 }}
               onClick={() => setShowScanner(false)}
+              aria-label="Close scanner"
             >
-              ×
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  lineHeight: 1
+                }}
+              >
+                ×
+              </span>
             </button>
             <BarcodeScannerComponent
               width={400}
