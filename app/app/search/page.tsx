@@ -1,22 +1,27 @@
 "use client";
 
 import { useState } from "react";
-// Supabase replaced by API routes (NextAuth + Prisma)
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  setSearchQuery,
+  setSelectedFood,
+  setServingSize,
+  setCustomServing,
+  setMealType,
+  setShowScanner,
+  setScannedBarcode,
+  setAdding,
+  setSavingFavorite,
+} from "@/store/uiSlice";
+import {
+  useLazySearchFoodsQuery,
+  useAddFoodLogMutation,
+  useAddFavoriteMutation,
+  type UsdaFood,
+} from "@/store/api";
 const BarcodeScannerComponent = dynamic(() => import("react-qr-barcode-scanner"), { ssr: false });
-
-type UsdaFood = {
-  fdcId: number;
-  description: string;
-  dataType?: string;
-  brandOwner?: string;
-  foodNutrients?: Array<{
-    nutrientName: string;
-    value: number;
-    unitName: string;
-  }>;
-};
 
 type ServingSize = {
   label: string;
@@ -33,68 +38,44 @@ const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snack"];
 
 export default function SearchPage() {
   const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<UsdaFood[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  
-  const [selectedFood, setSelectedFood] = useState<UsdaFood | null>(null);
-  const [servingSize, setServingSize] = useState<number>(100);
-  const [customServing, setCustomServing] = useState("");
-  const [mealType, setMealType] = useState("Lunch");
-  const [adding, setAdding] = useState(false);
-  const [savingFavorite, setSavingFavorite] = useState(false);
-  const [showScanner, setShowScanner] = useState(false);
-  const [scannedBarcode, setScannedBarcode] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const { query, selectedFood, servingSize, customServing, mealType, showScanner, adding, savingFavorite } =
+    useAppSelector((s) => s.ui.search);
+
+  // RTK Query lazy search hook — triggered manually on form submit
+  const [triggerSearch, { data: searchResults = [] as UsdaFood[], isFetching: loading, error: searchError }] =
+    useLazySearchFoodsQuery();
+  const [addFoodLog] = useAddFoodLogMutation();
+  const [addFavorite] = useAddFavoriteMutation();
+
+  // Barcode results live in local state since they come from a 3rd-party API
+  const [barcodeResults, setBarcodeResults] = useState<UsdaFood[]>([]);
+  const [error, setError] = useState<string | null>(
+    searchError ? "Search failed" : null
+  );
+
+  const results = barcodeResults.length > 0 ? barcodeResults : searchResults;
 
   async function handleSearch(event: React.FormEvent) {
     event.preventDefault();
     if (!query.trim()) return;
-
-    setLoading(true);
+    setBarcodeResults([]);
     setError(null);
-
     try {
-      const response = await fetch(
-        `/api/foods/search?query=${encodeURIComponent(query)}&pageSize=5`,
-      );
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Search failed");
-        setResults([]);
-        return;
-      }
-
-      // Simple deduplication by description
-      const seen = new Set();
-      const deduped = (data.foods || []).filter((food: UsdaFood) => {
-        const key = food.description.toLowerCase().trim();
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-
-      setResults(deduped.slice(0, 5));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Search failed");
-      setResults([]);
-    } finally {
-      setLoading(false);
+      await triggerSearch(query).unwrap();
+    } catch {
+      setError("Search failed");
     }
   }
 
   async function handleBarcodeDetected(barcode: string) {
-    setShowScanner(false);
-    setScannedBarcode(barcode);
-    setLoading(true);
+    dispatch(setShowScanner(false));
+    dispatch(setScannedBarcode(barcode));
     setError(null);
     try {
-      // Example: Open Food Facts API
       const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
       const data = await response.json();
       if (data.status === 1 && data.product) {
-        // Map Open Food Facts product to UsdaFood type (basic mapping)
         const food: UsdaFood = {
           fdcId: parseInt(barcode) || 0,
           description: data.product.product_name || "Unknown Product",
@@ -106,28 +87,26 @@ export default function SearchPage() {
             { nutrientName: "Total lipid (fat)", value: data.product.nutriments.fat_100g || 0, unitName: "g" },
           ],
         };
-        setResults([food]);
+        setBarcodeResults([food]);
       } else {
         setError("No product found for this barcode.");
-        setResults([]);
+        setBarcodeResults([]);
       }
-    } catch (err) {
+    } catch {
       setError("Failed to fetch product info.");
-      setResults([]);
-    } finally {
-      setLoading(false);
+      setBarcodeResults([]);
     }
   }
 
   function openModal(food: UsdaFood) {
-    setSelectedFood(food);
-    setServingSize(100);
-    setCustomServing("");
-    setMealType("Lunch");
+    dispatch(setSelectedFood(food));
+    dispatch(setServingSize(100));
+    dispatch(setCustomServing(""));
+    dispatch(setMealType("Lunch"));
   }
 
   function closeModal() {
-    setSelectedFood(null);
+    dispatch(setSelectedFood(null));
   }
 
   function getNutrient(name: string): number {
@@ -138,7 +117,7 @@ export default function SearchPage() {
   async function handleAddFood() {
     if (!selectedFood) return;
 
-    setAdding(true);
+    dispatch(setAdding(true));
     const multiplier = servingSize / 100; // USDA values are per 100g
 
     // Extract all nutrients from USDA API
@@ -184,10 +163,7 @@ export default function SearchPage() {
 
     const today = new Date().toISOString().split("T")[0];
 
-    const res = await fetch("/api/food-logs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    const logResult = await addFoodLog({
         date: today,
         fdc_id: selectedFood.fdcId,
         food_name: `${selectedFood.description} (${servingSize}g)`,
@@ -224,14 +200,11 @@ export default function SearchPage() {
       selenium,
       quantity: 1,
       time: new Date().toISOString(),
-      }),
     });
 
-    setAdding(false);
-
-    const logData = await res.json();
-    if (!res.ok) {
-      alert(`Failed to log food: ${logData.error}`);
+    dispatch(setAdding(false));
+    if ('error' in logResult) {
+      alert("Failed to log food");
       return;
     }
 
@@ -242,7 +215,7 @@ export default function SearchPage() {
   async function handleSaveFavorite() {
     if (!selectedFood) return;
 
-    setSavingFavorite(true);
+    dispatch(setSavingFavorite(true));
     const multiplier = servingSize / 100;
 
     const calories = getNutrient("Energy") * multiplier;
@@ -251,32 +224,25 @@ export default function SearchPage() {
     const fat = getNutrient("Total lipid (fat)") * multiplier;
 
     try {
-      const response = await fetch("/api/favorites", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const result = await addFavorite({
           fdc_id: selectedFood.fdcId,
           food_name: selectedFood.description,
           calories,
           protein,
           carbs,
           fat,
-          serving_size: servingSize,
-        }),
-      });
+        });
 
-      const data = await response.json();
-      
-      if (response.ok) {
+      if ('error' in result) {
+        alert("Failed to save favorite");
+      } else {
         alert(`${selectedFood.description} saved to favorites!`);
         closeModal();
-      } else {
-        alert(data.error || "Failed to save favorite");
       }
-    } catch (error) {
+    } catch {
       alert("Failed to save favorite");
     } finally {
-      setSavingFavorite(false);
+      dispatch(setSavingFavorite(false));
     }
   }
 
@@ -300,7 +266,7 @@ export default function SearchPage() {
             className="h-12 flex-1 rounded-xl border border-[#B0C4DE] bg-white px-4 text-sm dark:border-gray-700 dark:bg-black"
             placeholder="Type a food (e.g., chicken)"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => dispatch(setSearchQuery(e.target.value))}
             autoFocus
           />
           <button
@@ -313,7 +279,7 @@ export default function SearchPage() {
           <button
             type="button"
             className="h-12 rounded-full bg-emerald-500 px-6 text-sm font-semibold text-white shadow-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 disabled:opacity-60 ml-2 transition-colors duration-150"
-            onClick={() => setShowScanner(true)}
+            onClick={() => dispatch(setShowScanner(true))}
             style={{ boxShadow: '0 2px 8px rgba(16, 185, 129, 0.15)' }}
           >
             <svg className="inline-block mr-2 -mt-1" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="2" strokeWidth="2"/><rect x="14" y="3" width="7" height="7" rx="2" strokeWidth="2"/><rect x="14" y="14" width="7" height="7" rx="2" strokeWidth="2"/><rect x="3" y="14" width="7" height="7" rx="2" strokeWidth="2"/></svg>
@@ -391,8 +357,8 @@ export default function SearchPage() {
                   <button
                     key={size.grams}
                     onClick={() => {
-                      setServingSize(size.grams);
-                      setCustomServing("");
+                      dispatch(setServingSize(size.grams));
+                      dispatch(setCustomServing(""));
                     }}
                     className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
                       servingSize === size.grams && !customServing
@@ -409,8 +375,8 @@ export default function SearchPage() {
                 placeholder="Custom (grams)"
                 value={customServing}
                 onChange={(e) => {
-                  setCustomServing(e.target.value);
-                  if (e.target.value) setServingSize(parseInt(e.target.value) || 100);
+                  dispatch(setCustomServing(e.target.value));
+                  if (e.target.value) dispatch(setServingSize(parseInt(e.target.value) || 100));
                 }}
                 className="mt-2 h-10 w-full rounded-lg border border-[#D3D8E0] px-3 text-sm dark:border-gray-700 dark:bg-gray-800"
               />
@@ -424,7 +390,7 @@ export default function SearchPage() {
                 {MEAL_TYPES.map((meal) => (
                   <button
                     key={meal}
-                    onClick={() => setMealType(meal)}
+                    onClick={() => dispatch(setMealType(meal))}
                     className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
                       mealType === meal
                         ? "border-[#4169E1] bg-[#4169E1] text-white dark:border-[#87CEEB] dark:bg-[#87CEEB] dark:text-black"
@@ -469,7 +435,7 @@ export default function SearchPage() {
             <button
               className="absolute top-2 right-2 w-10 h-10 rounded-full bg-black/80 text-white text-2xl font-extrabold shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
               style={{ zIndex: 10, position: 'absolute', padding: 0 }}
-              onClick={() => setShowScanner(false)}
+              onClick={() => dispatch(setShowScanner(false))}
               aria-label="Close scanner"
             >
               <span

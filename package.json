@@ -17,6 +17,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "^7.4.1",
+    "@reduxjs/toolkit": "^2.11.2",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.90.1",
     "bcryptjs": "^3.0.3",
@@ -26,6 +27,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-qr-barcode-scanner": "^2.1.23",
+    "react-redux": "^9.2.0",
     "zustand": "^5.0.11"
   },
   "devDependencies": {

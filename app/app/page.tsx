@@ -1,46 +1,23 @@
 'use client';
 
-import { useEffect, useState, useMemo } from "react";
-// Supabase replaced by API routes (NextAuth + Prisma)
-
-type FoodLog = {
-  id: string;
-  fdc_id: number;
-  food_name: string;
-  calories: number | null;
-  protein: number | null;
-  carbs: number | null;
-  fat: number | null;
-  fiber: number | null;
-  sodium: number | null;
-  saturated_fat: number | null;
-  trans_fat: number | null;
-  polyunsaturated_fat: number | null;
-  monounsaturated_fat: number | null;
-  cholesterol: number | null;
-  sugars: number | null;
-  added_sugars: number | null;
-  vitamin_a: number | null;
-  vitamin_c: number | null;
-  vitamin_d: number | null;
-  vitamin_e: number | null;
-  vitamin_k: number | null;
-  thiamin: number | null;
-  riboflavin: number | null;
-  niacin: number | null;
-  vitamin_b6: number | null;
-  folate: number | null;
-  vitamin_b12: number | null;
-  calcium: number | null;
-  iron: number | null;
-  magnesium: number | null;
-  phosphorus: number | null;
-  potassium: number | null;
-  zinc: number | null;
-  selenium: number | null;
-  quantity: number;
-  time: string;
-};
+import { useMemo } from "react";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  setTimeView,
+  toggleShowAllNutrients,
+  setEditingLog,
+  setEditServingSize,
+  setEditCustomServing,
+  setUpdating,
+} from "@/store/uiSlice";
+import {
+  useGetFoodLogsQuery,
+  useGetUserGoalsQuery,
+  useDeleteFoodLogMutation,
+  useUpdateFoodLogMutation,
+  useLazyGetFoodDetailQuery,
+  type FoodLog,
+} from "@/store/api";
 
 type UserGoal = {
   calories_goal: number | null;
@@ -58,59 +35,63 @@ type HistoricalData = {
 };
 
 export default function TodayPage() {
-  const [logs, setLogs] = useState<FoodLog[]>([]);
-  const [goals, setGoals] = useState<UserGoal | null>(null);
-  const [showAllNutrients, setShowAllNutrients] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [timeView, setTimeView] = useState<'today' | 'week' | 'month'>('today');
-  const [historicalData, setHistoricalData] = useState<HistoricalData[]>([]);
-  
-  const [editingLog, setEditingLog] = useState<FoodLog | null>(null);
-  const [editServingSize, setEditServingSize] = useState<number>(100);
-  const [editCustomServing, setEditCustomServing] = useState("");
-  const [foodData, setFoodData] = useState<{ description: string; foodNutrients: Array<{ nutrient?: { name: string }; nutrientName?: string; amount?: number; value?: number }> } | null>(null);
-  const [updating, setUpdating] = useState(false);
+  const dispatch = useAppDispatch();
+  const { timeView, showAllNutrients, editingLog, editServingSize, editCustomServing, updating } =
+    useAppSelector((s) => s.ui.dashboard);
+
+  const today = new Date().toISOString().split("T")[0];
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+  const monthAgo = new Date(); monthAgo.setDate(monthAgo.getDate() - 30);
+  const startDate =
+    timeView === "week" ? weekAgo.toISOString().split("T")[0] :
+    timeView === "month" ? monthAgo.toISOString().split("T")[0] : today;
+
+  const { data: logs = [], isLoading } = useGetFoodLogsQuery({ date: today });
+  const { data: goals } = useGetUserGoalsQuery();
+  const { data: historicalLogs = [] } = useGetFoodLogsQuery(
+    { start: startDate, end: today },
+    { skip: timeView === "today" }
+  );
+  const [deleteFoodLog] = useDeleteFoodLogMutation();
+  const [updateFoodLog] = useUpdateFoodLogMutation();
+  const [triggerFoodDetail, { data: foodData }] = useLazyGetFoodDetailQuery();
+
+  // Aggregate raw historical logs by date for charting
+  const historicalData: HistoricalData[] = useMemo(() => {
+    if (!historicalLogs.length) return [];
+    const agg = historicalLogs.reduce((acc: Record<string, HistoricalData>, item) => {
+      const key = (item as FoodLog & { date?: string }).date ?? today;
+      if (!acc[key]) acc[key] = { date: key, calories: 0, protein: 0, carbs: 0, fat: 0 };
+      acc[key].calories += (item.calories || 0) * (item.quantity || 1);
+      acc[key].protein  += (item.protein  || 0) * (item.quantity || 1);
+      acc[key].carbs    += (item.carbs    || 0) * (item.quantity || 1);
+      acc[key].fat      += (item.fat      || 0) * (item.quantity || 1);
+      return acc;
+    }, {});
+    return Object.values(agg).sort((a, b) => a.date.localeCompare(b.date));
+  }, [historicalLogs, today]);
+
+  const loading = isLoading;
 
   async function handleRemoveLog(logId: string) {
-    const res = await fetch(`/api/food-logs?id=${logId}`, { method: "DELETE" });
-    if (!res.ok) {
-      const { error } = await res.json();
-      alert(`Failed to remove: ${error}`);
-      return;
+    try {
+      await deleteFoodLog(logId).unwrap();
+    } catch {
+      alert("Failed to remove food log");
     }
-    setLogs(logs.filter(log => log.id !== logId));
   }
 
   async function handleEditLog(log: FoodLog) {
-    setEditingLog(log);
-    setEditServingSize(100);
-    setEditCustomServing("");
-    setUpdating(false);
-    
-    // Fetch food data from USDA API using fdc_id
+    dispatch(setEditingLog(log));
     try {
-      console.log("Fetching food data for fdc_id:", log.fdc_id);
-      const response = await fetch(`/api/foods/${log.fdc_id}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch food data");
-      }
-      const data = await response.json();
-      console.log("Food data received:", data);
-      console.log("Number of nutrients:", data.foodNutrients?.length);
-      if (data.foodNutrients && data.foodNutrients.length > 0) {
-        console.log("First few nutrients:", data.foodNutrients.slice(0, 5));
-        console.log("Sample nutrient structure:", JSON.stringify(data.foodNutrients[0], null, 2));
-      }
-      setFoodData(data);
-    } catch (err) {
-      console.error("Failed to fetch food data:", err);
+      await triggerFoodDetail(log.fdc_id);
+    } catch {
       alert("Could not load food data for editing");
     }
   }
 
   function closeEditModal() {
-    setEditingLog(null);
-    setFoodData(null);
+    dispatch(setEditingLog(null));
   }
 
   async function handleUpdateLog() {
@@ -121,12 +102,12 @@ export default function TodayPage() {
     console.log("editCustomServing:", editCustomServing);
     console.log("foodData.description:", foodData.description);
 
-    setUpdating(true);
+    dispatch(setUpdating(true));
     const multiplier = editServingSize / 100;
 
     function getNutrient(name: string): number {
       if (!foodData?.foodNutrients) return 0;
-      const nutrient = foodData.foodNutrients.find((n) => 
+      const nutrient = foodData.foodNutrients.find((n: { nutrient?: { name: string }; nutrientName?: string; amount?: number; value?: number }) => 
         n.nutrient?.name === name || n.nutrientName === name
       );
       return nutrient?.amount || nutrient?.value || 0;
@@ -175,10 +156,7 @@ export default function TodayPage() {
     console.log("New serving size:", editServingSize);
     console.log("New calories:", calories);
 
-    const patchRes = await fetch("/api/food-logs", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    const patchRes = await updateFoodLog({
         id: editingLog.id,
         food_name: newFoodName,
         calories, protein, carbs, fat, fiber, sodium,
@@ -187,86 +165,15 @@ export default function TodayPage() {
         vitamin_a, vitamin_c, vitamin_d, vitamin_e, vitamin_k,
         thiamin, riboflavin, niacin, vitamin_b6, folate, vitamin_b12,
         calcium, iron, magnesium, phosphorus, potassium, zinc, selenium,
-      }),
-    });
+      });
 
-    if (!patchRes.ok) {
-      const { error } = await patchRes.json();
-      setUpdating(false);
-      alert(`Failed to update: ${error}`);
+    dispatch(setUpdating(false));
+    if ('error' in patchRes) {
+      alert("Failed to update log");
       return;
     }
-
-    // Refresh the logs
-    const today = new Date().toISOString().split("T")[0];
-    const logsRes = await fetch(`/api/food-logs?date=${today}`);
-    const { logs: freshLogs } = await logsRes.json();
-
-    setUpdating(false);
-    if (freshLogs) setLogs(freshLogs as FoodLog[]);
     setTimeout(() => { closeEditModal(); }, 100);
   }
-
-  useEffect(() => {
-    async function fetchData() {
-      const today = new Date().toISOString().split("T")[0];
-
-      // Calculate date range based on view
-      let startDate = today;
-      if (timeView === 'week') {
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        startDate = weekAgo.toISOString().split("T")[0];
-      } else if (timeView === 'month') {
-        const monthAgo = new Date();
-        monthAgo.setDate(monthAgo.getDate() - 30);
-        startDate = monthAgo.toISOString().split("T")[0];
-      }
-
-      const [logsRes, goalsRes, historicalRes] = await Promise.all([
-        fetch(`/api/food-logs?date=${today}`),
-        fetch("/api/user-goals"),
-        timeView !== 'today'
-          ? fetch(`/api/food-logs?start=${startDate}&end=${today}`)
-          : Promise.resolve(null),
-      ]);
-
-      const { logs: logsData } = await logsRes.json();
-      const { goals: goalsData } = await goalsRes.json();
-      const historicalData = historicalRes ? (await historicalRes.json()).logs : [];
-
-      setLogs((logsData || []) as FoodLog[]);
-      setGoals(goalsData as UserGoal | null);
-      
-      // Aggregate historical data by date
-      if (historicalData && historicalData.length > 0) {
-        const aggregated = historicalData.reduce((acc: Record<string, HistoricalData>, item: { date: string; calories: number | null; protein: number | null; carbs: number | null; fat: number | null; quantity: number }) => {
-          if (!acc[item.date]) {
-            acc[item.date] = { date: item.date, calories: 0, protein: 0, carbs: 0, fat: 0 };
-          }
-          acc[item.date].calories += (item.calories || 0) * (item.quantity || 1);
-          acc[item.date].protein += (item.protein || 0) * (item.quantity || 1);
-          acc[item.date].carbs += (item.carbs || 0) * (item.quantity || 1);
-          acc[item.date].fat += (item.fat || 0) * (item.quantity || 1);
-          return acc;
-        }, {});
-        setHistoricalData(Object.values(aggregated));
-      } else {
-        setHistoricalData([]);
-      }
-      
-      setLoading(false);
-    }
-
-    fetchData();
-  }, [timeView]);
-
-  useEffect(() => {
-    console.log("Logs state updated:", logs.length, "items");
-    logs.forEach(log => {
-      console.log(`- ${log.food_name}: ${log.calories} cal`);
-    });
-  }, [logs]);
 
   const totals = logs.reduce(
     (acc, log) => ({
@@ -338,7 +245,7 @@ export default function TodayPage() {
         {/* Time View Toggle */}
         <div className="flex items-center gap-1 rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
           <button
-            onClick={() => setTimeView('today')}
+            onClick={() => dispatch(setTimeView('today'))}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               timeView === 'today'
                 ? 'bg-[#4169E1] text-white dark:bg-blue-900 dark:text-white'
@@ -348,7 +255,7 @@ export default function TodayPage() {
             Today
           </button>
           <button
-            onClick={() => setTimeView('week')}
+            onClick={() => dispatch(setTimeView('week'))}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               timeView === 'week'
                 ? 'bg-[#4169E1] text-white dark:bg-blue-900 dark:text-white'
@@ -358,7 +265,7 @@ export default function TodayPage() {
             7 Days
           </button>
           <button
-            onClick={() => setTimeView('month')}
+            onClick={() => dispatch(setTimeView('month'))}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               timeView === 'month'
                 ? 'bg-[#4169E1] text-white dark:bg-blue-900 dark:text-white'
@@ -464,7 +371,7 @@ export default function TodayPage() {
       {/* Additional Nutrients Section */}
       <div className="mt-6 rounded-2xl border border-zinc-200/70 p-5 dark:border-blue-950/70 bg-white dark:bg-zinc-900">
         <button
-          onClick={() => setShowAllNutrients(!showAllNutrients)}
+          onClick={() => dispatch(toggleShowAllNutrients())}
           className="flex w-full items-center justify-between text-left"
         >
           <h3 className="text-sm font-semibold">Additional Nutrients</h3>
@@ -632,8 +539,8 @@ export default function TodayPage() {
                   <button
                     key={size.grams}
                     onClick={() => {
-                      setEditServingSize(size.grams);
-                      setEditCustomServing("");
+                      dispatch(setEditServingSize(size.grams));
+                      dispatch(setEditCustomServing(""));
                     }}
                     className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
                       editServingSize === size.grams && !editCustomServing
@@ -650,8 +557,8 @@ export default function TodayPage() {
                 placeholder="Custom (grams)"
                 value={editCustomServing}
                 onChange={(e) => {
-                  setEditCustomServing(e.target.value);
-                  if (e.target.value) setEditServingSize(parseInt(e.target.value) || 100);
+                  dispatch(setEditCustomServing(e.target.value));
+                  if (e.target.value) dispatch(setEditServingSize(parseInt(e.target.value) || 100));
                 }}
                 className="mt-2 h-10 w-full rounded-lg border border-[#D3D8E0] px-3 text-sm dark:border-gray-700 dark:bg-gray-800"
               />
