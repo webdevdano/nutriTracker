@@ -1,6 +1,7 @@
 import { GraphQLError } from "graphql";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { n, summarise } from "./utils";
 
 /** Pull the authenticated user ID or throw a 401-equivalent error */
 async function requireUserId(): Promise<string> {
@@ -12,33 +13,6 @@ async function requireUserId(): Promise<string> {
     });
   }
   return userId;
-}
-
-/** Convert Prisma Decimal / null to plain number | null */
-function n(v: unknown): number | null {
-  if (v == null) return null;
-  return Number(v);
-}
-
-/** Aggregate an array of food-log rows into macro totals */
-function summarise(logs: Array<{
-  calories: unknown; protein: unknown; carbs: unknown;
-  fat: unknown; fiber: unknown; sodium: unknown; quantity: unknown;
-}>) {
-  return logs.reduce(
-    (acc, log) => {
-      const qty = Number(log.quantity) || 1;
-      return {
-        calories: acc.calories + (n(log.calories) ?? 0) * qty,
-        protein:  acc.protein  + (n(log.protein)  ?? 0) * qty,
-        carbs:    acc.carbs    + (n(log.carbs)     ?? 0) * qty,
-        fat:      acc.fat      + (n(log.fat)       ?? 0) * qty,
-        fiber:    acc.fiber    + (n(log.fiber)     ?? 0) * qty,
-        sodium:   acc.sodium   + (n(log.sodium)    ?? 0) * qty,
-      };
-    },
-    { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, sodium: 0 }
-  );
 }
 
 // ─── Resolvers ────────────────────────────────────────────────────────────────
