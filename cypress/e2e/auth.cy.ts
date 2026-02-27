@@ -69,9 +69,7 @@ describe("Authentication", () => {
     });
 
     it("shows a duplicate-email error when registering an existing address", () => {
-      cy.get('input[placeholder="Full name"], input[name="fullName"]')
-        .first()
-        .type("Duplicate Test");
+      cy.get('input[name="fullName"]').type("Duplicate Test");
       cy.get('input[type="email"]').type(TEST_EMAIL);
       cy.get('input[type="password"]').type(TEST_PASS);
       cy.get('button[type="submit"]').click();

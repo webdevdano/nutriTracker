@@ -92,6 +92,7 @@ export default function SignupPage() {
                   <span className="text-sm font-medium">Full name</span>
                   <input
                     type="text"
+                    name="fullName"
                     className="h-10 rounded-xl border border-zinc-300 bg-transparent px-3 text-sm dark:border-zinc-700"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
