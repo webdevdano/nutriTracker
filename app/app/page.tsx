@@ -299,6 +299,7 @@ export default function TodayPage() {
         <div className="flex items-center gap-1 rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
           <button
             onClick={() => dispatch(setTimeView('today'))}
+            data-active={timeView === 'today'}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               timeView === 'today'
                 ? 'bg-[#4169E1] text-white dark:bg-blue-900 dark:text-white'
@@ -309,6 +310,7 @@ export default function TodayPage() {
           </button>
           <button
             onClick={() => dispatch(setTimeView('week'))}
+            data-active={timeView === 'week'}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               timeView === 'week'
                 ? 'bg-[#4169E1] text-white dark:bg-blue-900 dark:text-white'
@@ -319,6 +321,7 @@ export default function TodayPage() {
           </button>
           <button
             onClick={() => dispatch(setTimeView('month'))}
+            data-active={timeView === 'month'}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               timeView === 'month'
                 ? 'bg-[#4169E1] text-white dark:bg-blue-900 dark:text-white'

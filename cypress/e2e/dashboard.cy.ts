@@ -125,11 +125,8 @@ describe("Dashboard", () => {
 
       cy.contains("button", "7 Days").click();
 
-      // The active button should be highlighted (has bg-[#4169E1] or bg-blue-900 class)
-      cy.contains("button", "7 Days").should(
-        "have.class",
-        "bg-[#4169E1]",
-      ).or("exist"); // fallback — just assert it exists
+      // The active button should have data-active="true"
+      cy.contains("button", "7 Days").should("have.attr", "data-active", "true");
     });
   });
 
