@@ -1,0 +1,251 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =====================================================
+// AUTH MODELS (NextAuth / Auth.js)
+// =====================================================
+
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // for credentials provider
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+
+  // App relations
+  profile       Profile?
+  userGoals     UserGoals?
+  foodLogs      FoodLog[]
+  groceryList   GroceryList[]
+  savedFavorites SavedFavorite[]
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// =====================================================
+// APP MODELS
+// =====================================================
+
+model Profile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  email               String?
+  fullName            String?
+  age                 Int?
+  sex                 String?
+  heightFeet          Int?
+  heightInches        Int?
+  weightLbs           Int?
+  activityLevel       String?
+  bmi                 Decimal?
+  recommendedCalories Int?
+  recommendedProtein  Int?
+  recommendedCarbs    Int?
+  recommendedFat      Int?
+  fitnessGoal         String?  @default("maintain")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserGoals {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  caloriesGoal Int?
+  proteinGoal  Int?
+  carbsGoal    Int?
+  fatGoal      Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FoodLog {
+  id       String   @id @default(uuid())
+  userId   String
+  date     DateTime @db.Date
+  time     DateTime @default(now())
+
+  // Food snapshot from USDA
+  fdcId       Int
+  foodName    String
+  servingSize Decimal?
+  servingUnit String?
+
+  // Basic nutrition
+  calories Decimal?
+  protein  Decimal?
+  carbs    Decimal?
+  fat      Decimal?
+  fiber    Decimal?
+  sodium   Decimal?
+  quantity Decimal? @default(1)
+
+  // Extended macros
+  saturatedFat       Decimal?
+  transFat           Decimal?
+  polyunsaturatedFat Decimal?
+  monounsaturatedFat Decimal?
+  cholesterol        Decimal?
+  sugars             Decimal?
+  addedSugars        Decimal?
+
+  // Vitamins
+  vitaminA  Decimal?
+  vitaminC  Decimal?
+  vitaminD  Decimal?
+  vitaminE  Decimal?
+  vitaminK  Decimal?
+  thiamin   Decimal?
+  riboflavin Decimal?
+  niacin    Decimal?
+  vitaminB6 Decimal?
+  folate    Decimal?
+  vitaminB12 Decimal?
+
+  // Minerals
+  calcium    Decimal?
+  iron       Decimal?
+  magnesium  Decimal?
+  phosphorus Decimal?
+  potassium  Decimal?
+  zinc       Decimal?
+  selenium   Decimal?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date(sort: Desc)])
+}
+
+model MealSuggestion {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  ingredients String[]
+  createdAt   DateTime @default(now())
+
+  // Basic nutrition
+  calories Int?
+  protein  Int?
+  carbs    Int?
+  fat      Int?
+  fiber    Int?
+  sodium   Int?
+
+  // Extended macros
+  saturatedFat       Int?
+  transFat           Int?
+  polyunsaturatedFat Int?
+  monounsaturatedFat Int?
+  cholesterol        Int?
+  sugars             Int?
+  addedSugars        Int?
+
+  // Vitamins
+  vitaminA   Int?
+  vitaminC   Int?
+  vitaminD   Int?
+  vitaminE   Int?
+  vitaminK   Int?
+  thiamin    Int?
+  riboflavin Int?
+  niacin     Int?
+  vitaminB6  Int?
+  folate     Int?
+  vitaminB12 Int?
+
+  // Minerals
+  calcium    Int?
+  iron       Int?
+  magnesium  Int?
+  phosphorus Int?
+  potassium  Int?
+  zinc       Int?
+  selenium   Int?
+}
+
+model GroceryList {
+  id        String   @id @default(uuid())
+  userId    String
+  foodName  String
+  quantity  Decimal? @default(1)
+  unit      String?  @default("serving")
+  purchased Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, purchased])
+}
+
+model SavedFavorite {
+  id          String   @id @default(uuid())
+  userId      String
+  fdcId       Int
+  foodName    String
+  calories    Decimal?
+  protein     Decimal?
+  carbs       Decimal?
+  fat         Decimal?
+  servingSize Decimal? @default(100)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, fdcId])
+}

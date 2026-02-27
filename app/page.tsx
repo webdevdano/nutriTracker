@@ -62,6 +62,12 @@ export default async function Home() {
                 >
                   Log in
                 </a>
+                <a
+                  className="rounded-full border border-[#B0C4DE] px-4 py-1.5 text-sm font-medium text-[#228B22] hover:bg-[#E0E0E0] dark:border-gray-700 dark:text-[#90EE90] dark:hover:bg-gray-900"
+                  href="/app?guest=true"
+                >
+                  Guest View
+                </a>
               </>
             )}
           </nav>

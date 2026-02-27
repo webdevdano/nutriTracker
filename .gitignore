@@ -43,3 +43,4 @@ next-env.d.ts
 
 # etc 
 complete-schema.sql
+/lib/generated/prisma
