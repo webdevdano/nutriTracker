@@ -70,12 +70,27 @@ export default function ProfileSetupPage() {
       ]);
 
       const bmiData = await bmiRes.json();
-      const nutritionData = await nutritionRes.json();
 
       if (!bmiRes.ok) {
-        setError(bmiData.error || "Failed to calculate BMI");
+        setError(
+          bmiData.error ||
+            bmiData.message ||
+            bmiData.detail ||
+            `BMI service error (${bmiRes.status})`,
+        );
         setCalculating(false);
         return;
+      }
+
+      // Nutrition-info may 502 when the upstream USDA DRI Calculator is down.
+      // In that case we continue with safe defaults and show a soft warning.
+      let nutritionData: Record<string, any> = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
+      if (nutritionRes.ok) {
+        nutritionData = await nutritionRes.json();
+      } else {
+        console.warn(
+          `Nutrition-info unavailable (${nutritionRes.status}). Using default macro targets.`,
+        );
       }
 
       // Parse nutrition data
@@ -157,6 +172,8 @@ export default function ProfileSetupPage() {
     setLoading(true);
     setError(null);
 
+    try {
+
     // Save profile
     const profileRes = await fetch("/api/profile", {
       method: "POST",
@@ -178,8 +195,8 @@ export default function ProfileSetupPage() {
     });
 
     if (!profileRes.ok) {
-      const { error } = await profileRes.json();
-      setError(error);
+      const body = await profileRes.json().catch(() => ({}));
+      setError(body.error || body.message || "Failed to save profile");
       setLoading(false);
       return;
     }
@@ -197,13 +214,18 @@ export default function ProfileSetupPage() {
     });
 
     if (!goalsRes.ok) {
-      const { error } = await goalsRes.json();
-      setError(error);
+      const body = await goalsRes.json().catch(() => ({}));
+      setError(body.error || body.message || "Failed to save goals");
       setLoading(false);
       return;
     }
 
     router.push("/app");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save profile");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
