@@ -20,6 +20,7 @@
     "@as-integrations/next": "^4.1.0",
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "^7.4.1",
+    "@prisma/client-runtime-utils": "^7.4.1",
     "@reduxjs/toolkit": "^2.11.2",
     "bcryptjs": "^3.0.3",
     "graphql": "^16.13.0",
