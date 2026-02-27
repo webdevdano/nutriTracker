@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from "react";
+import { useQuery, useApolloClient } from "@apollo/client/react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   setTimeView,
@@ -11,13 +12,16 @@ import {
   setUpdating,
 } from "@/store/uiSlice";
 import {
+  // RTK Query: mutations + historical range query
   useGetFoodLogsQuery,
-  useGetUserGoalsQuery,
-  useDeleteFoodLogMutation,
   useUpdateFoodLogMutation,
   useLazyGetFoodDetailQuery,
   type FoodLog,
 } from "@/store/api";
+import {
+  // Apollo Client: today's dashboard aggregate (one round-trip for logs + goals + profile)
+  DASHBOARD_QUERY,
+} from "@/graphql/queries";
 
 type UserGoal = {
   calories_goal: number | null;
@@ -34,6 +38,16 @@ type HistoricalData = {
   fat: number;
 };
 
+/** Shape returned by the GraphQL DASHBOARD_QUERY */
+type DashboardQueryResult = {
+  dashboard: {
+    logs: Array<FoodLog & { foodName: string }>;
+    summary: { calories: number; protein: number; carbs: number; fat: number; fiber: number; sodium: number };
+    goals: { caloriesGoal: number | null; proteinGoal: number | null; carbsGoal: number | null; fatGoal: number | null } | null;
+    profile: { fullName: string | null; fitnessGoal: string | null } | null;
+  };
+};
+
 export default function TodayPage() {
   const dispatch = useAppDispatch();
   const { timeView, showAllNutrients, editingLog, editServingSize, editCustomServing, updating } =
@@ -46,15 +60,37 @@ export default function TodayPage() {
     timeView === "week" ? weekAgo.toISOString().split("T")[0] :
     timeView === "month" ? monthAgo.toISOString().split("T")[0] : today;
 
-  const { data: logs = [], isLoading } = useGetFoodLogsQuery({ date: today });
-  const { data: goals } = useGetUserGoalsQuery();
+  // ── GraphQL: today's logs + goals in a single request ────────────────────
+  const { data: gqlData, loading: gqlLoading } = useQuery<DashboardQueryResult>(
+    DASHBOARD_QUERY,
+    { variables: { date: today }, fetchPolicy: "cache-and-network" }
+  );
+
+  // ── RTK Query: historical range (only for week/month views) ───────────────
   const { data: historicalLogs = [] } = useGetFoodLogsQuery(
     { start: startDate, end: today },
     { skip: timeView === "today" }
   );
-  const [deleteFoodLog] = useDeleteFoodLogMutation();
   const [updateFoodLog] = useUpdateFoodLogMutation();
   const [triggerFoodDetail, { data: foodData }] = useLazyGetFoodDetailQuery();
+  const apolloClient = useApolloClient(); // used to refetch GraphQL after RTK mutations
+
+  // Normalise GraphQL response → same shape the rest of the page expects
+  const rawGqlLogs = gqlData?.dashboard?.logs ?? [];
+  const logs: FoodLog[] = rawGqlLogs.map((l: FoodLog & { foodName?: string; fdcId?: number }) => ({
+    ...l,
+    food_name: l.foodName ?? (l as unknown as FoodLog).food_name,
+    fdc_id:    l.fdcId    ?? (l as unknown as FoodLog).fdc_id,
+  }));
+  const goals: UserGoal | null = gqlData?.dashboard?.goals
+    ? {
+        calories_goal: gqlData.dashboard.goals.caloriesGoal,
+        protein_goal:  gqlData.dashboard.goals.proteinGoal,
+        carbs_goal:    gqlData.dashboard.goals.carbsGoal,
+        fat_goal:      gqlData.dashboard.goals.fatGoal,
+      }
+    : null;
+  const loading = gqlLoading && !gqlData;
 
   // Aggregate raw historical logs by date for charting
   const historicalData: HistoricalData[] = useMemo(() => {
@@ -71,11 +107,17 @@ export default function TodayPage() {
     return Object.values(agg).sort((a, b) => a.date.localeCompare(b.date));
   }, [historicalLogs, today]);
 
-  const loading = isLoading;
-
   async function handleRemoveLog(logId: string) {
+    // Use the Apollo client imperatively to run the GraphQL mutation, then
+    // refetch the dashboard query so the cache stays in sync
     try {
-      await deleteFoodLog(logId).unwrap();
+      const { getApolloClient } = await import("@/lib/apollo-client");
+      const { DELETE_FOOD_LOG_MUTATION } = await import("@/graphql/queries");
+      await getApolloClient().mutate({
+        mutation: DELETE_FOOD_LOG_MUTATION,
+        variables: { id: logId },
+        refetchQueries: [{ query: DASHBOARD_QUERY, variables: { date: today } }],
+      });
     } catch {
       alert("Failed to remove food log");
     }
@@ -172,52 +214,60 @@ export default function TodayPage() {
       alert("Failed to update log");
       return;
     }
+    // Sync the Apollo cache with the updated data
+    await apolloClient.refetchQueries({ include: [DASHBOARD_QUERY] });
     setTimeout(() => { closeEditModal(); }, 100);
   }
 
-  const totals = logs.reduce(
+  // ── Totals: use GraphQL pre-computed summary for basics; compute extended from logs ──
+  const gqlSummary = gqlData?.dashboard?.summary;
+  const extendedTotals = logs.reduce(
     (acc, log) => ({
-      calories: acc.calories + (log.calories || 0) * log.quantity,
-      protein: acc.protein + (log.protein || 0) * log.quantity,
-      carbs: acc.carbs + (log.carbs || 0) * log.quantity,
-      fat: acc.fat + (log.fat || 0) * log.quantity,
-      fiber: acc.fiber + (log.fiber || 0) * log.quantity,
-      sodium: acc.sodium + (log.sodium || 0) * log.quantity,
-      saturated_fat: acc.saturated_fat + (log.saturated_fat || 0) * log.quantity,
-      trans_fat: acc.trans_fat + (log.trans_fat || 0) * log.quantity,
+      saturated_fat:       acc.saturated_fat       + (log.saturated_fat       || 0) * log.quantity,
+      trans_fat:           acc.trans_fat           + (log.trans_fat           || 0) * log.quantity,
       polyunsaturated_fat: acc.polyunsaturated_fat + (log.polyunsaturated_fat || 0) * log.quantity,
       monounsaturated_fat: acc.monounsaturated_fat + (log.monounsaturated_fat || 0) * log.quantity,
-      cholesterol: acc.cholesterol + (log.cholesterol || 0) * log.quantity,
-      sugars: acc.sugars + (log.sugars || 0) * log.quantity,
-      added_sugars: acc.added_sugars + (log.added_sugars || 0) * log.quantity,
-      vitamin_a: acc.vitamin_a + (log.vitamin_a || 0) * log.quantity,
-      vitamin_c: acc.vitamin_c + (log.vitamin_c || 0) * log.quantity,
-      vitamin_d: acc.vitamin_d + (log.vitamin_d || 0) * log.quantity,
-      vitamin_e: acc.vitamin_e + (log.vitamin_e || 0) * log.quantity,
-      vitamin_k: acc.vitamin_k + (log.vitamin_k || 0) * log.quantity,
-      thiamin: acc.thiamin + (log.thiamin || 0) * log.quantity,
-      riboflavin: acc.riboflavin + (log.riboflavin || 0) * log.quantity,
-      niacin: acc.niacin + (log.niacin || 0) * log.quantity,
-      vitamin_b6: acc.vitamin_b6 + (log.vitamin_b6 || 0) * log.quantity,
-      folate: acc.folate + (log.folate || 0) * log.quantity,
-      vitamin_b12: acc.vitamin_b12 + (log.vitamin_b12 || 0) * log.quantity,
-      calcium: acc.calcium + (log.calcium || 0) * log.quantity,
-      iron: acc.iron + (log.iron || 0) * log.quantity,
-      magnesium: acc.magnesium + (log.magnesium || 0) * log.quantity,
-      phosphorus: acc.phosphorus + (log.phosphorus || 0) * log.quantity,
-      potassium: acc.potassium + (log.potassium || 0) * log.quantity,
-      zinc: acc.zinc + (log.zinc || 0) * log.quantity,
-      selenium: acc.selenium + (log.selenium || 0) * log.quantity,
+      cholesterol:         acc.cholesterol         + (log.cholesterol         || 0) * log.quantity,
+      sugars:              acc.sugars              + (log.sugars              || 0) * log.quantity,
+      added_sugars:        acc.added_sugars        + (log.added_sugars        || 0) * log.quantity,
+      vitamin_a:           acc.vitamin_a           + (log.vitamin_a           || 0) * log.quantity,
+      vitamin_c:           acc.vitamin_c           + (log.vitamin_c           || 0) * log.quantity,
+      vitamin_d:           acc.vitamin_d           + (log.vitamin_d           || 0) * log.quantity,
+      vitamin_e:           acc.vitamin_e           + (log.vitamin_e           || 0) * log.quantity,
+      vitamin_k:           acc.vitamin_k           + (log.vitamin_k           || 0) * log.quantity,
+      thiamin:             acc.thiamin             + (log.thiamin             || 0) * log.quantity,
+      riboflavin:          acc.riboflavin          + (log.riboflavin          || 0) * log.quantity,
+      niacin:              acc.niacin              + (log.niacin              || 0) * log.quantity,
+      vitamin_b6:          acc.vitamin_b6          + (log.vitamin_b6          || 0) * log.quantity,
+      folate:              acc.folate              + (log.folate              || 0) * log.quantity,
+      vitamin_b12:         acc.vitamin_b12         + (log.vitamin_b12         || 0) * log.quantity,
+      calcium:             acc.calcium             + (log.calcium             || 0) * log.quantity,
+      iron:                acc.iron                + (log.iron                || 0) * log.quantity,
+      magnesium:           acc.magnesium           + (log.magnesium           || 0) * log.quantity,
+      phosphorus:          acc.phosphorus          + (log.phosphorus          || 0) * log.quantity,
+      potassium:           acc.potassium           + (log.potassium           || 0) * log.quantity,
+      zinc:                acc.zinc                + (log.zinc                || 0) * log.quantity,
+      selenium:            acc.selenium            + (log.selenium            || 0) * log.quantity,
     }),
-    { 
-      calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, sodium: 0,
+    {
       saturated_fat: 0, trans_fat: 0, polyunsaturated_fat: 0, monounsaturated_fat: 0,
-      cholesterol: 0, sugars: 0, added_sugars: 0, 
+      cholesterol: 0, sugars: 0, added_sugars: 0,
       vitamin_a: 0, vitamin_c: 0, vitamin_d: 0, vitamin_e: 0, vitamin_k: 0,
       thiamin: 0, riboflavin: 0, niacin: 0, vitamin_b6: 0, folate: 0, vitamin_b12: 0,
-      calcium: 0, iron: 0, magnesium: 0, phosphorus: 0, potassium: 0, zinc: 0, selenium: 0
+      calcium: 0, iron: 0, magnesium: 0, phosphorus: 0, potassium: 0, zinc: 0, selenium: 0,
     }
   );
+
+  // Merge GraphQL summary (server-aggregated) + client-computed extended nutrients
+  const totals = {
+    calories: gqlSummary?.calories ?? 0,
+    protein:  gqlSummary?.protein  ?? 0,
+    carbs:    gqlSummary?.carbs    ?? 0,
+    fat:      gqlSummary?.fat      ?? 0,
+    fiber:    gqlSummary?.fiber    ?? 0,
+    sodium:   gqlSummary?.sodium   ?? 0,
+    ...extendedTotals,
+  };
 
   if (loading) {
     return (
