@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 type CalculatedNeeds = {
@@ -39,10 +38,10 @@ export default function ProfileSetupPage() {
 
   useEffect(() => {
     async function checkProfile() {
-      const supabase = createClient();
-      const { data } = await supabase.from("profiles").select("age").single();
-      if (data?.age) {
-        setHasProfile(true);
+      const res = await fetch("/api/profile");
+      if (res.ok) {
+        const { profile } = await res.json();
+        if (profile?.age) setHasProfile(true);
       }
     }
     checkProfile();
@@ -158,19 +157,11 @@ export default function ProfileSetupPage() {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      setError("Not authenticated");
-      setLoading(false);
-      return;
-    }
-
-    // Update profile with health metrics
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .update({
+    // Save profile
+    const profileRes = await fetch("/api/profile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         age: parseInt(age),
         sex,
         height_feet: parseInt(feet),
@@ -183,29 +174,31 @@ export default function ProfileSetupPage() {
         recommended_protein: calculated.protein,
         recommended_carbs: calculated.carbs,
         recommended_fat: calculated.fat,
-      })
-      .eq("id", user.id);
+      }),
+    });
 
-    if (profileError) {
-      setError(profileError.message);
+    if (!profileRes.ok) {
+      const { error } = await profileRes.json();
+      setError(error);
       setLoading(false);
       return;
     }
 
-    // Create/update goals based on recommendations
-    const { error: goalsError } = await supabase.from("user_goals").upsert(
-      {
-        user_id: user.id,
+    // Save goals
+    const goalsRes = await fetch("/api/user-goals", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         calories_goal: calculated.calories,
         protein_goal: calculated.protein,
         carbs_goal: calculated.carbs,
         fat_goal: calculated.fat,
-      },
-      { onConflict: "user_id" }
-    );
+      }),
+    });
 
-    if (goalsError) {
-      setError(goalsError.message);
+    if (!goalsRes.ok) {
+      const { error } = await goalsRes.json();
+      setError(error);
       setLoading(false);
       return;
     }

@@ -1,20 +1,17 @@
-import { createClient } from "@/lib/supabase/server";
+import { getServerUser } from "@/lib/auth-helpers";
+import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getServerUser();
 
-  // Fetch user's first name from profiles
+  // Fetch user's first name from profile
   let firstName = null;
   if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("first_name")
-      .eq("id", user.id)
-      .single();
-    firstName = profile?.first_name;
+    const profile = await prisma.profile.findUnique({
+      where: { userId: user.id },
+      select: { fullName: true },
+    });
+    firstName = profile?.fullName?.split(" ")[0] ?? null;
   }
 
   return (

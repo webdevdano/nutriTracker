@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
+import { signIn } from "next-auth/react";
 import { useState } from "react";
 
 export default function SignupPage() {
@@ -16,26 +16,35 @@ export default function SignupPage() {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/profile-setup`,
-      },
+    // Register new user
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, name: fullName }),
     });
 
-    if (signUpError) {
-      setError(signUpError.message);
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error ?? "Registration failed");
       setLoading(false);
       return;
     }
 
-    setSuccess(true);
-    setLoading(false);
+    // Auto sign-in after successful registration
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError("Account created but could not sign in. Please log in.");
+      setLoading(false);
+      setSuccess(true);
+      return;
+    }
+
+    window.location.href = "/profile-setup";
   }
 
   return (

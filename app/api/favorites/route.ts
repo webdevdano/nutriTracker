@@ -1,35 +1,26 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
+import { getServerUser } from "@/lib/auth-helpers";
+import { serializeFavorite } from "@/lib/api-serializers";
 
 export const dynamic = "force-dynamic";
 
 // GET - Fetch all favorites for the user
 export async function GET() {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getServerUser();
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const favorites = await prisma.savedFavorite.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+    });
 
-    const { data, error } = await supabase
-      .from("saved_favorites")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ favorites: data });
+    return NextResponse.json({ favorites: favorites.map(serializeFavorite) });
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Failed to fetch favorites" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -37,14 +28,8 @@ export async function GET() {
 // POST - Add a new favorite
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const user = await getServerUser();
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await request.json();
     const { fdc_id, food_name, calories, protein, carbs, fat, serving_size } = body;
@@ -52,49 +37,35 @@ export async function POST(request: Request) {
     if (!fdc_id || !food_name) {
       return NextResponse.json(
         { error: "Missing required fields: fdc_id and food_name" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // Check if already favorited
-    const { data: existing } = await supabase
-      .from("saved_favorites")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("fdc_id", fdc_id)
-      .single();
-
+    const existing = await prisma.savedFavorite.findFirst({
+      where: { userId: user.id, fdcId: fdc_id },
+    });
     if (existing) {
-      return NextResponse.json(
-        { error: "Food already in favorites" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Food already in favorites" }, { status: 400 });
     }
 
-    const { data, error } = await supabase
-      .from("saved_favorites")
-      .insert({
-        user_id: user.id,
-        fdc_id,
-        food_name,
+    const favorite = await prisma.savedFavorite.create({
+      data: {
+        userId: user.id,
+        fdcId: fdc_id,
+        foodName: food_name,
         calories,
         protein,
         carbs,
         fat,
-        serving_size: serving_size || 100,
-      })
-      .select()
-      .single();
+        servingSize: serving_size ?? 100,
+      },
+    });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ favorite: data });
+    return NextResponse.json({ favorite: serializeFavorite(favorite) });
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Failed to add favorite" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -102,40 +73,18 @@ export async function POST(request: Request) {
 // DELETE - Remove a favorite
 export async function DELETE(request: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getServerUser();
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const id = new URL(request.url).searchParams.get("id");
+    if (!id) return NextResponse.json({ error: "Missing favorite ID" }, { status: 400 });
 
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json(
-        { error: "Missing favorite ID" },
-        { status: 400 }
-      );
-    }
-
-    const { error } = await supabase
-      .from("saved_favorites")
-      .delete()
-      .eq("id", id)
-      .eq("user_id", user.id);
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
+    await prisma.savedFavorite.delete({ where: { id, userId: user.id } });
     return NextResponse.json({ success: true });
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Failed to delete favorite" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

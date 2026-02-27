@@ -4,8 +4,10 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
 COPY . .
+RUN pnpm prisma generate
 RUN pnpm run build
 EXPOSE 3000
 # Required so Next.js listens on all interfaces inside the container
 ENV HOSTNAME=0.0.0.0
-CMD ["pnpm", "start"]
+# Run migrations then start the server
+CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm start"]

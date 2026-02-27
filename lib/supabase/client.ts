@@ -1,8 +1,10 @@
-import { createBrowserClient } from "@supabase/ssr";
-
-export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+/**
+ * @deprecated Supabase has been replaced by NextAuth.
+ * Use useSession() from 'next-auth/react' for auth in client components.
+ * Use fetch('/api/...') routes for data access.
+ */
+export function createClient(): never {
+  throw new Error(
+    "Supabase client is no longer available. Use useSession() from next-auth/react and fetch API routes instead.",
   );
 }

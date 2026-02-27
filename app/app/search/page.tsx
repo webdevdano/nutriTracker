@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+// Supabase replaced by API routes (NextAuth + Prisma)
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 const BarcodeScannerComponent = dynamic(() => import("react-qr-barcode-scanner"), { ssr: false });
@@ -96,7 +96,7 @@ export default function SearchPage() {
       if (data.status === 1 && data.product) {
         // Map Open Food Facts product to UsdaFood type (basic mapping)
         const food: UsdaFood = {
-          fdcId: barcode,
+          fdcId: parseInt(barcode) || 0,
           description: data.product.product_name || "Unknown Product",
           brandOwner: data.product.brands,
           foodNutrients: [
@@ -182,22 +182,15 @@ export default function SearchPage() {
     const zinc = getNutrient("Zinc, Zn") * multiplier;
     const selenium = getNutrient("Selenium, Se") * multiplier;
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      alert("You must be logged in to log food");
-      setAdding(false);
-      return;
-    }
-
     const today = new Date().toISOString().split("T")[0];
 
-    const { error: insertError } = await supabase.from("food_logs").insert({
-      user_id: user.id,
-      date: today,
-      fdc_id: selectedFood.fdcId,
-      food_name: `${selectedFood.description} (${servingSize}g)`,
+    const res = await fetch("/api/food-logs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        date: today,
+        fdc_id: selectedFood.fdcId,
+        food_name: `${selectedFood.description} (${servingSize}g)`,
       calories,
       protein,
       carbs,
@@ -231,12 +224,14 @@ export default function SearchPage() {
       selenium,
       quantity: 1,
       time: new Date().toISOString(),
+      }),
     });
 
     setAdding(false);
 
-    if (insertError) {
-      alert(`Failed to log food: ${insertError.message}`);
+    const logData = await res.json();
+    if (!res.ok) {
+      alert(`Failed to log food: ${logData.error}`);
       return;
     }
 
@@ -499,7 +494,7 @@ export default function SearchPage() {
               height={300}
               onUpdate={(err, result) => {
                 if (result) {
-                  handleBarcodeDetected(result.text);
+                  handleBarcodeDetected((result as unknown as { text: string }).text);
                 }
               }}
             />

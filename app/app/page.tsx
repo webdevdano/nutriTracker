@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from "react";
-import { createClient } from "@/lib/supabase/client";
+// Supabase replaced by API routes (NextAuth + Prisma)
 
 type FoodLog = {
   id: string;
@@ -72,14 +72,12 @@ export default function TodayPage() {
   const [updating, setUpdating] = useState(false);
 
   async function handleRemoveLog(logId: string) {
-    const supabase = createClient();
-    const { error } = await supabase.from("food_logs").delete().eq("id", logId);
-    
-    if (error) {
-      alert(`Failed to remove: ${error.message}`);
+    const res = await fetch(`/api/food-logs?id=${logId}`, { method: "DELETE" });
+    if (!res.ok) {
+      const { error } = await res.json();
+      alert(`Failed to remove: ${error}`);
       return;
     }
-    
     setLogs(logs.filter(log => log.id !== logId));
   }
 
@@ -177,92 +175,40 @@ export default function TodayPage() {
     console.log("New serving size:", editServingSize);
     console.log("New calories:", calories);
 
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("food_logs")
-      .update({
+    const patchRes = await fetch("/api/food-logs", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: editingLog.id,
         food_name: newFoodName,
-        calories,
-        protein,
-        carbs,
-        fat,
-        fiber,
-        sodium,
-        saturated_fat,
-        trans_fat,
-        polyunsaturated_fat,
-        monounsaturated_fat,
-        cholesterol,
-        sugars,
-        added_sugars,
-        vitamin_a,
-        vitamin_c,
-        vitamin_d,
-        vitamin_e,
-        vitamin_k,
-        thiamin,
-        riboflavin,
-        niacin,
-        vitamin_b6,
-        folate,
-        vitamin_b12,
-        calcium,
-        iron,
-        magnesium,
-        phosphorus,
-        potassium,
-        zinc,
-        selenium,
-      })
-      .eq("id", editingLog.id);
+        calories, protein, carbs, fat, fiber, sodium,
+        saturated_fat, trans_fat, polyunsaturated_fat, monounsaturated_fat,
+        cholesterol, sugars, added_sugars,
+        vitamin_a, vitamin_c, vitamin_d, vitamin_e, vitamin_k,
+        thiamin, riboflavin, niacin, vitamin_b6, folate, vitamin_b12,
+        calcium, iron, magnesium, phosphorus, potassium, zinc, selenium,
+      }),
+    });
 
-    console.log("Update error:", error);
-
-    if (error) {
+    if (!patchRes.ok) {
+      const { error } = await patchRes.json();
       setUpdating(false);
-      alert(`Failed to update: ${error.message}`);
+      alert(`Failed to update: ${error}`);
       return;
     }
 
-    // Wait a moment for database to process
-    await new Promise(resolve => setTimeout(resolve, 200));
-
     // Refresh the logs
     const today = new Date().toISOString().split("T")[0];
-    const { data, error: fetchError } = await supabase
-      .from("food_logs")
-      .select("*")
-      .eq("date", today)
-      .order("time", { ascending: false });
-    
-    console.log("Fetched logs:", data);
-    console.log("Fetch error:", fetchError);
-    
-    if (data && data.length > 0) {
-      console.log("First log details:");
-      console.log("- food_name:", data[0].food_name);
-      console.log("- calories:", data[0].calories);
-      console.log("- protein:", data[0].protein);
-    }
+    const logsRes = await fetch(`/api/food-logs?date=${today}`);
+    const { logs: freshLogs } = await logsRes.json();
 
     setUpdating(false);
-    
-    if (data) {
-      console.log("Setting new logs state:", data);
-      const newLogs = [...data] as FoodLog[];
-      setLogs(newLogs);
-      console.log("State set, logs length:", newLogs.length);
-    }
-    
-    // Small delay to ensure state update before closing modal
-    setTimeout(() => {
-      closeEditModal();
-    }, 100);
+    if (freshLogs) setLogs(freshLogs as FoodLog[]);
+    setTimeout(() => { closeEditModal(); }, 100);
   }
 
   useEffect(() => {
     async function fetchData() {
-      const supabase = createClient();
       const today = new Date().toISOString().split("T")[0];
 
       // Calculate date range based on view
@@ -277,27 +223,24 @@ export default function TodayPage() {
         startDate = monthAgo.toISOString().split("T")[0];
       }
 
-      const [logsResult, goalsResult, historicalResult] = await Promise.all([
-        supabase
-          .from("food_logs")
-          .select("*")
-          .eq("date", today)
-          .order("time", { ascending: false }),
-        supabase.from("user_goals").select("*").single(),
-        timeView !== 'today' ? supabase
-          .from("food_logs")
-          .select("date, calories, protein, carbs, fat, quantity")
-          .gte("date", startDate)
-          .lte("date", today)
-          .order("date", { ascending: true }) : Promise.resolve({ data: [] })
+      const [logsRes, goalsRes, historicalRes] = await Promise.all([
+        fetch(`/api/food-logs?date=${today}`),
+        fetch("/api/user-goals"),
+        timeView !== 'today'
+          ? fetch(`/api/food-logs?start=${startDate}&end=${today}`)
+          : Promise.resolve(null),
       ]);
 
-      setLogs((logsResult.data || []) as FoodLog[]);
-      setGoals(goalsResult.data as UserGoal | null);
+      const { logs: logsData } = await logsRes.json();
+      const { goals: goalsData } = await goalsRes.json();
+      const historicalData = historicalRes ? (await historicalRes.json()).logs : [];
+
+      setLogs((logsData || []) as FoodLog[]);
+      setGoals(goalsData as UserGoal | null);
       
       // Aggregate historical data by date
-      if (historicalResult.data && historicalResult.data.length > 0) {
-        const aggregated = historicalResult.data.reduce((acc: Record<string, HistoricalData>, item: { date: string; calories: number | null; protein: number | null; carbs: number | null; fat: number | null; quantity: number }) => {
+      if (historicalData && historicalData.length > 0) {
+        const aggregated = historicalData.reduce((acc: Record<string, HistoricalData>, item: { date: string; calories: number | null; protein: number | null; carbs: number | null; fat: number | null; quantity: number }) => {
           if (!acc[item.date]) {
             acc[item.date] = { date: item.date, calories: 0, protein: 0, carbs: 0, fat: 0 };
           }

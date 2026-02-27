@@ -21,6 +21,8 @@ services:
       - .env
     environment:
       DATABASE_URL: postgres://nutritracker:password123@db:5432/nutritracker
+      AUTH_SECRET: ${AUTH_SECRET}
+      NEXTAUTH_URL: http://localhost:3000
     depends_on:
       - db
 
