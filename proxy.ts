@@ -7,12 +7,6 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   const { nextUrl, auth: session } = req;
 
-  // Redirect to login if accessing /app/* without auth
-  if (!session && nextUrl.pathname.startsWith("/app")) {
-    const loginUrl = new URL("/login", nextUrl.origin);
-    return NextResponse.redirect(loginUrl);
-  }
-
   // Redirect authenticated users away from login/signup
   if (
     session &&
@@ -22,6 +16,7 @@ export default auth((req) => {
     return NextResponse.redirect(appUrl);
   }
 
+  // /app/* is open to guests — individual pages handle the guest state
   return NextResponse.next();
 });
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from "react";
+import { useSession } from "next-auth/react";
 import { useQuery, useApolloClient } from "@apollo/client/react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -50,6 +51,8 @@ type DashboardQueryResult = {
 
 export default function TodayPage() {
   const dispatch = useAppDispatch();
+  const { status } = useSession();
+  const isGuest = status === 'unauthenticated';
   const { timeView, showAllNutrients, editingLog, editServingSize, editCustomServing, updating } =
     useAppSelector((s) => s.ui.dashboard);
 
@@ -63,13 +66,13 @@ export default function TodayPage() {
   // ── GraphQL: today's logs + goals in a single request ────────────────────
   const { data: gqlData, loading: gqlLoading } = useQuery<DashboardQueryResult>(
     DASHBOARD_QUERY,
-    { variables: { date: today }, fetchPolicy: "cache-and-network" }
+    { variables: { date: today }, fetchPolicy: "cache-and-network", skip: isGuest }
   );
 
-  // ── RTK Query: historical range (only for week/month views) ───────────────
+  // ── RTK Query: historical range (only for week/month views) ───────────────────────
   const { data: historicalLogs = [] } = useGetFoodLogsQuery(
     { start: startDate, end: today },
-    { skip: timeView === "today" }
+    { skip: timeView === "today" || isGuest }
   );
   const [updateFoodLog] = useUpdateFoodLogMutation();
   const [triggerFoodDetail, { data: foodData }] = useLazyGetFoodDetailQuery();
@@ -279,6 +282,30 @@ export default function TodayPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-8">
+      {isGuest && (
+        <div className="mb-6 rounded-2xl border border-[#4169E1]/30 bg-[#4169E1]/5 dark:bg-blue-950/30 p-6 text-center">
+          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
+            📈 This is a live preview of the NutriTracker dashboard.
+          </p>
+          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            Sign up to track your meals, set goals, and see your progress here.
+          </p>
+          <div className="mt-4 flex justify-center gap-3">
+            <a
+              href="/signup"
+              className="rounded-full bg-[#4169E1] px-5 py-2 text-sm font-medium text-white hover:bg-[#000080] dark:bg-[#87CEEB] dark:text-black"
+            >
+              Get started — it&apos;s free
+            </a>
+            <a
+              href="/login"
+              className="rounded-full border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            >
+              Sign in
+            </a>
+          </div>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Progress</h1>
@@ -783,8 +810,7 @@ function StatCard({
   unit?: string;
 }) {
   const percentage = goal && goal > 0 ? (value / goal) * 100 : 0;
-  const isOnTrack = percentage >= 90 && percentage <= 110;
-  
+
   // Choose a color based on label, with dark mode overrides
   const colorMap: Record<string, string> = {
     Calories: 'from-yellow-200 to-yellow-400 border-yellow-300 dark:from-yellow-900 dark:to-yellow-800 dark:border-yellow-900',

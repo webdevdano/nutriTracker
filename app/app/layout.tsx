@@ -1,5 +1,4 @@
 import { getServerUser } from "@/lib/auth-helpers";
-import { redirect } from "next/navigation";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export default async function AppLayout({
@@ -8,10 +7,7 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   const user = await getServerUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+  const isGuest = !user;
 
   return (
     <div className="min-h-dvh bg-white dark:bg-black">
@@ -53,24 +49,52 @@ export default async function AppLayout({
               >
                 Lists
               </a>
-              <a
-                className="whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#4169E1] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#87CEEB]"
-                href="/profile-setup"
-              >
-                Profile
-              </a>
-              <form action="/auth/signout" method="post" className="inline">
-                <button
-                  type="submit"
-                  className="whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#C8102E] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#C8102E]"
-                >
-                  Sign out
-                </button>
-              </form>
+              {isGuest ? (
+                <>
+                  <a
+                    className="whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#4169E1] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#87CEEB]"
+                    href="/login"
+                  >
+                    Sign in
+                  </a>
+                  <a
+                    className="whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium bg-[#4169E1] text-white transition-colors hover:bg-[#000080] dark:bg-[#87CEEB] dark:text-black dark:hover:bg-[#ADD8E6]"
+                    href="/signup"
+                  >
+                    Sign up
+                  </a>
+                </>
+              ) : (
+                <>
+                  <a
+                    className="whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#4169E1] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#87CEEB]"
+                    href="/profile-setup"
+                  >
+                    Profile
+                  </a>
+                  <form action="/auth/signout" method="post" className="inline">
+                    <button
+                      type="submit"
+                      className="whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#C8102E] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#C8102E]"
+                    >
+                      Sign out
+                    </button>
+                  </form>
+                </>
+              )}
             </nav>
           </div>
         </div>
       </header>
+      {isGuest && (
+        <div className="bg-[#4169E1] dark:bg-blue-900 text-white text-center text-xs py-2 px-4">
+          You&apos;re browsing as a guest.{" "}
+          <a href="/signup" className="underline font-semibold hover:text-blue-100">
+            Sign up free
+          </a>{" "}
+          to save your logs and track progress.
+        </div>
+      )}
       <main>{children}</main>
     </div>
   );

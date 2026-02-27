@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -39,6 +40,8 @@ const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snack"];
 export default function SearchPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { status } = useSession();
+  const isGuest = status === 'unauthenticated';
   const { query, selectedFood, servingSize, customServing, mealType, showScanner, adding, savingFavorite } =
     useAppSelector((s) => s.ui.search);
 
@@ -116,6 +119,10 @@ export default function SearchPage() {
 
   async function handleAddFood() {
     if (!selectedFood) return;
+    if (isGuest) {
+      router.push("/signup");
+      return;
+    }
 
     dispatch(setAdding(true));
     const multiplier = servingSize / 100; // USDA values are per 100g
@@ -214,6 +221,10 @@ export default function SearchPage() {
 
   async function handleSaveFavorite() {
     if (!selectedFood) return;
+    if (isGuest) {
+      router.push("/signup");
+      return;
+    }
 
     dispatch(setSavingFavorite(true));
     const multiplier = servingSize / 100;
@@ -404,26 +415,37 @@ export default function SearchPage() {
             </div>
 
             <div className="mt-6 flex gap-2">
-              <button
-                onClick={closeModal}
-                className="rounded-full border border-[#D3D8E0] px-4 py-2 text-sm font-medium hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveFavorite}
-                disabled={savingFavorite}
-                className="rounded-full border border-yellow-500 bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-100 disabled:opacity-60 dark:border-yellow-600 dark:bg-yellow-950 dark:text-yellow-300 dark:hover:bg-yellow-900"
-              >
-                {savingFavorite ? "Saving..." : "⭐ Save"}
-              </button>
-              <button
-                onClick={handleAddFood}
-                disabled={adding}
-                className="flex-1 rounded-full bg-[#4169E1] px-4 py-2 text-sm font-medium text-white hover:bg-[#000080] disabled:opacity-60 dark:bg-[#87CEEB] dark:text-black dark:hover:bg-[#ADD8E6]"
-              >
-                {adding ? "Adding..." : "Add to Log"}
-              </button>
+              {isGuest ? (
+                <a
+                  href="/signup"
+                  className="flex-1 rounded-full bg-[#4169E1] px-4 py-2 text-center text-sm font-medium text-white hover:bg-[#000080] dark:bg-[#87CEEB] dark:text-black"
+                >
+                  Sign up to save this food
+                </a>
+              ) : (
+                <>
+                  <button
+                    onClick={closeModal}
+                    className="rounded-full border border-[#D3D8E0] px-4 py-2 text-sm font-medium hover:bg-[#E0E0E0] dark:border-gray-700 dark:hover:bg-gray-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveFavorite}
+                    disabled={savingFavorite}
+                    className="rounded-full border border-yellow-500 bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-100 disabled:opacity-60 dark:border-yellow-600 dark:bg-yellow-950 dark:text-yellow-300 dark:hover:bg-yellow-900"
+                  >
+                    {savingFavorite ? "Saving..." : "⭐ Save"}
+                  </button>
+                  <button
+                    onClick={handleAddFood}
+                    disabled={adding}
+                    className="flex-1 rounded-full bg-[#4169E1] px-4 py-2 text-sm font-medium text-white hover:bg-[#000080] disabled:opacity-60 dark:bg-[#87CEEB] dark:text-black dark:hover:bg-[#ADD8E6]"
+                  >
+                    {adding ? "Adding..." : "Add to Log"}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
