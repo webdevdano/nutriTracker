@@ -4,6 +4,13 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
 COPY . .
+# Build-time env vars (no real DB needed — Next.js routes are fully dynamic)
+ARG DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+ARG AUTH_SECRET=build-placeholder
+ARG NEXTAUTH_URL=http://localhost:3000
+ENV DATABASE_URL=$DATABASE_URL
+ENV AUTH_SECRET=$AUTH_SECRET
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
 RUN pnpm prisma generate
 RUN pnpm run build
 EXPOSE 3000
