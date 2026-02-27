@@ -60,10 +60,10 @@ describe("Profile Setup", () => {
     cy.visit("/profile-setup");
 
     // Fill in the form fields
-    cy.get('input[type="number"]').first().clear().type("28"); // age
-    cy.get('select').first().select("male");                   // sex
-    cy.get('input[type="number"]').eq(1).clear().type("5");    // feet
-    cy.get('input[type="number"]').eq(3).clear().type("170");  // weight
+    cy.get('input[type="number"]').first().type("{selectAll}{backspace}28"); // age
+    cy.get('select').first().select("male");                                  // sex
+    cy.get('input[type="number"]').eq(1).type("{selectAll}{backspace}5");    // feet
+    cy.get('input[type="number"]').eq(3).type("{selectAll}{backspace}170");  // weight
 
     cy.get('button[type="submit"]').click();
 
@@ -86,9 +86,9 @@ describe("Profile Setup", () => {
 
     cy.visit("/profile-setup");
 
-    cy.get('input[type="number"]').first().clear().type("28");
-    cy.get('input[type="number"]').eq(1).clear().type("5");
-    cy.get('input[type="number"]').eq(3).clear().type("170");
+    cy.get('input[type="number"]').first().type("{selectAll}{backspace}28");
+    cy.get('input[type="number"]').eq(1).type("{selectAll}{backspace}5");
+    cy.get('input[type="number"]').eq(3).type("{selectAll}{backspace}170");
     cy.get('button[type="submit"]').click();
 
     cy.wait("@bmiError");
@@ -114,9 +114,9 @@ describe("Profile Setup", () => {
 
     cy.visit("/profile-setup");
 
-    cy.get('input[type="number"]').first().clear().type("28");
-    cy.get('input[type="number"]').eq(1).clear().type("5");
-    cy.get('input[type="number"]').eq(3).clear().type("170");
+    cy.get('input[type="number"]').first().type("{selectAll}{backspace}28");
+    cy.get('input[type="number"]').eq(1).type("{selectAll}{backspace}5");
+    cy.get('input[type="number"]').eq(3).type("{selectAll}{backspace}170");
     cy.get('button[type="submit"]').click();
 
     // Wait for results to appear, then save
