@@ -12,6 +12,7 @@ import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { typeDefs } from "@/graphql/schema";
 import { resolvers } from "@/graphql/resolvers";
+import { NextRequest } from "next/server";
 
 const server = new ApolloServer({
   typeDefs,
@@ -20,6 +21,11 @@ const server = new ApolloServer({
   introspection: true,
 });
 
-const handler = startServerAndCreateNextHandler(server);
+const apolloHandler = startServerAndCreateNextHandler(server);
+
+// Wrap in an explicitly-typed function so Next.js 16 route handler constraints are satisfied
+async function handler(req: NextRequest): Promise<Response> {
+  return apolloHandler(req) as Promise<Response>;
+}
 
 export { handler as GET, handler as POST };
