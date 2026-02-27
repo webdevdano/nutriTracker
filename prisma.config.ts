@@ -9,6 +9,8 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // Use DATABASE_URL_DIRECT (plain postgres://) for migrations so they can
+    // reach the Docker container directly, bypassing any proxy/Accelerate URL.
+    url: process.env["DATABASE_URL_DIRECT"] ?? process.env["DATABASE_URL"],
   },
 });
