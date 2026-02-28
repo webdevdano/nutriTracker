@@ -159,22 +159,20 @@ export default async function Home() {
         </section>
 
         <section id="how-it-works" className="mx-auto w-full max-w-5xl px-6 pb-20">
-          <div className="rounded-2xl border border-zinc-200/70 p-6 dark:border-zinc-800/80">
-            <h2 className="text-lg font-semibold tracking-tight">How it works</h2>
-            <ol className="mt-4 grid gap-4 text-sm text-zinc-600 dark:text-zinc-400 sm:grid-cols-3">
-              <li>
-                <div className="font-medium text-zinc-900 dark:text-zinc-50">1. Set goals</div>
-                <div className="mt-1 leading-6">Fill in your nutritional targets. See daily goals in your dashboard.</div>
-              </li>
-              <li>
-                <div className="font-medium text-zinc-900 dark:text-zinc-50">2. Add foods</div>
-                <div className="mt-1 leading-6">Create food entries and save nutrition per serving to your daily log.</div>
-              </li>
-              <li>
-                <div className="font-medium text-zinc-900 dark:text-zinc-50">3. Review totals</div>
-                <div className="mt-1 leading-6">See daily totals for calories, macronutrients, micronutrients, and more.</div>
-              </li>
-            </ol>
+          <h2 className="mb-8 text-center text-2xl font-semibold tracking-tight">How it works</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80">
+              <h3 className="text-sm font-semibold">1. Set goals</h3>
+              <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">Fill in your nutritional targets. See daily goals in your dashboard.</p>
+            </div>
+            <div className="rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80">
+              <h3 className="text-sm font-semibold">2. Add foods</h3>
+              <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">Create food entries and save nutrition per serving to your daily log.</p>
+            </div>
+            <div className="rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80">
+              <h3 className="text-sm font-semibold">3. Review totals</h3>
+              <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">See daily totals for calories, macronutrients, micronutrients, and more.</p>
+            </div>
           </div>
         </section>
       </main>
