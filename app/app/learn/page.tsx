@@ -205,6 +205,36 @@ const SUPERFOODS: Superfood[] = [
 ];
 const allNutrients = getAllNutrientsAlphabetically();
 
+const CARBS_FOODS: Superfood[] = [
+  { name: "Oats", emoji: "🌾", description: "Whole grain high in fiber and complex carbs", nutrients: ["Carbohydrates", "Fiber", "Protein", "Magnesium", "Iron", "Zinc"], benefits: ["Sustained energy", "Digestive health", "Heart health", "Blood sugar control"], serving: "1 cup cooked (156g)" },
+  { name: "Sweet Potato", emoji: "🍠", description: "Complex carb loaded with vitamins", nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Fiber", "Potassium", "Manganese"], benefits: ["Eye health", "Immune support", "Digestive health", "Stable energy"], serving: "1 medium (150g)" },
+  { name: "Brown Rice", emoji: "🍚", description: "Whole grain source of complex carbs", nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Phosphorus", "Selenium"], benefits: ["Long-lasting energy", "Digestive health", "Supports metabolism"], serving: "1 cup cooked (195g)" },
+  { name: "Banana", emoji: "🍌", description: "Natural sugars and potassium", nutrients: ["Carbohydrates", "Potassium", "Vitamin B6", "Vitamin C", "Fiber"], benefits: ["Quick energy", "Muscle function", "Digestive health"], serving: "1 medium (118g)" },
+  { name: "Quinoa", emoji: "🌱", description: "Gluten-free whole grain alternative", nutrients: ["Carbohydrates", "Protein", "Fiber", "Magnesium", "Iron", "Zinc"], benefits: ["Complete protein", "Sustained energy", "Rich in minerals"], serving: "1 cup cooked (185g)" },
+  { name: "Black Beans", emoji: "🫘", description: "Legume high in fiber and complex carbs", nutrients: ["Carbohydrates", "Protein", "Fiber", "Folate", "Magnesium", "Iron"], benefits: ["Digestive health", "Blood sugar control", "Heart health"], serving: "1 cup cooked (172g)" },
+];
+
+const PROTEINS_FOODS: Superfood[] = [
+  { name: "Chicken Breast", emoji: "🍗", description: "Lean animal protein", nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Low Fat"], benefits: ["Muscle building", "Weight management", "Supports metabolism", "Low in fat"], serving: "3 oz (85g)" },
+  { name: "Lentils", emoji: "🥣", description: "Plant-based protein and fiber", nutrients: ["Protein", "Fiber", "Iron", "Folate", "Manganese", "Low Fat"], benefits: ["Heart health", "Digestive health", "Blood sugar control", "Rich in iron"], serving: "1 cup cooked (198g)" },
+  { name: "Greek Yogurt", emoji: "🥛", description: "High-protein dairy", nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"], benefits: ["Gut health", "Bone strength", "Muscle building", "Immune support"], serving: "1 cup (245g)" },
+  { name: "Tofu", emoji: "🍥", description: "Soy-based complete protein", nutrients: ["Protein", "Calcium", "Iron", "Magnesium", "Low Fat", "Isoflavones"], benefits: ["Heart health", "Bone health", "Plant-based protein", "Low in fat"], serving: "3 oz (85g)" },
+];
+
+const VITAMINS_FOODS: Superfood[] = [
+  { name: "Spinach", emoji: "🥬", description: "Rich in vitamin K, A, C", nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"], benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"], serving: "1 cup cooked (180g)" },
+  { name: "Citrus Fruits", emoji: "🍋", description: "High in vitamin C", nutrients: ["Vitamin C", "Folate", "Potassium", "Fiber", "Antioxidants"], benefits: ["Boosts immune system", "Improves skin health", "Aids iron absorption", "Antioxidant-rich"], serving: "1 medium orange (130g)" },
+  { name: "Carrots", emoji: "🥕", description: "Excellent source of vitamin A", nutrients: ["Vitamin A", "Vitamin K", "Fiber", "Potassium", "Vitamin C"], benefits: ["Eye health", "Immune support", "Digestive health", "Antioxidant-rich"], serving: "1 medium (61g)" },
+  { name: "Red Peppers", emoji: "🫑", description: "Vitamin C and antioxidants", nutrients: ["Vitamin C", "Vitamin A", "Vitamin B6", "Folate", "Antioxidants"], benefits: ["Boosts immune system", "Supports eye health", "Rich in antioxidants", "Aids iron absorption"], serving: "1 medium (119g)" },
+];
+
+const MINERALS_FOODS: Superfood[] = [
+  { name: "Almonds", emoji: "🥜", description: "Magnesium, calcium, iron", nutrients: ["Magnesium", "Calcium", "Iron", "Fiber", "Vitamin E", "Protein"], benefits: ["Supports heart health", "Bone strength", "Rich in antioxidants", "Helps control blood sugar"], serving: "1 oz (28g)" },
+  { name: "Pumpkin Seeds", emoji: "🎃", description: "Zinc, magnesium, iron", nutrients: ["Zinc", "Magnesium", "Iron", "Copper", "Manganese", "Healthy Fats"], benefits: ["Improves sleep", "Boosts immune system", "Supports prostate health", "Rich in antioxidants"], serving: "1 oz (28g)" },
+  { name: "Salmon", emoji: "🐟", description: "Rich in selenium and iodine", nutrients: ["Selenium", "Iodine", "Phosphorus", "Potassium", "Magnesium", "Vitamin D"], benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"], serving: "3 oz (85g)" },
+  { name: "Broccoli", emoji: "🥦", description: "Calcium, potassium, iron", nutrients: ["Calcium", "Potassium", "Iron", "Vitamin C", "Folate", "Fiber"], benefits: ["Cancer prevention", "Bone health", "Digestive health", "Immune support"], serving: "1 cup chopped (91g)" },
+];
+
 function LearnPage() {
   // Filter nutrients based on search
   const [searchQuery, setSearchQuery] = useState('');
@@ -212,14 +242,17 @@ function LearnPage() {
   const nutrientsByCategory = getNutrientsByCategory();
   const [selectedNutrientIndex, setSelectedNutrientIndex] = useState<number | null>(null);
   const selectedNutrient = selectedNutrientIndex !== null ? allNutrients[selectedNutrientIndex] : null;
-  const [selectedSuperfoodIndex, setSelectedSuperfoodIndex] = useState<number | null>(null);
-  const [selectedFood, setSelectedFood] = useState<{
-    name: string;
-    emoji: string;
-    description: string;
-    nutrients: string[];
-    serving?: string;
-  } | null>(null);
+  const [selectedFoodList, setSelectedFoodList] = useState<Superfood[] | null>(null);
+  const [selectedFoodIndex, setSelectedFoodIndex] = useState<number | null>(null);
+
+  function openFood(list: Superfood[], idx: number) {
+    setSelectedFoodList(list);
+    setSelectedFoodIndex(idx);
+  }
+  function closeFood() {
+    setSelectedFoodList(null);
+    setSelectedFoodIndex(null);
+  }
 
   // (filteredNutrients removed, not used)
 
@@ -329,73 +362,14 @@ function LearnPage() {
             <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                name: "Oats",
-                emoji: "🌾",
-                description: "Whole grain high in fiber and complex carbs",
-                nutrients: ["Carbohydrates", "Fiber", "Protein", "Magnesium", "Iron", "Zinc"],
-                benefits: ["Sustained energy", "Digestive health", "Heart health", "Blood sugar control"],
-                serving: "1 cup cooked (156g)"
-              },
-              {
-                name: "Sweet Potato",
-                emoji: "🍠",
-                description: "Complex carb loaded with vitamins",
-                nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Fiber", "Potassium", "Manganese"],
-                benefits: ["Eye health", "Immune support", "Digestive health", "Stable energy"],
-                serving: "1 medium (150g)"
-              },
-              {
-                name: "Brown Rice",
-                emoji: "🍚",
-                description: "Whole grain source of complex carbs",
-                nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Phosphorus", "Selenium"],
-                benefits: ["Long-lasting energy", "Digestive health", "Supports metabolism"],
-                serving: "1 cup cooked (195g)"
-              },
-              {
-                name: "Banana",
-                emoji: "🍌",
-                description: "Natural sugars and potassium",
-                nutrients: ["Carbohydrates", "Potassium", "Vitamin B6", "Vitamin C", "Fiber"],
-                benefits: ["Quick energy", "Muscle function", "Digestive health"],
-                serving: "1 medium (118g)"
-              },
-              {
-                name: "Quinoa",
-                emoji: "🌱",
-                description: "Gluten-free whole grain alternative",
-                nutrients: ["Carbohydrates", "Protein", "Fiber", "Magnesium", "Iron", "Zinc"],
-                benefits: ["Complete protein", "Sustained energy", "Rich in minerals"],
-                serving: "1 cup cooked (185g)"
-              },
-              {
-                name: "Black Beans",
-                emoji: "🫘",
-                description: "Legume high in fiber and complex carbs",
-                nutrients: ["Carbohydrates", "Protein", "Fiber", "Folate", "Magnesium", "Iron"],
-                benefits: ["Digestive health", "Blood sugar control", "Heart health"],
-                serving: "1 cup cooked (172g)"
-              }
-            ].map((carb) => (
+            {CARBS_FOODS.map((carb, idx) => (
               <SuperfoodCard
                 key={carb.name}
                 superfood={carb}
-                onClick={() => setSelectedFood(carb)}
+                onClick={() => openFood(CARBS_FOODS, idx)}
               />
             ))}
           </div>
-          {/* Food Modal for carbohydrates */}
-          {selectedFood && (
-            <FoodModal
-              food={{
-                ...selectedFood,
-                benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
-              }}
-              onClose={() => setSelectedFood(null)}
-            />
-          )}
         </div>
       ) : view === 'proteins' ? (
         // Proteins Food Sources View
@@ -405,57 +379,14 @@ function LearnPage() {
             <p className="text-zinc-700 dark:text-zinc-300">Foods rich in protein</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                name: "Chicken Breast",
-                emoji: "🍗",
-                description: "Lean animal protein",
-                nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Low Fat"],
-                benefits: ["Muscle building", "Weight management", "Supports metabolism", "Low in fat"],
-                serving: "3 oz (85g)"
-              },
-              {
-                name: "Lentils",
-                emoji: "🥣",
-                description: "Plant-based protein and fiber",
-                nutrients: ["Protein", "Fiber", "Iron", "Folate", "Manganese", "Low Fat"],
-                benefits: ["Heart health", "Digestive health", "Blood sugar control", "Rich in iron"],
-                serving: "1 cup cooked (198g)"
-              },
-              {
-                name: "Greek Yogurt",
-                emoji: "🥛",
-                description: "High-protein dairy",
-                nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"],
-                benefits: ["Gut health", "Bone strength", "Muscle building", "Immune support"],
-                serving: "1 cup (245g)"
-              },
-              {
-                name: "Tofu",
-                emoji: "🍥",
-                description: "Soy-based complete protein",
-                nutrients: ["Protein", "Calcium", "Iron", "Magnesium", "Low Fat", "Isoflavones"],
-                benefits: ["Heart health", "Bone health", "Plant-based protein", "Low in fat"],
-                serving: "3 oz (85g)"
-              }
-            ].map((protein) => (
+            {PROTEINS_FOODS.map((protein, idx) => (
               <SuperfoodCard
                 key={protein.name}
                 superfood={protein}
-                onClick={() => setSelectedFood(protein)}
+                onClick={() => openFood(PROTEINS_FOODS, idx)}
               />
             ))}
           </div>
-          {/* Food Modal for proteins */}
-          {selectedFood && (
-            <FoodModal
-              food={{
-                ...selectedFood,
-                benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
-              }}
-              onClose={() => setSelectedFood(null)}
-            />
-          )}
         </div>
         ) : view === 'vitamins' ? (
           // Vitamins Food Sources View 
@@ -465,57 +396,14 @@ function LearnPage() {
               <p className="text-zinc-700 dark:text-zinc-300">Foods rich in vitamins</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  name: "Spinach",
-                  emoji: "🥬",
-                  description: "Rich in vitamin K, A, C",
-                  nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"],
-                  benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"],
-                  serving: "1 cup cooked (180g)"
-                },
-                {
-                  name: "Citrus Fruits",
-                  emoji: "🍋",
-                  description: "High in vitamin C",
-                  nutrients: ["Vitamin C", "Folate", "Potassium", "Fiber", "Antioxidants"],
-                  benefits: ["Boosts immune system", "Improves skin health", "Aids iron absorption", "Antioxidant-rich"],
-                  serving: "1 medium orange (130g)"
-                },
-                {
-                  name: "Carrots",
-                  emoji: "🥕",
-                  description: "Excellent source of vitamin A",
-                  nutrients: ["Vitamin A", "Vitamin K", "Fiber", "Potassium", "Vitamin C"],
-                  benefits: ["Eye health", "Immune support", "Digestive health", "Antioxidant-rich"],
-                  serving: "1 medium (61g)"
-                },
-                {
-                  name: "Red Peppers",
-                  emoji: "🫑",
-                  description: "Vitamin C and antioxidants",
-                  nutrients: ["Vitamin C", "Vitamin A", "Vitamin B6", "Folate", "Antioxidants"],
-                  benefits: ["Boosts immune system", "Supports eye health", "Rich in antioxidants", "Aids iron absorption"],
-                  serving: "1 medium (119g)"
-                }
-              ].map((vitamin) => (
+              {VITAMINS_FOODS.map((vitamin, idx) => (
                 <SuperfoodCard
                   key={vitamin.name}
                   superfood={vitamin}
-                  onClick={() => setSelectedFood(vitamin)}
+                  onClick={() => openFood(VITAMINS_FOODS, idx)}
                 />
               ))}
             </div>
-            {/* Food Modal for vitamins */}
-            {selectedFood && (
-              <FoodModal
-                food={{
-                  ...selectedFood,
-                  benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
-                }}
-                onClose={() => setSelectedFood(null)}
-              />
-            )}
           </div>
         ) : view === 'minerals' ? (
           // Minerals Food Sources View 
@@ -525,57 +413,14 @@ function LearnPage() {
               <p className="text-zinc-700 dark:text-zinc-300">Foods rich in minerals</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  name: "Almonds",
-                  emoji: "🥜",
-                  description: "Magnesium, calcium, iron",
-                  nutrients: ["Magnesium", "Calcium", "Iron", "Fiber", "Vitamin E", "Protein"],
-                  benefits: ["Supports heart health", "Bone strength", "Rich in antioxidants", "Helps control blood sugar"],
-                  serving: "1 oz (28g)"
-                },
-                {
-                  name: "Pumpkin Seeds",
-                  emoji: "🎃",
-                  description: "Zinc, magnesium, iron",
-                  nutrients: ["Zinc", "Magnesium", "Iron", "Copper", "Manganese", "Healthy Fats"],
-                  benefits: ["Improves sleep", "Boosts immune system", "Supports prostate health", "Rich in antioxidants"],
-                  serving: "1 oz (28g)"
-                },
-                {
-                  name: "Salmon",
-                  emoji: "🐟",
-                  description: "Rich in selenium and iodine",
-                  nutrients: ["Selenium", "Iodine", "Phosphorus", "Potassium", "Magnesium", "Vitamin D"],
-                  benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"],
-                  serving: "3 oz (85g)"
-                },
-                {
-                  name: "Broccoli",
-                  emoji: "🥦",
-                  description: "Calcium, potassium, iron",
-                  nutrients: ["Calcium", "Potassium", "Iron", "Vitamin C", "Folate", "Fiber"],
-                  benefits: ["Cancer prevention", "Bone health", "Digestive health", "Immune support"],
-                  serving: "1 cup chopped (91g)"
-                }
-              ].map((mineral) => (
+              {MINERALS_FOODS.map((mineral, idx) => (
                 <SuperfoodCard
                   key={mineral.name}
                   superfood={mineral}
-                  onClick={() => setSelectedFood(mineral)}
+                  onClick={() => openFood(MINERALS_FOODS, idx)}
                 />
               ))}
             </div>
-            {/* Food Modal for minerals */}
-            {selectedFood && (
-              <FoodModal
-                food={{
-                  ...selectedFood,
-                  benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
-                }}
-                onClose={() => setSelectedFood(null)}
-              />
-            )}
           </div>
         ) : view === 'superfoods' ? (
           // Superfoods View
@@ -591,7 +436,7 @@ function LearnPage() {
                 <SuperfoodCard
                   key={superfood.name}
                   superfood={superfood}
-                  onClick={() => setSelectedSuperfoodIndex(index)}
+                  onClick={() => openFood(SUPERFOODS, index)}
                 />
               ))}
             </div>
@@ -660,7 +505,7 @@ function LearnPage() {
           </div>
         )}
       
-      {/* Detail Modal */}
+      {/* Detail Modal - A-Z & By Category */}
       {selectedNutrientIndex !== null && (
         <NutrientModal
           nutrients={allNutrients}
@@ -668,12 +513,12 @@ function LearnPage() {
           onClose={() => setSelectedNutrientIndex(null)}
         />
       )}
-      {/* Superfood Modal */}
-      {selectedSuperfoodIndex !== null && (
+      {/* Food Modal - Carbs, Proteins, Vitamins, Minerals, Superfoods */}
+      {selectedFoodList && selectedFoodIndex !== null && (
         <SuperfoodModal
-          superfoods={SUPERFOODS}
-          initialIndex={selectedSuperfoodIndex}
-          onClose={() => setSelectedSuperfoodIndex(null)}
+          superfoods={selectedFoodList}
+          initialIndex={selectedFoodIndex}
+          onClose={closeFood}
         />
       )}
     </div>
