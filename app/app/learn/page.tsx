@@ -210,7 +210,8 @@ function LearnPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [view, setView] = useState<'alphabetical' | 'category' | 'carbohydrates' | 'proteins' | 'vitamins' | 'minerals' | 'superfoods'>('category');
   const nutrientsByCategory = getNutrientsByCategory();
-  const [selectedNutrient, setSelectedNutrient] = useState<NutrientInfo | null>(null);
+  const [selectedNutrientIndex, setSelectedNutrientIndex] = useState<number | null>(null);
+  const selectedNutrient = selectedNutrientIndex !== null ? allNutrients[selectedNutrientIndex] : null;
   const [selectedSuperfoodIndex, setSelectedSuperfoodIndex] = useState<number | null>(null);
   const [selectedFood, setSelectedFood] = useState<{
     name: string;
@@ -262,11 +263,11 @@ function LearnPage() {
       {/* Content Views */}
       {view === 'alphabetical' && !searchQuery ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {getAllNutrientsAlphabetically().map((nutrient) => (
+          {getAllNutrientsAlphabetically().map((nutrient, idx) => (
             <NutrientCard
               key={nutrient.name}
               nutrient={nutrient}
-              onClick={() => setSelectedNutrient(nutrient)}
+              onClick={() => setSelectedNutrientIndex(idx)}
             />
           ))}
         </div>
@@ -286,7 +287,7 @@ function LearnPage() {
                     <NutrientCard
                       key={nutrient.name}
                       nutrient={nutrient}
-                      onClick={() => setSelectedNutrient(nutrient)}
+                      onClick={() => setSelectedNutrientIndex(allNutrients.findIndex(n => n.name === nutrient.name))}
                     />
                   ))}
               </div>
@@ -303,7 +304,7 @@ function LearnPage() {
                     <NutrientCard
                       key={nutrient.name}
                       nutrient={nutrient}
-                      onClick={() => setSelectedNutrient(nutrient)}
+                      onClick={() => setSelectedNutrientIndex(allNutrients.findIndex(n => n.name === nutrient.name))}
                     />
                   ))}
               </div>
@@ -498,37 +499,11 @@ function LearnPage() {
                   serving: "1 medium (119g)"
                 }
               ].map((vitamin) => (
-                <button
+                <SuperfoodCard
                   key={vitamin.name}
-                  className="group w-full rounded-xl border border-zinc-200 p-5 text-left transition-all hover:border-green-300 hover:shadow-lg dark:border-zinc-800 dark:hover:border-green-700"
-                  type="button"
-                  tabIndex={0}
+                  superfood={vitamin}
                   onClick={() => setSelectedFood(vitamin)}
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-3xl">{vitamin.emoji}</span>
-                    <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-300">
-                      {vitamin.nutrients.length} nutrients
-                    </span>
-                  </div>
-                  <h3 className="mb-1 font-semibold group-hover:text-green-700 dark:group-hover:text-green-400">{vitamin.name}</h3>
-                  <p className="mb-3 text-xs text-zinc-600 dark:text-zinc-400">{vitamin.description}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {vitamin.nutrients.slice(0, 3).map((nutrient, i) => (
-                      <span
-                        key={i}
-                        className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                      >
-                        {nutrient}
-                      </span>
-                    ))}
-                    {vitamin.nutrients.length > 3 && (
-                      <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-                        +{vitamin.nutrients.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                </button>
+                />
               ))}
             </div>
             {/* Food Modal for vitamins */}
@@ -636,7 +611,7 @@ function LearnPage() {
                     <NutrientCard
                       key={nutrient.name}
                       nutrient={nutrient}
-                      onClick={() => setSelectedNutrient(nutrient)}
+                      onClick={() => setSelectedNutrientIndex(allNutrients.findIndex(n => n.name === nutrient.name))}
                     />
                   ) : null;
                 })}
@@ -650,7 +625,7 @@ function LearnPage() {
                     <NutrientCard
                       key={nutrient.name}
                       nutrient={nutrient}
-                      onClick={() => setSelectedNutrient(nutrient)}
+                      onClick={() => setSelectedNutrientIndex(allNutrients.findIndex(n => n.name === nutrient.name))}
                     />
                   ) : null;
                 })}
@@ -666,7 +641,7 @@ function LearnPage() {
                   <NutrientCard
                     key={nutrient.name}
                     nutrient={nutrient}
-                    onClick={() => setSelectedNutrient(nutrient)}
+                    onClick={() => setSelectedNutrientIndex(allNutrients.findIndex(n => n.name === nutrient.name))}
                   />
                 ))}
               </div>
@@ -677,7 +652,7 @@ function LearnPage() {
                   <NutrientCard
                     key={nutrient.name}
                     nutrient={nutrient}
-                    onClick={() => setSelectedNutrient(nutrient)}
+                    onClick={() => setSelectedNutrientIndex(allNutrients.findIndex(n => n.name === nutrient.name))}
                   />
                 ))}
               </div>
@@ -686,10 +661,11 @@ function LearnPage() {
         )}
       
       {/* Detail Modal */}
-      {selectedNutrient && (
+      {selectedNutrientIndex !== null && (
         <NutrientModal
-          nutrient={selectedNutrient}
-          onClose={() => setSelectedNutrient(null)}
+          nutrients={allNutrients}
+          initialIndex={selectedNutrientIndex}
+          onClose={() => setSelectedNutrientIndex(null)}
         />
       )}
       {/* Superfood Modal */}
@@ -954,16 +930,32 @@ function NutrientCard({ nutrient, onClick }: { nutrient: NutrientInfo; onClick: 
   );
 }
 
-function NutrientModal({ nutrient, onClose }: { nutrient: NutrientInfo; onClose: () => void }) {
+function NutrientModal({ nutrients, initialIndex, onClose }: { nutrients: NutrientInfo[]; initialIndex: number; onClose: () => void }) {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const nutrient = nutrients[currentIndex];
+
+  const handlePrev = () => setCurrentIndex((i) => (i === 0 ? nutrients.length - 1 : i - 1));
+  const handleNext = () => setCurrentIndex((i) => (i === nutrients.length - 1 ? 0 : i + 1));
+
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={onClose}
     >
-      <div 
-        className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="relative flex w-full max-w-5xl items-center justify-center gap-4">
+        {/* Prev arrow */}
+        <button
+          onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+          className="hidden sm:flex shrink-0 items-center justify-center w-11 h-11 rounded-full bg-white/90 shadow-lg border border-zinc-200 text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-700 transition"
+          aria-label="Previous"
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        </button>
+
+        <div
+          className="max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-900"
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* Header */}
         <div className="mb-4 flex items-start justify-between">
           <div>
@@ -972,15 +964,25 @@ function NutrientModal({ nutrient, onClose }: { nutrient: NutrientInfo; onClose:
               {nutrient.category}
               {nutrient.dailyValue && ` • Daily Value: ${nutrient.dailyValue}`}
             </p>
+            <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">{currentIndex + 1} / {nutrients.length}</p>
           </div>
-          <button
-            onClick={onClose}
-            className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-          >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Mobile prev/next inside header */}
+            <button onClick={handlePrev} className="sm:hidden rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800" aria-label="Previous">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <button onClick={handleNext} className="sm:hidden rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800" aria-label="Next">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </button>
+            <button
+              onClick={onClose}
+              className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Description */}
@@ -1062,6 +1064,15 @@ function NutrientModal({ nutrient, onClose }: { nutrient: NutrientInfo; onClose:
             )}
           </div>
         </div>
+        </div>
+        {/* Next arrow */}
+        <button
+          onClick={(e) => { e.stopPropagation(); handleNext(); }}
+          className="hidden sm:flex shrink-0 items-center justify-center w-11 h-11 rounded-full bg-white/90 shadow-lg border border-zinc-200 text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-700 transition"
+          aria-label="Next"
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </button>
       </div>
     </div>
   );
