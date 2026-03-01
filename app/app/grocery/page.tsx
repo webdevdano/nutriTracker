@@ -87,29 +87,34 @@ export default function GroceryPage() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   // Removed unused showNutrientChecklist state
 
-  // Get all unique nutrients from superfoods
-  const ALL_SUPERFOOD_NUTRIENTS = Array.from(
-    new Set(Object.values(SUPERFOOD_NUTRIENTS).flat())
+  // Combined lookup: every known food → nutrients it provides
+  const ALL_FOOD_NUTRIENTS: Record<string, string[]> = {
+    ...SUPERFOOD_NUTRIENTS,
+    ...MAIN_PROTEINS,
+  };
+
+  // All unique nutrients across both maps
+  const ALL_NUTRIENTS = Array.from(
+    new Set(Object.values(ALL_FOOD_NUTRIENTS).flat())
   ).sort((a, b) => a.localeCompare(b));
 
-  // Map nutrient to foods in grocery list that provide it
+  // For each nutrient, find grocery items that provide it (checks both maps)
   const getNutrientChecklist = () => {
-    const checklist: { nutrient: string; foods: string[] }[] = [];
-    ALL_SUPERFOOD_NUTRIENTS.forEach((nutrient) => {
+    return ALL_NUTRIENTS.map((nutrient) => {
       const foods: string[] = [];
       items.forEach((item) => {
-        Object.entries(SUPERFOOD_NUTRIENTS).forEach(([superfood, nutrients]) => {
+        Object.entries(ALL_FOOD_NUTRIENTS).forEach(([knownFood, nutrients]) => {
           if (
-            item.food_name.toLowerCase().includes(superfood.toLowerCase()) &&
-            nutrients.includes(nutrient)
+            item.food_name.toLowerCase().includes(knownFood.toLowerCase()) &&
+            nutrients.includes(nutrient) &&
+            !foods.includes(item.food_name)
           ) {
-            if (!foods.includes(item.food_name)) foods.push(item.food_name);
+            foods.push(item.food_name);
           }
         });
       });
-      checklist.push({ nutrient, foods });
+      return { nutrient, foods };
     });
-    return checklist;
   };
   const nutrientChecklist = getNutrientChecklist();
 
