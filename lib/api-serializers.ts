@@ -68,6 +68,8 @@ export function serializeGoals(goals: UserGoals) {
     protein_goal: goals.proteinGoal,
     carbs_goal: goals.carbsGoal,
     fat_goal: goals.fatGoal,
+    fiber_goal: goals.fiberGoal,
+    sodium_goal: goals.sodiumGoal,
     created_at: goals.createdAt instanceof Date ? goals.createdAt.toISOString() : goals.createdAt,
     updated_at: goals.updatedAt instanceof Date ? goals.updatedAt.toISOString() : goals.updatedAt,
   };

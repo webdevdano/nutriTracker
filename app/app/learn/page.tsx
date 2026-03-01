@@ -343,16 +343,6 @@ function LearnPage() {
               </div>
             )}
           </div>
-          {/* Food Modal for all food cards */}
-          {selectedFood && (
-            <FoodModal
-              food={{
-                ...selectedFood,
-                benefits: 'benefits' in selectedFood ? (selectedFood as { benefits?: string[] }).benefits ?? [] : [],
-              }}
-              onClose={() => setSelectedFood(null)}
-            />
-          )}
         </>
       ) : view === 'carbohydrates' ? (
         // Carbohydrates View: show food card UI like proteins, vitamins, minerals, superfoods

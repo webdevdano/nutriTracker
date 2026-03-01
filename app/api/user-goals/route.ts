@@ -33,6 +33,8 @@ export async function POST(request: Request) {
         proteinGoal: body.protein_goal,
         carbsGoal: body.carbs_goal,
         fatGoal: body.fat_goal,
+        fiberGoal: body.fiber_goal ?? undefined,
+        sodiumGoal: body.sodium_goal ?? undefined,
       },
       create: {
         userId: user.id,
@@ -40,6 +42,8 @@ export async function POST(request: Request) {
         proteinGoal: body.protein_goal,
         carbsGoal: body.carbs_goal,
         fatGoal: body.fat_goal,
+        fiberGoal: body.fiber_goal ?? undefined,
+        sodiumGoal: body.sodium_goal ?? undefined,
       },
     });
     return NextResponse.json({ goals: serializeGoals(goals) });

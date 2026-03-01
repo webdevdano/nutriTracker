@@ -26,6 +26,10 @@ export default function ProfileSetupPage() {
   const [error, setError] = useState<string | null>(null);
   const [hasProfile, setHasProfile] = useState(false);
 
+  // Personal info
+  const [fullName, setFullName] = useState("");
+
+  // Physical stats
   const [age, setAge] = useState("");
   const [sex, setSex] = useState("female");
   const [feet, setFeet] = useState("");
@@ -34,14 +38,32 @@ export default function ProfileSetupPage() {
   const [activityLevel, setActivityLevel] = useState("Active");
   const [fitnessGoal, setFitnessGoal] = useState<"shred" | "bulk" | "maintain">("maintain");
 
+  // Calculated results (kept in state so user can edit before saving)
   const [calculated, setCalculated] = useState<CalculatedNeeds | null>(null);
+  const [editedCalories, setEditedCalories] = useState("");
+  const [editedProtein, setEditedProtein] = useState("");
+  const [editedCarbs, setEditedCarbs] = useState("");
+  const [editedFat, setEditedFat] = useState("");
+  const [editedFiber, setEditedFiber] = useState("");
+  const [editedSodium, setEditedSodium] = useState("");
 
   useEffect(() => {
     async function checkProfile() {
       const res = await fetch("/api/profile");
       if (res.ok) {
         const { profile } = await res.json();
-        if (profile?.age) setHasProfile(true);
+        if (profile?.age) {
+          setHasProfile(true);
+          // Pre-populate all form fields with existing data
+          if (profile.full_name) setFullName(profile.full_name);
+          if (profile.age) setAge(String(profile.age));
+          if (profile.sex) setSex(profile.sex);
+          if (profile.height_feet != null) setFeet(String(profile.height_feet));
+          if (profile.height_inches != null) setInches(String(profile.height_inches));
+          if (profile.weight_lbs) setWeight(String(profile.weight_lbs));
+          if (profile.activity_level) setActivityLevel(profile.activity_level);
+          if (profile.fitness_goal) setFitnessGoal(profile.fitness_goal as "shred" | "bulk" | "maintain");
+        }
       }
     }
     checkProfile();
@@ -101,11 +123,10 @@ export default function ProfileSetupPage() {
       // Adjust calories based on fitness goal
       let adjustedCalories = calories;
       if (fitnessGoal === "shred") {
-        adjustedCalories = calories - 500; // Caloric deficit for weight loss
+        adjustedCalories = calories - 500;
       } else if (fitnessGoal === "bulk") {
-        adjustedCalories = calories + 500; // Caloric surplus for muscle gain
+        adjustedCalories = calories + 500;
       }
-      // maintain stays at base calories
       
       const macros = nutritionData.macronutrients_table?.["macronutrients-table"] || [];
       const proteinRow = macros.find((row: string[]) => row[0] === "Protein");
@@ -144,7 +165,7 @@ export default function ProfileSetupPage() {
       else if (bmiValue >= 25 && bmiValue < 30) bmiCategory = "Overweight";
       else if (bmiValue >= 30) bmiCategory = "Obese";
 
-      setCalculated({
+      const result: CalculatedNeeds = {
         bmi: bmiValue.toFixed(1),
         bmiCategory,
         calories: adjustedCalories,
@@ -158,7 +179,17 @@ export default function ProfileSetupPage() {
         vitamin_c,
         vitamin_d,
         potassium,
-      });
+      };
+
+      setCalculated(result);
+
+      // Seed editable goal inputs with calculated values
+      setEditedCalories(String(adjustedCalories));
+      setEditedProtein(String(protein));
+      setEditedCarbs(String(carbs));
+      setEditedFat(String(fat));
+      setEditedFiber(String(fiber));
+      setEditedSodium(String(sodium));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Calculation failed");
     } finally {
@@ -173,54 +204,56 @@ export default function ProfileSetupPage() {
     setError(null);
 
     try {
+      // Save profile (personal info + physical stats + recommendations)
+      const profileRes = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: fullName.trim() || undefined,
+          age: parseInt(age),
+          sex,
+          height_feet: parseInt(feet),
+          height_inches: parseInt(inches),
+          weight_lbs: parseInt(weight),
+          activity_level: activityLevel,
+          fitness_goal: fitnessGoal,
+          bmi: parseFloat(calculated.bmi),
+          recommended_calories: calculated.calories,
+          recommended_protein: calculated.protein,
+          recommended_carbs: calculated.carbs,
+          recommended_fat: calculated.fat,
+        }),
+      });
 
-    // Save profile
-    const profileRes = await fetch("/api/profile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        age: parseInt(age),
-        sex,
-        height_feet: parseInt(feet),
-        height_inches: parseInt(inches),
-        weight_lbs: parseInt(weight),
-        activity_level: activityLevel,
-        fitness_goal: fitnessGoal,
-        bmi: parseFloat(calculated.bmi),
-        recommended_calories: calculated.calories,
-        recommended_protein: calculated.protein,
-        recommended_carbs: calculated.carbs,
-        recommended_fat: calculated.fat,
-      }),
-    });
+      if (!profileRes.ok) {
+        const body = await profileRes.json().catch(() => ({}));
+        setError(body.error || body.message || "Failed to save profile");
+        setLoading(false);
+        return;
+      }
 
-    if (!profileRes.ok) {
-      const body = await profileRes.json().catch(() => ({}));
-      setError(body.error || body.message || "Failed to save profile");
-      setLoading(false);
-      return;
-    }
+      // Save goals (user-editable targets)
+      const goalsRes = await fetch("/api/user-goals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          calories_goal: parseInt(editedCalories) || calculated.calories,
+          protein_goal: parseInt(editedProtein) || calculated.protein,
+          carbs_goal: parseInt(editedCarbs) || calculated.carbs,
+          fat_goal: parseInt(editedFat) || calculated.fat,
+          fiber_goal: parseInt(editedFiber) || calculated.fiber,
+          sodium_goal: parseInt(editedSodium) || calculated.sodium,
+        }),
+      });
 
-    // Save goals
-    const goalsRes = await fetch("/api/user-goals", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        calories_goal: calculated.calories,
-        protein_goal: calculated.protein,
-        carbs_goal: calculated.carbs,
-        fat_goal: calculated.fat,
-      }),
-    });
+      if (!goalsRes.ok) {
+        const body = await goalsRes.json().catch(() => ({}));
+        setError(body.error || body.message || "Failed to save goals");
+        setLoading(false);
+        return;
+      }
 
-    if (!goalsRes.ok) {
-      const body = await goalsRes.json().catch(() => ({}));
-      setError(body.error || body.message || "Failed to save goals");
-      setLoading(false);
-      return;
-    }
-
-    router.push("/app");
+      router.push("/app");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save profile");
     } finally {
@@ -236,7 +269,7 @@ export default function ProfileSetupPage() {
             {hasProfile ? "Update Your Profile" : "Set Up Your Profile"}
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Calculate your daily nutritional needs and set personalized goals
+            Enter your details to get personalised nutrition targets, then fine-tune them before saving.
           </p>
         </div>
 
@@ -244,7 +277,22 @@ export default function ProfileSetupPage() {
           onSubmit={handleCalculate}
           className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
         >
+          {/* ── Personal Information ── */}
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Personal Information
+          </h2>
           <div className="grid gap-4 sm:grid-cols-2">
+            <label className="col-span-full grid gap-1.5">
+              <span className="text-sm font-medium">Full Name <span className="font-normal text-zinc-400">(optional)</span></span>
+              <input
+                type="text"
+                placeholder="e.g. Alex Johnson"
+                className="h-10 rounded-xl border border-zinc-300 bg-transparent px-3 text-sm dark:border-zinc-700"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </label>
+
             <label className="grid gap-1.5">
               <span className="text-sm font-medium">Age</span>
               <input
@@ -267,7 +315,13 @@ export default function ProfileSetupPage() {
                 <option value="male">Male</option>
               </select>
             </label>
+          </div>
 
+          {/* ── Physical Stats ── */}
+          <h2 className="mb-4 mt-8 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Physical Stats
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
             <label className="grid gap-1.5">
               <span className="text-sm font-medium">Height (feet)</span>
               <input
@@ -315,52 +369,50 @@ export default function ProfileSetupPage() {
             </label>
           </div>
 
-          {/* Fitness Goal Section */}
-          <div className="mt-6 grid gap-3">
-            <label className="grid gap-2">
-              <span className="text-sm font-medium">Fitness Goal</span>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setFitnessGoal("shred")}
-                  className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
-                    fitnessGoal === "shred"
-                      ? "border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-950 dark:text-blue-300"
-                      : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600"
-                  }`}
-                >
-                  <div className="text-xs opacity-70">🔥</div>
-                  <div className="mt-1">Shred</div>
-                  <div className="mt-0.5 text-xs opacity-60">-500 cal</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFitnessGoal("maintain")}
-                  className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
-                    fitnessGoal === "maintain"
-                      ? "border-green-500 bg-green-50 text-green-700 dark:border-green-400 dark:bg-green-950 dark:text-green-300"
-                      : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600"
-                  }`}
-                >
-                  <div className="text-xs opacity-70">⚖️</div>
-                  <div className="mt-1">Maintain</div>
-                  <div className="mt-0.5 text-xs opacity-60">base</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFitnessGoal("bulk")}
-                  className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
-                    fitnessGoal === "bulk"
-                      ? "border-purple-500 bg-purple-50 text-purple-700 dark:border-purple-400 dark:bg-purple-950 dark:text-purple-300"
-                      : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600"
-                  }`}
-                >
-                  <div className="text-xs opacity-70">💪</div>
-                  <div className="mt-1">Bulk</div>
-                  <div className="mt-0.5 text-xs opacity-60">+500 cal</div>
-                </button>
-              </div>
-            </label>
+          {/* ── Fitness Goal ── */}
+          <h2 className="mb-4 mt-8 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Fitness Goal
+          </h2>
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={() => setFitnessGoal("shred")}
+              className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
+                fitnessGoal === "shred"
+                  ? "border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-950 dark:text-blue-300"
+                  : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600"
+              }`}
+            >
+              <div className="text-xs opacity-70">🔥</div>
+              <div className="mt-1">Shred</div>
+              <div className="mt-0.5 text-xs opacity-60">−500 cal/day</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setFitnessGoal("maintain")}
+              className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
+                fitnessGoal === "maintain"
+                  ? "border-green-500 bg-green-50 text-green-700 dark:border-green-400 dark:bg-green-950 dark:text-green-300"
+                  : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600"
+              }`}
+            >
+              <div className="text-xs opacity-70">⚖️</div>
+              <div className="mt-1">Maintain</div>
+              <div className="mt-0.5 text-xs opacity-60">base TDEE</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setFitnessGoal("bulk")}
+              className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
+                fitnessGoal === "bulk"
+                  ? "border-purple-500 bg-purple-50 text-purple-700 dark:border-purple-400 dark:bg-purple-950 dark:text-purple-300"
+                  : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600"
+              }`}
+            >
+              <div className="text-xs opacity-70">💪</div>
+              <div className="mt-1">Bulk</div>
+              <div className="mt-0.5 text-xs opacity-60">+500 cal/day</div>
+            </button>
           </div>
 
           {error ? (
@@ -372,7 +424,7 @@ export default function ProfileSetupPage() {
             className="mt-6 h-11 w-full rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
             disabled={calculating}
           >
-            {calculating ? "Calculating..." : "Calculate My Needs"}
+            {calculating ? "Calculating…" : "Calculate My Needs"}
           </button>
         </form>
 
@@ -380,10 +432,10 @@ export default function ProfileSetupPage() {
           <div className="mt-6">
             <div className="rounded-2xl border border-zinc-200/70 bg-white p-6 dark:border-zinc-800/80 dark:bg-zinc-900">
               <h2 className="text-lg font-semibold tracking-tight">
-                Your Health Profile & Recommendations
+                Your Health Profile &amp; Recommendations
               </h2>
-              
-              {/* BMI Section */}
+
+              {/* BMI */}
               <div className="mt-4 rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800/50">
                 <div className="flex items-center justify-between">
                   <div>
@@ -398,57 +450,99 @@ export default function ProfileSetupPage() {
                 </div>
               </div>
 
-              {/* Macronutrients */}
-              <h3 className="mt-6 text-sm font-semibold">Daily Macronutrient Targets</h3>
+              {/* Editable macronutrient goals */}
+              <div className="mt-6 flex items-center justify-between">
+                <h3 className="text-sm font-semibold">Daily Goal Targets</h3>
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">Edit any value before saving</span>
+              </div>
               <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Calories</div>
-                  <div className="mt-1 text-xl font-semibold">{calculated.calories} cal</div>
-                </div>
-                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Protein</div>
-                  <div className="mt-1 text-xl font-semibold">{calculated.protein}g</div>
-                </div>
-                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Carbs</div>
-                  <div className="mt-1 text-xl font-semibold">{calculated.carbs}g</div>
-                </div>
-                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Fat</div>
-                  <div className="mt-1 text-xl font-semibold">{calculated.fat}g</div>
-                </div>
-                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Fiber</div>
-                  <div className="mt-1 text-xl font-semibold">{calculated.fiber}g</div>
-                </div>
-                <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Sodium (limit)</div>
-                  <div className="mt-1 text-xl font-semibold">{calculated.sodium}mg</div>
-                </div>
+                {/* Calories */}
+                <label className="grid gap-1 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Calories (cal)</span>
+                  <input
+                    type="number"
+                    className="w-full bg-transparent text-xl font-semibold outline-none"
+                    value={editedCalories}
+                    onChange={(e) => setEditedCalories(e.target.value)}
+                  />
+                </label>
+                {/* Protein */}
+                <label className="grid gap-1 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Protein (g)</span>
+                  <input
+                    type="number"
+                    className="w-full bg-transparent text-xl font-semibold outline-none"
+                    value={editedProtein}
+                    onChange={(e) => setEditedProtein(e.target.value)}
+                  />
+                </label>
+                {/* Carbs */}
+                <label className="grid gap-1 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Carbs (g)</span>
+                  <input
+                    type="number"
+                    className="w-full bg-transparent text-xl font-semibold outline-none"
+                    value={editedCarbs}
+                    onChange={(e) => setEditedCarbs(e.target.value)}
+                  />
+                </label>
+                {/* Fat */}
+                <label className="grid gap-1 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Fat (g)</span>
+                  <input
+                    type="number"
+                    className="w-full bg-transparent text-xl font-semibold outline-none"
+                    value={editedFat}
+                    onChange={(e) => setEditedFat(e.target.value)}
+                  />
+                </label>
+                {/* Fiber */}
+                <label className="grid gap-1 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Fiber (g)</span>
+                  <input
+                    type="number"
+                    className="w-full bg-transparent text-xl font-semibold outline-none"
+                    value={editedFiber}
+                    onChange={(e) => setEditedFiber(e.target.value)}
+                  />
+                </label>
+                {/* Sodium */}
+                <label className="grid gap-1 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Sodium limit (mg)</span>
+                  <input
+                    type="number"
+                    className="w-full bg-transparent text-xl font-semibold outline-none"
+                    value={editedSodium}
+                    onChange={(e) => setEditedSodium(e.target.value)}
+                  />
+                </label>
               </div>
 
-              {/* Micronutrients */}
-              <h3 className="mt-6 text-sm font-semibold">Key Micronutrient Targets</h3>
+              {/* Micronutrients — read-only reference */}
+              <h3 className="mt-6 text-sm font-semibold">Key Micronutrient Reference</h3>
+              <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+                Recommended daily intake based on your profile — tracked automatically from logged meals.
+              </p>
               <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
                   <div className="text-xs text-zinc-600 dark:text-zinc-400">Vitamin C</div>
-                  <div className="mt-1 text-lg font-semibold">{calculated.vitamin_c}mg</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.vitamin_c} mg</div>
                 </div>
                 <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
                   <div className="text-xs text-zinc-600 dark:text-zinc-400">Vitamin D</div>
-                  <div className="mt-1 text-lg font-semibold">{calculated.vitamin_d}µg</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.vitamin_d} µg</div>
                 </div>
                 <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
                   <div className="text-xs text-zinc-600 dark:text-zinc-400">Calcium</div>
-                  <div className="mt-1 text-lg font-semibold">{calculated.calcium}mg</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.calcium} mg</div>
                 </div>
                 <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
                   <div className="text-xs text-zinc-600 dark:text-zinc-400">Iron</div>
-                  <div className="mt-1 text-lg font-semibold">{calculated.iron}mg</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.iron} mg</div>
                 </div>
                 <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/30">
                   <div className="text-xs text-zinc-600 dark:text-zinc-400">Potassium</div>
-                  <div className="mt-1 text-lg font-semibold">{calculated.potassium}mg</div>
+                  <div className="mt-1 text-lg font-semibold">{calculated.potassium} mg</div>
                 </div>
               </div>
 
@@ -457,7 +551,7 @@ export default function ProfileSetupPage() {
                 className="mt-6 h-11 w-full rounded-full bg-green-900 px-5 text-sm font-medium text-white hover:bg-green-800 disabled:opacity-60 dark:bg-green-50 dark:text-green-900 dark:hover:bg-white"
                 disabled={loading}
               >
-                {loading ? "Saving..." : "Save Profile & Set Goals"}
+                {loading ? "Saving…" : "Save Profile & Set Goals"}
               </button>
             </div>
           </div>

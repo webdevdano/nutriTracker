@@ -105,6 +105,8 @@ model UserGoals {
   proteinGoal  Int?
   carbsGoal    Int?
   fatGoal      Int?
+  fiberGoal    Int?
+  sodiumGoal   Int?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
