@@ -126,7 +126,7 @@ const SUPERFOODS: Superfood[] = [
     name: "Salmon",
     emoji: "🐟",
     description: "Omega-3 rich fatty fish",
-    nutrients: ["Protein", "Omega-3 Fatty Acids", "Vitamin D", "Vitamin B12", "Selenium", "Niacin"],
+    nutrients: ["Protein", "Omega-3s", "Vitamin D", "Vitamin B12", "Selenium", "Niacin"],
     benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"],
     serving: "3 oz (85g)"
   },
