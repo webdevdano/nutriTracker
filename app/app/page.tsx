@@ -558,47 +558,75 @@ export default function TodayPage() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-2">
-            {logs.map((log) => (
-              <div
-                key={log.id}
-                className="flex items-center justify-between rounded-xl border border-zinc-200/70 p-4 dark:border-blue-950/70 bg-white dark:bg-zinc-900"
-              >
-                <div>
-                  <div className="text-sm font-medium">{log.food_name}</div>
-                  <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-                    {log.quantity}x serving · {Math.round((log.calories || 0) * log.quantity)}{" "}
-                    cal · {Math.round((log.protein || 0) * log.quantity)}g protein
+          <div className="space-y-6">
+            {(["BREAKFAST", "LUNCH", "DINNER", "SNACK"] as const).map((meal) => {
+              const mealLogs = logs.filter((l) => (l.meal_type ?? "SNACK") === meal);
+              if (mealLogs.length === 0) return null;
+
+              const mealMeta: Record<string, { label: string; emoji: string; color: string }> = {
+                BREAKFAST: { label: "Breakfast", emoji: "🌅", color: "text-amber-600 dark:text-amber-400" },
+                LUNCH:     { label: "Lunch",     emoji: "☀️",  color: "text-blue-600 dark:text-blue-400" },
+                DINNER:    { label: "Dinner",    emoji: "🌙", color: "text-indigo-600 dark:text-indigo-400" },
+                SNACK:     { label: "Snack",     emoji: "🍎", color: "text-emerald-600 dark:text-emerald-400" },
+              };
+              const { label, emoji, color } = mealMeta[meal];
+              const mealCals = mealLogs.reduce((s, l) => s + (l.calories || 0) * l.quantity, 0);
+
+              return (
+                <div key={meal}>
+                  {/* Section header */}
+                  <div className="mb-2 flex items-center justify-between">
+                    <h3 className={`flex items-center gap-1.5 text-sm font-semibold ${color}`}>
+                      <span>{emoji}</span> {label}
+                    </h3>
+                    <span className="text-xs text-zinc-400">{Math.round(mealCals)} kcal</span>
+                  </div>
+
+                  <div className="grid gap-2">
+                    {mealLogs.map((log) => (
+                      <div
+                        key={log.id}
+                        className="flex items-center justify-between rounded-xl border border-zinc-200/70 p-4 dark:border-blue-950/70 bg-white dark:bg-zinc-900"
+                      >
+                        <div>
+                          <div className="text-sm font-medium">{log.food_name}</div>
+                          <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                            {log.quantity}x serving · {Math.round((log.calories || 0) * log.quantity)}{" "}
+                            cal · {Math.round((log.protein || 0) * log.quantity)}g protein
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="text-xs text-zinc-500">
+                            {new Date(log.time).toLocaleTimeString("en-US", {
+                              hour: "numeric",
+                              minute: "2-digit",
+                            })}
+                          </div>
+                          <button
+                            onClick={() => handleEditLog(log)}
+                            className="rounded-full p-1.5 text-zinc-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/60 dark:hover:text-blue-300"
+                            title="Edit"
+                          >
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => handleRemoveLog(log.id)}
+                            className="rounded-full p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/60 dark:hover:text-red-300"
+                            title="Remove"
+                          >
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="text-xs text-zinc-500">
-                    {new Date(log.time).toLocaleTimeString("en-US", {
-                      hour: "numeric",
-                      minute: "2-digit",
-                    })}
-                  </div>
-                  <button
-                    onClick={() => handleEditLog(log)}
-                    className="rounded-full p-1.5 text-zinc-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/60 dark:hover:text-blue-300"
-                    title="Edit"
-                  >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => handleRemoveLog(log.id)}
-                    className="rounded-full p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/60 dark:hover:text-red-300"
-                    title="Remove"
-                  >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
