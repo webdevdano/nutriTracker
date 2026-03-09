@@ -502,6 +502,11 @@ export default function TodayPage() {
         <StatCard label="Fat"      value={Math.round(totals.fat)}      goal={goals?.fat_goal}      unit="g" />
       </div>
 
+      {/* Micronutrient snapshot — today only */}
+      {timeView === 'today' && !isGuest && (
+        <NutrientMiniWidget totals={totals} />
+      )}
+
       {/* Meal Breakdown Pie — today only, needs at least one log */}
       {timeView === 'today' && logs.length > 0 && (
         <MealPieChart logs={logs} />
@@ -1069,6 +1074,64 @@ function Chart({
           />
         </LineChart>
       </ResponsiveContainer>
+    </div>
+  );
+}
+
+// ─── NutrientMiniWidget ──────────────────────────────────────────────────────
+const MICRO_ITEMS = [
+  { key: "fiber",     label: "Fiber",     unit: "g",  rdi: 28   },
+  { key: "vitamin_c", label: "Vitamin C", unit: "mg", rdi: 90   },
+  { key: "vitamin_d", label: "Vitamin D", unit: "µg", rdi: 20   },
+  { key: "calcium",   label: "Calcium",   unit: "mg", rdi: 1000 },
+  { key: "iron",      label: "Iron",      unit: "mg", rdi: 18   },
+  { key: "potassium", label: "Potassium", unit: "mg", rdi: 4700 },
+];
+
+function NutrientMiniWidget({ totals }: { totals: Record<string, number> }) {
+  return (
+    <div className="mt-4 rounded-2xl border border-zinc-200/70 bg-white p-5 dark:border-blue-950/70 dark:bg-zinc-900">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-sm font-semibold">Micronutrient Snapshot</h3>
+        <a
+          href="/app/nutrients"
+          className="flex items-center gap-1 text-xs font-medium text-[#4169E1] hover:underline dark:text-[#87CEEB]"
+        >
+          Full breakdown
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {MICRO_ITEMS.map(({ key, label, unit, rdi }) => {
+          const val = totals[key] ?? 0;
+          const pct = rdi > 0 ? Math.min(100, Math.round((val / rdi) * 100)) : 0;
+          const barColor =
+            pct >= 80 ? "bg-green-500" :
+            pct >= 50 ? "bg-yellow-400" :
+            pct > 0   ? "bg-red-400" :
+            "bg-zinc-200 dark:bg-zinc-700";
+          const textColor =
+            pct >= 80 ? "text-green-700 dark:text-green-400" :
+            pct >= 50 ? "text-yellow-700 dark:text-yellow-400" :
+            pct > 0   ? "text-red-600 dark:text-red-400" :
+            "text-zinc-400 dark:text-zinc-500";
+          const display = val < 1 ? val.toFixed(1) : val < 10 ? val.toFixed(1) : String(Math.round(val));
+          return (
+            <div key={key}>
+              <div className="mb-1 flex items-center justify-between text-xs">
+                <span className="font-medium text-zinc-700 dark:text-zinc-300">{label}</span>
+                <span className={`font-semibold tabular-nums ${textColor}`}>{display}{unit} <span className="font-normal text-zinc-400">/ {rdi}{unit}</span></span>
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                <div className={`h-full rounded-full transition-all ${barColor}`} style={{ width: `${pct}%` }} />
+              </div>
+              <p className={`mt-0.5 text-[10px] ${textColor}`}>{pct}%</p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
