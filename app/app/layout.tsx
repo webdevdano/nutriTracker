@@ -45,6 +45,12 @@ export default async function AppLayout({
               </a>
               <a
                 className="whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#4169E1] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#87CEEB]"
+                href="/app/nutrients"
+              >
+                Nutrients
+              </a>
+              <a
+                className="whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium text-[#A9A9A9] transition-colors hover:bg-white hover:text-[#4169E1] dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-[#87CEEB]"
                 href="/app/grocery"
               >
                 Lists
