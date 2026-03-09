@@ -36,6 +36,7 @@ model User {
   customFoods   CustomFood[]
   userRecipes   UserRecipe[]
   savedRecipes  SavedRecipe[]
+  weightLogs    WeightLog[]
 }
 
 model Account {
@@ -366,4 +367,23 @@ model SavedRecipe {
 
   @@unique([userId, spoonacularId])
   @@index([userId])
+}
+
+// =====================================================
+// WEIGHT TRACKING
+// =====================================================
+
+model WeightLog {
+  id        String   @id @default(uuid())
+  userId    String
+  weightLbs Decimal
+  note      String?
+  loggedAt  DateTime @db.Date
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, loggedAt])
+  @@index([userId, loggedAt(sort: Desc)])
 }

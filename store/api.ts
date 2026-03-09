@@ -142,12 +142,20 @@ export type SavedRecipe = {
   created_at: string;
 };
 
+export type WeightLog = {
+  id: string;
+  weight_lbs: number;
+  note: string | null;
+  logged_at: string;  // YYYY-MM-DD
+  created_at: string;
+};
+
 // ─── RTK Query API ────────────────────────────────────────────────────────────
 
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }),
-  tagTypes: ["FoodLog", "Goals", "Grocery", "Favorites", "CustomFoods", "UserRecipes", "SavedRecipes"],
+  tagTypes: ["FoodLog", "Goals", "Grocery", "Favorites", "CustomFoods", "UserRecipes", "SavedRecipes", "WeightLogs"],
 
   endpoints: (builder) => ({
     // ── Food Logs ──────────────────────────────────────────────────────────
@@ -338,6 +346,24 @@ export const api = createApi({
       query: (id) => ({ url: `api/recipes/saved?id=${id}`, method: "DELETE" }),
       invalidatesTags: [{ type: "SavedRecipes", id: "LIST" }],
     }),
+
+    // ── Weight Logs ───────────────────────────────────────────────────
+    getWeightLogs: builder.query<WeightLog[], { days?: number } | void>({
+      query: (arg) => `api/weight${arg?.days ? `?days=${arg.days}` : ""}`,
+      transformResponse: (res: { logs: WeightLog[] }) => res.logs ?? [],
+      providesTags: [{ type: "WeightLogs", id: "LIST" }],
+    }),
+
+    addWeightLog: builder.mutation<WeightLog, { weight_lbs: number; note?: string; logged_at?: string }>({
+      query: (body) => ({ url: "api/weight", method: "POST", body }),
+      transformResponse: (res: { log: WeightLog }) => res.log,
+      invalidatesTags: [{ type: "WeightLogs", id: "LIST" }],
+    }),
+
+    deleteWeightLog: builder.mutation<void, string>({
+      query: (id) => ({ url: `api/weight?id=${id}`, method: "DELETE" }),
+      invalidatesTags: [{ type: "WeightLogs", id: "LIST" }],
+    }),
   }),
 });
 
@@ -372,4 +398,7 @@ export const {
   useGetSavedRecipesQuery,
   useSaveRecipeMutation,
   useUnsaveRecipeMutation,
+  useGetWeightLogsQuery,
+  useAddWeightLogMutation,
+  useDeleteWeightLogMutation,
 } = api;

@@ -6,6 +6,7 @@ import type {
   Profile,
   UserRecipe,
   SavedRecipe,
+  WeightLog,
 } from "./generated/prisma";
 
 // Convert Prisma Decimal / null to plain number | null
@@ -170,5 +171,17 @@ export function serializeSavedRecipe(r: SavedRecipe) {
     carbs: n(r.carbs),
     fat: n(r.fat),
     created_at: r.createdAt instanceof Date ? r.createdAt.toISOString() : r.createdAt,
+  };
+}
+
+// Serialize Prisma WeightLog → snake_case
+export function serializeWeightLog(w: WeightLog) {
+  return {
+    id: w.id,
+    user_id: w.userId,
+    weight_lbs: Number(w.weightLbs),
+    note: w.note,
+    logged_at: w.loggedAt instanceof Date ? w.loggedAt.toISOString().split("T")[0] : w.loggedAt,
+    created_at: w.createdAt instanceof Date ? w.createdAt.toISOString() : w.createdAt,
   };
 }

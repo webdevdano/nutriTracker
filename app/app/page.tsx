@@ -30,6 +30,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer,
 } from "recharts";
 import Toast from "@/components/Toast";
+import WeightWidget from "@/components/WeightWidget";
 
 type UserGoal = {
   calories_goal: number | null;
@@ -360,8 +361,9 @@ export default function TodayPage() {
       )}
 
       {timeView === 'today' && !isGuest && (
-        <div className="mb-6">
+        <div className="mb-6 grid gap-4 lg:grid-cols-[3fr_2fr] lg:items-stretch">
           <DailySummaryCard totals={totals} goals={goals} logCount={logs.length} />
+          <WeightWidget />
         </div>
       )}
 
@@ -482,6 +484,13 @@ export default function TodayPage() {
               unit="g"
             />
           </div>
+        </div>
+      )}
+
+      {/* Weight trend — shown in week/month view as full-width standalone card */}
+      {timeView !== 'today' && !isGuest && (
+        <div className="mt-4">
+          <WeightWidget />
         </div>
       )}
 
