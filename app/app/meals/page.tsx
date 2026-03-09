@@ -1,190 +1,214 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useMemo } from "react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useGetFoodLogsQuery, type FoodLog } from "@/store/api";
 
-type Recipe = {
-  id: number;
-  title: string;
-  image: string;
-  servings: number;
-  readyInMinutes: number;
-  summary: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  ingredients: string[];
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type DayGroup = {
+  date: string;
+  label: string;
+  logs: FoodLog[];
+  totals: { calories: number; protein: number; carbs: number; fat: number };
 };
 
+type MealSection = {
+  type: "BREAKFAST" | "LUNCH" | "DINNER" | "SNACK";
+  logs: FoodLog[];
+  calories: number;
+};
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const MEAL_META: Record<string, { label: string; emoji: string; color: string }> = {
+  BREAKFAST: { label: "Breakfast", emoji: "🌅", color: "text-amber-600 dark:text-amber-400" },
+  LUNCH:     { label: "Lunch",     emoji: "☀️",  color: "text-blue-600 dark:text-blue-400" },
+  DINNER:    { label: "Dinner",    emoji: "🌙",  color: "text-indigo-600 dark:text-indigo-400" },
+  SNACK:     { label: "Snack",     emoji: "🍎",  color: "text-emerald-600 dark:text-emerald-400" },
+};
+
+function formatDate(dateStr: string) {
+  const d         = new Date(dateStr + "T12:00:00");
+  const today     = new Date().toISOString().split("T")[0];
+  const yesterday = new Date(Date.now() - 86_400_000).toISOString().split("T")[0];
+  if (dateStr === today)     return "Today";
+  if (dateStr === yesterday) return "Yesterday";
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
+
+// ─── LogRow ───────────────────────────────────────────────────────────────────
+
+function LogRow({ log }: { log: FoodLog }) {
+  const totalCals = Math.round((log.calories || 0) * log.quantity);
+  const protein   = Math.round((log.protein  || 0) * log.quantity);
+  const carbs     = Math.round((log.carbs    || 0) * log.quantity);
+  const fat       = Math.round((log.fat      || 0) * log.quantity);
+  const label     = log.food_name.replace(/\s*\(\d+g\)$/, "");
+  const serving   = log.food_name.match(/\((\d+g)\)$/)?.[1];
+
+  return (
+    <div className="flex items-start justify-between gap-2 rounded-lg px-2 py-1.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/60">
+      <div className="min-w-0">
+        <p className="truncate text-sm font-medium">{label}</p>
+        <p className="mt-0.5 text-xs text-zinc-400">
+          {log.quantity !== 1 && <span>{log.quantity} × </span>}
+          {serving ?? `${Math.round((log.calories || 0) * 100) / 100} kcal/srv`}
+        </p>
+      </div>
+      <div className="flex shrink-0 items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+        <span className="font-medium text-zinc-700 dark:text-zinc-300">{totalCals} kcal</span>
+        <span className="hidden sm:inline">P {protein}g</span>
+        <span className="hidden sm:inline">C {carbs}g</span>
+        <span className="hidden sm:inline">F {fat}g</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── DayCard ──────────────────────────────────────────────────────────────────
+
+function DayCard({ day }: { day: DayGroup }) {
+  const mealSections: MealSection[] = (["BREAKFAST", "LUNCH", "DINNER", "SNACK"] as const)
+    .map((type) => {
+      const ml = day.logs.filter((l) => (l.meal_type ?? "SNACK") === type);
+      return { type, logs: ml, calories: ml.reduce((s, l) => s + (l.calories || 0) * l.quantity, 0) };
+    })
+    .filter((s) => s.logs.length > 0);
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-zinc-200/70 bg-white dark:border-zinc-800/80 dark:bg-zinc-900">
+      {/* Day header */}
+      <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-3.5 dark:border-zinc-800">
+        <span className="text-sm font-semibold">{day.label}</span>
+        <div className="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+          <span className="font-medium text-zinc-700 dark:text-zinc-300">{Math.round(day.totals.calories)} kcal</span>
+          <span className="hidden sm:inline">P {Math.round(day.totals.protein)}g</span>
+          <span className="hidden sm:inline">C {Math.round(day.totals.carbs)}g</span>
+          <span className="hidden sm:inline">F {Math.round(day.totals.fat)}g</span>
+        </div>
+      </div>
+
+      {/* Meal sections */}
+      <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+        {mealSections.map((section) => {
+          const meta = MEAL_META[section.type];
+          return (
+            <div key={section.type} className="px-5 py-3">
+              <div className="mb-2 flex items-center gap-1.5">
+                <span className="text-sm">{meta.emoji}</span>
+                <span className={`text-xs font-semibold ${meta.color}`}>{meta.label}</span>
+                <span className="ml-auto text-xs text-zinc-400">{Math.round(section.calories)} kcal</span>
+              </div>
+              <div className="space-y-1.5">
+                {section.logs.map((log) => (
+                  <LogRow key={log.id} log={log} />
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function MealsPage() {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const { status }  = useSession();
+  const isGuest     = status === "unauthenticated";
 
-  useEffect(() => {
-    loadRecipes();
-  }, []);
+  const today    = new Date().toISOString().split("T")[0];
+  const sevenAgo = new Date(Date.now() - 6 * 86_400_000).toISOString().split("T")[0];
 
-  async function loadRecipes() {
-    try {
-      const response = await fetch("/api/recipes");
-      const data = await response.json();
-      
-      if (!response.ok) {
-        setError(data.error || "Failed to load recipes");
-        return;
-      }
-      
-      setRecipes(data.recipes || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load recipes");
-    } finally {
-      setLoading(false);
+  const { data: logs = [], isLoading } = useGetFoodLogsQuery(
+    { start: sevenAgo, end: today },
+    { skip: isGuest }
+  );
+
+  // Group logs by date, newest first
+  const days: DayGroup[] = useMemo(() => {
+    const map: Record<string, FoodLog[]> = {};
+    for (const log of logs) {
+      const d = (log as FoodLog & { date?: string }).date ?? today;
+      (map[d] ??= []).push(log);
     }
-  }
+    return Object.entries(map)
+      .sort(([a], [b]) => b.localeCompare(a))
+      .map(([date, dayLogs]) => ({
+        date,
+        label: formatDate(date),
+        logs: dayLogs,
+        totals: dayLogs.reduce(
+          (acc, l) => ({
+            calories: acc.calories + (l.calories || 0) * l.quantity,
+            protein:  acc.protein  + (l.protein  || 0) * l.quantity,
+            carbs:    acc.carbs    + (l.carbs    || 0) * l.quantity,
+            fat:      acc.fat      + (l.fat      || 0) * l.quantity,
+          }),
+          { calories: 0, protein: 0, carbs: 0, fat: 0 }
+        ),
+      }));
+  }, [logs, today]);
 
-  function stripHtml(html: string): string {
-    return html.replace(/<[^>]*>/g, "");
+  if (isGuest) {
+    return (
+      <div className="mx-auto w-full max-w-3xl px-6 py-8">
+        <h1 className="text-2xl font-semibold tracking-tight">Meal History</h1>
+        <div className="mt-6 rounded-2xl border border-[#4169E1]/30 bg-[#4169E1]/5 p-8 text-center dark:bg-blue-950/30">
+          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-200">Sign in to see your meal history.</p>
+          <div className="mt-4 flex justify-center gap-3">
+            <Link href="/signup" className="rounded-full bg-[#4169E1] px-5 py-2 text-sm font-medium text-white hover:bg-[#000080]">
+              Get started
+            </Link>
+            <Link href="/login" className="rounded-full border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">
+              Sign in
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Meal Suggestions</h1>
-      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-        Healthy recipe ideas to hit your daily goals
-      </p>
-
-      {loading ? (
-        <div className="mt-8 text-center">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">Loading recipes...</p>
+    <div className="mx-auto w-full max-w-3xl px-6 py-8">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Meal History</h1>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Last 7 days</p>
         </div>
-      ) : error ? (
-        <div className="mt-8 rounded-2xl border border-red-200/70 bg-red-50 p-8 text-center dark:border-red-800/80 dark:bg-red-950">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-        </div>
-      ) : recipes.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-zinc-800/80">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            No meal suggestions available.
-          </p>
-        </div>
-      ) : (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {recipes.map((recipe) => (
-            <div
-              key={recipe.id}
-              className="rounded-2xl border border-zinc-200/70 p-5 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors cursor-pointer"
-              onClick={() => setSelectedRecipe(recipe)}
-            >
-              {recipe.image && (
-                <div className="relative aspect-video w-full overflow-hidden rounded-lg mb-3">
-                  <Image
-                    src={recipe.image}
-                    alt={recipe.title}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                </div>
-              )}
-              
-              <h3 className="text-sm font-semibold">{recipe.title}</h3>
-              
-              <div className="mt-2 flex gap-3 text-xs text-zinc-600 dark:text-zinc-400">
-                <span>⏱️ {recipe.readyInMinutes} min</span>
-                <span>🍽️ {recipe.servings} servings</span>
-              </div>
-
-              <div className="mt-3 flex gap-4 text-xs text-zinc-600 dark:text-zinc-400">
-                <span>{Math.round(recipe.calories)} cal</span>
-                <span>{Math.round(recipe.protein)}g protein</span>
-                <span>{Math.round(recipe.carbs)}g carbs</span>
-                <span>{Math.round(recipe.fat)}g fat</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Recipe Detail Modal */}
-      {selectedRecipe && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setSelectedRecipe(null)}
+        <Link
+          href="/app/search"
+          className="inline-flex h-9 items-center justify-center rounded-full bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
         >
-          <div
-            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
-            onClick={(e) => e.stopPropagation()}
+          + Add Food
+        </Link>
+      </div>
+
+      {isLoading && (
+        <div className="mt-10 text-center text-sm text-zinc-500 dark:text-zinc-400">Loading…</div>
+      )}
+
+      {!isLoading && days.length === 0 && (
+        <div className="mt-10 rounded-2xl border border-zinc-200/70 bg-white p-10 text-center dark:border-zinc-800/80 dark:bg-zinc-900">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">No meals logged in the last 7 days.</p>
+          <Link
+            href="/app/search"
+            className="mt-4 inline-flex rounded-full bg-[#4169E1] px-5 py-2 text-sm font-medium text-white hover:bg-[#000080] dark:bg-[#87CEEB] dark:text-black"
           >
-            <button
-              onClick={() => setSelectedRecipe(null)}
-              className="mb-4 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-            >
-              ← Back to recipes
-            </button>
-
-            {selectedRecipe.image && (
-              <div className="relative aspect-video w-full overflow-hidden rounded-lg mb-4">
-                <Image
-                  src={selectedRecipe.image}
-                  alt={selectedRecipe.title}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
-            )}
-
-            <h2 className="text-xl font-semibold">{selectedRecipe.title}</h2>
-            
-            <div className="mt-3 flex gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-              <span>⏱️ {selectedRecipe.readyInMinutes} minutes</span>
-              <span>🍽️ {selectedRecipe.servings} servings</span>
-            </div>
-
-            <div className="mt-4 grid grid-cols-4 gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
-              <div>
-                <div className="text-xs text-zinc-600 dark:text-zinc-400">Calories</div>
-                <div className="text-sm font-semibold">{Math.round(selectedRecipe.calories)}</div>
-              </div>
-              <div>
-                <div className="text-xs text-zinc-600 dark:text-zinc-400">Protein</div>
-                <div className="text-sm font-semibold">{Math.round(selectedRecipe.protein)}g</div>
-              </div>
-              <div>
-                <div className="text-xs text-zinc-600 dark:text-zinc-400">Carbs</div>
-                <div className="text-sm font-semibold">{Math.round(selectedRecipe.carbs)}g</div>
-              </div>
-              <div>
-                <div className="text-xs text-zinc-600 dark:text-zinc-400">Fat</div>
-                <div className="text-sm font-semibold">{Math.round(selectedRecipe.fat)}g</div>
-              </div>
-            </div>
-
-            {selectedRecipe.summary && (
-              <div className="mt-4">
-                <h3 className="text-sm font-semibold mb-2">Description</h3>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  {stripHtml(selectedRecipe.summary)}
-                </p>
-              </div>
-            )}
-
-            {selectedRecipe.ingredients && selectedRecipe.ingredients.length > 0 && (
-              <div className="mt-4">
-                <h3 className="text-sm font-semibold mb-2">Ingredients</h3>
-                <ul className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
-                  {selectedRecipe.ingredients.map((ing, i) => (
-                    <li key={i}>• {ing}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+            Log your first meal
+          </Link>
         </div>
       )}
+
+      <div className="mt-6 space-y-6">
+        {days.map((day) => (
+          <DayCard key={day.date} day={day} />
+        ))}
+      </div>
     </div>
   );
 }

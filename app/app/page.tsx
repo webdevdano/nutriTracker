@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery, useApolloClient } from "@apollo/client/react";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -29,6 +29,7 @@ import {
   PieChart, Pie, Cell,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer,
 } from "recharts";
+import Toast from "@/components/Toast";
 
 type UserGoal = {
   calories_goal: number | null;
@@ -90,6 +91,7 @@ export default function TodayPage() {
   const [triggerFoodDetail, { data: foodData }] = useLazyGetFoodDetailQuery();
   const apolloClient = useApolloClient(); // used to refetch GraphQL after RTK mutations
   const { data: streakData } = useGetStreakQuery(undefined, { skip: isGuest });
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
 
   // Normalise GraphQL response → same shape the rest of the page expects
   const rawGqlLogs = gqlData?.dashboard?.logs ?? [];
@@ -142,8 +144,6 @@ export default function TodayPage() {
   }, [recentLogs]);
 
   async function handleRemoveLog(logId: string) {
-    // Use the Apollo client imperatively to run the GraphQL mutation, then
-    // refetch the dashboard query so the cache stays in sync
     try {
       const { getApolloClient } = await import("@/lib/apollo-client");
       const { DELETE_FOOD_LOG_MUTATION } = await import("@/graphql/queries");
@@ -152,8 +152,9 @@ export default function TodayPage() {
         variables: { id: logId },
         refetchQueries: [{ query: DASHBOARD_QUERY, variables: { date: today } }],
       });
+      setToast({ message: "Food removed", type: "success" });
     } catch {
-      alert("Failed to remove food log");
+      setToast({ message: "Failed to remove food log", type: "error" });
     }
   }
 
@@ -163,8 +164,9 @@ export default function TodayPage() {
     try {
       await addFoodLog({ ...log, id: undefined, date: today, time: new Date().toISOString(), meal_type: mealType });
       await apolloClient.refetchQueries({ include: [DASHBOARD_QUERY] });
+      setToast({ message: `${log.food_name.replace(/\s*\(\d+g\)$/, "")} added`, type: "success" });
     } catch {
-      alert("Failed to quick-add food");
+      setToast({ message: "Failed to quick-add food", type: "error" });
     }
   }
 
@@ -173,7 +175,7 @@ export default function TodayPage() {
     try {
       await triggerFoodDetail(log.fdc_id);
     } catch {
-      alert("Could not load food data for editing");
+      setToast({ message: "Could not load food data for editing", type: "error" });
     }
   }
 
@@ -256,11 +258,12 @@ export default function TodayPage() {
 
     dispatch(setUpdating(false));
     if ('error' in patchRes) {
-      alert("Failed to update log");
+      setToast({ message: "Failed to update log", type: "error" });
       return;
     }
     // Sync the Apollo cache with the updated data
     await apolloClient.refetchQueries({ include: [DASHBOARD_QUERY] });
+    setToast({ message: "Log updated", type: "success" });
     setTimeout(() => { closeEditModal(); }, 100);
   }
 
@@ -349,6 +352,13 @@ export default function TodayPage() {
         </div>
       )}
       {/* Daily Summary Card — only meaningful in today view */}
+      {/* Tip of the Day — today only, above summary card */}
+      {timeView === 'today' && !isGuest && (
+        <div className="mb-6">
+          <TipOfTheDay totals={totals} />
+        </div>
+      )}
+
       {timeView === 'today' && !isGuest && (
         <div className="mb-6">
           <DailySummaryCard totals={totals} goals={goals} logCount={logs.length} />
@@ -486,11 +496,6 @@ export default function TodayPage() {
       {/* Meal Breakdown Pie — today only, needs at least one log */}
       {timeView === 'today' && logs.length > 0 && (
         <MealPieChart logs={logs} />
-      )}
-
-      {/* Tip of the Day — today only */}
-      {timeView === 'today' && !isGuest && (
-        <TipOfTheDay totals={totals} />
       )}
 
       {/* Additional Nutrients Section */}
@@ -739,6 +744,11 @@ export default function TodayPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Toast notifications */}
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onCloseAction={() => setToast(null)} />
       )}
     </div>
   );
@@ -1265,3 +1275,4 @@ function StatCard({
     </div>
   );
 }
+
