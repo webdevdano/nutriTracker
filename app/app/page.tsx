@@ -16,7 +16,9 @@ import {
   // RTK Query: mutations + historical range query
   useGetFoodLogsQuery,
   useUpdateFoodLogMutation,
+  useAddFoodLogMutation,
   useLazyGetFoodDetailQuery,
+  useGetStreakQuery,
   type FoodLog,
 } from "@/store/api";
 import {
@@ -78,9 +80,16 @@ export default function TodayPage() {
     { start: startDate, end: today },
     { skip: timeView === "today" || isGuest }
   );
+  // Always fetch the last 7 days for Quick Add (independent of timeView)
+  const { data: recentLogs = [] } = useGetFoodLogsQuery(
+    { start: weekAgo.toISOString().split("T")[0], end: today },
+    { skip: isGuest }
+  );
   const [updateFoodLog] = useUpdateFoodLogMutation();
+  const [addFoodLog]    = useAddFoodLogMutation();
   const [triggerFoodDetail, { data: foodData }] = useLazyGetFoodDetailQuery();
   const apolloClient = useApolloClient(); // used to refetch GraphQL after RTK mutations
+  const { data: streakData } = useGetStreakQuery(undefined, { skip: isGuest });
 
   // Normalise GraphQL response → same shape the rest of the page expects
   const rawGqlLogs = gqlData?.dashboard?.logs ?? [];
@@ -114,6 +123,24 @@ export default function TodayPage() {
     return Object.values(agg).sort((a, b) => a.date.localeCompare(b.date));
   }, [historicalLogs, today]);
 
+  // Last 5 distinct recently-logged foods (newest first) for Quick Add chips
+  const recentFoods: FoodLog[] = useMemo(() => {
+    const seen = new Set<string>();
+    const result: FoodLog[] = [];
+    const sorted = [...recentLogs].sort(
+      (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
+    );
+    for (const log of sorted) {
+      const key = `${log.fdc_id}-${log.food_name}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        result.push(log);
+        if (result.length === 5) break;
+      }
+    }
+    return result;
+  }, [recentLogs]);
+
   async function handleRemoveLog(logId: string) {
     // Use the Apollo client imperatively to run the GraphQL mutation, then
     // refetch the dashboard query so the cache stays in sync
@@ -127,6 +154,17 @@ export default function TodayPage() {
       });
     } catch {
       alert("Failed to remove food log");
+    }
+  }
+
+  async function handleQuickAdd(log: FoodLog) {
+    const hour = new Date().getHours();
+    const mealType = hour < 11 ? "BREAKFAST" : hour < 15 ? "LUNCH" : hour < 20 ? "DINNER" : "SNACK";
+    try {
+      await addFoodLog({ ...log, id: undefined, date: today, time: new Date().toISOString(), meal_type: mealType });
+      await apolloClient.refetchQueries({ include: [DASHBOARD_QUERY] });
+    } catch {
+      alert("Failed to quick-add food");
     }
   }
 
@@ -320,17 +358,19 @@ export default function TodayPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Progress</h1>
-          <p
-            className="mt-1 text-sm text-zinc-600 dark:text-zinc-400"
-            suppressHydrationWarning
-          >
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
+          <div className="mt-1 flex flex-wrap items-center gap-3">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400" suppressHydrationWarning>
+              {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+            </p>
+            {streakData && streakData.streak > 0 && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-orange-50 px-2.5 py-0.5 text-xs font-semibold text-orange-600 dark:bg-orange-950/30 dark:text-orange-400">
+                🔥 {streakData.streak} day{streakData.streak !== 1 ? "s" : ""}
+                {streakData.longestStreak > streakData.streak && (
+                  <span className="ml-1 font-normal text-orange-400 dark:text-orange-500">(best {streakData.longestStreak})</span>
+                )}
+              </span>
+            )}
+          </div>
         </div>
         
         {/* Time View Toggle */}
@@ -448,6 +488,11 @@ export default function TodayPage() {
         <MealPieChart logs={logs} />
       )}
 
+      {/* Tip of the Day — today only */}
+      {timeView === 'today' && !isGuest && (
+        <TipOfTheDay totals={totals} />
+      )}
+
       {/* Additional Nutrients Section */}
       <div className="mt-6 rounded-2xl border border-zinc-200/70 p-5 dark:border-blue-950/70 bg-white dark:bg-zinc-900">
         <button
@@ -531,6 +576,11 @@ export default function TodayPage() {
       </div>
 
       <div className="mt-8">
+        {/* Quick Add recents — today only */}
+        {timeView === 'today' && !isGuest && recentFoods.length > 0 && (
+          <QuickAddRecents foods={recentFoods} onAdd={handleQuickAdd} />
+        )}
+
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold tracking-tight">Today&apos;s Meals</h2>
           <a
@@ -690,6 +740,128 @@ export default function TodayPage() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Tips data ───────────────────────────────────────────────────────────────
+
+const TIPS: { nutrients: string[]; tip: string }[] = [
+  { nutrients: ["iron"],       tip: "Low on iron? Pair spinach or lentils with vitamin C (lemon juice, bell pepper) to boost absorption by up to 3×." },
+  { nutrients: ["iron"],       tip: "Cast-iron skillets can add meaningful iron to acidic dishes like tomato sauce — a simple passive boost." },
+  { nutrients: ["vitamin_d"],  tip: "Vitamin D deficiency is linked to fatigue and low mood. Fatty fish like salmon is one of the best dietary sources." },
+  { nutrients: ["vitamin_d"],  tip: "UV-treated mushrooms can generate meaningful vitamin D. Look for 'sun-exposed' on the label." },
+  { nutrients: ["calcium"],    tip: "Calcium needs vitamin D to absorb properly. Track both together if you're focused on bone health." },
+  { nutrients: ["calcium"],    tip: "Sardines (with bones), kale, and almonds are strong non-dairy calcium sources worth adding to your rotation." },
+  { nutrients: ["protein"],    tip: "Spreading protein across meals ('protein distribution') improves muscle synthesis more than loading it all at dinner." },
+  { nutrients: ["protein"],    tip: "Greek yogurt packs roughly twice the protein of regular yogurt with the same gut-friendly probiotics." },
+  { nutrients: ["fiber"],      tip: "Aim for variety: soluble fiber (oats, beans) feeds gut bacteria; insoluble fiber (wheat bran, vegetables) aids transit." },
+  { nutrients: ["fiber"],      tip: "A half-cup of cooked lentils delivers ~8 g fiber and ~9 g protein — one of the best satiety combinations per calorie." },
+  { nutrients: ["potassium"],  tip: "Potassium offsets the blood-pressure effect of sodium. Avocados, bananas, beet greens, and white beans are top sources." },
+  { nutrients: ["potassium"],  tip: "Most people get less than half the recommended potassium daily. Tomato paste is a concentrated, easy-to-add source." },
+  { nutrients: ["magnesium"],  tip: "Magnesium supports 300+ enzymatic reactions. Dark chocolate (70%+), pumpkin seeds, and spinach are rich sources." },
+  { nutrients: ["magnesium"],  tip: "Stress and alcohol both deplete magnesium faster. If either applies, prioritising magnesium intake is especially worth it." },
+  { nutrients: ["vitamin_c"],  tip: "Bell peppers actually contain more vitamin C than oranges — and they survive light cooking better than many other sources." },
+  { nutrients: ["vitamin_c"],  tip: "Boiling destroys most vitamin C. Raw or lightly steamed vegetables preserve significantly more than fully cooked ones." },
+  { nutrients: ["vitamin_b12"], tip: "B12 is only found reliably in animal products and fortified foods. Eggs, meat, and dairy are the primary dietary sources." },
+  { nutrients: ["vitamin_b12"], tip: "Low B12 can cause fatigue and neurological symptoms long before a clinical deficiency appears on blood panels." },
+  { nutrients: ["folate"],     tip: "Folate and B12 work together in DNA synthesis. Dark leafy greens, beans, and fortified cereals are the best sources." },
+  { nutrients: ["zinc"],       tip: "Zinc is critical for immune function and wound healing. Oysters have more zinc per serving than any other food." },
+  { nutrients: ["zinc"],       tip: "Plant-based eaters need ~50% more zinc than the RDA because phytates in grains reduce its absorption." },
+  { nutrients: ["selenium"],   tip: "Just 1–2 Brazil nuts can meet your daily selenium requirement. More than 4 regularly risks toxicity." },
+  { nutrients: ["vitamin_k"],  tip: "Vitamin K activates clotting proteins and supports bone mineralisation. Dark leafy greens are by far the richest source." },
+  { nutrients: ["vitamin_e"],  tip: "Vitamin E is a fat-soluble antioxidant. Sunflower seeds, almonds, and avocado provide it alongside healthy fats." },
+  { nutrients: ["vitamin_a"],  tip: "Beta-carotene in orange and yellow vegetables converts to vitamin A more effectively when eaten with some fat." },
+  { nutrients: [],             tip: "Logging consistently — even on 'bad' days — gives you better data to learn from than only tracking your best days." },
+  { nutrients: [],             tip: "Hydration affects hunger signals. Drinking water before a meal can reduce unintended overconsumption by 10–15%." },
+  { nutrients: [],             tip: "Sleep deprivation raises ghrelin (hunger hormone) and lowers leptin (satiety hormone). Consistent sleep supports weight goals." },
+  { nutrients: [],             tip: "Total daily intake of calories and nutrients drives outcomes far more than specific meal timing windows." },
+  { nutrients: [],             tip: "Eating slowly and chewing more thoroughly gives your gut-brain satiety signal (~20 min lag) time to kick in before you overeat." },
+  { nutrients: [],             tip: "Protein is the most satiating macronutrient per calorie. Prioritising it at breakfast can reduce total intake for the day." },
+  { nutrients: [],             tip: "A food log isn't just about restriction — it's a mirror. Patterns you've never noticed become visible within a week of consistent tracking." },
+  { nutrients: [],             tip: "Whole foods are typically more satiating than processed ones with the same calorie count, due to fiber, water content, and chewing time." },
+  { nutrients: [],             tip: "Colour variety in vegetables generally correlates with nutrient diversity. Aim for 3+ distinct colours per day." },
+  { nutrients: [],             tip: "Fermented foods (yogurt, kimchi, kefir) support gut microbiome diversity, which influences nutrient absorption and immunity." },
+  { nutrients: [],             tip: "Omega-3 fatty acids from fatty fish, walnuts, and flaxseed are consistently linked to reduced cardiovascular inflammation." },
+  { nutrients: [],             tip: "A 20-minute walk after a high-carb meal meaningfully blunts the post-meal glucose spike compared to sitting." },
+  { nutrients: [],             tip: "Consistency over weeks matters more than perfection on any single day. A rough day doesn't erase a strong week." },
+  { nutrients: [],             tip: "Ultra-processed foods often have high calorie density per unit weight — tracking them precisely tends to surface surprising totals." },
+  { nutrients: [],             tip: "Meal prepping even two or three consistent meals a week reduces decision fatigue and unplanned high-calorie choices." },
+];
+
+// ─── QuickAddRecents ──────────────────────────────────────────────────────────
+
+function QuickAddRecents({ foods, onAdd }: { foods: FoodLog[]; onAdd: (log: FoodLog) => void }) {
+  return (
+    <div className="mb-6">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Quick Add</p>
+      <div className="flex flex-wrap gap-2">
+        {foods.map((log) => {
+          const name = log.food_name.replace(/\s*\(\d+g\)$/, "");
+          const kcal = Math.round((log.calories || 0) * log.quantity);
+          return (
+            <button
+              key={log.id}
+              onClick={() => onAdd(log)}
+              className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-sm transition-colors hover:border-[#4169E1]/40 hover:bg-[#4169E1]/5 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-[#87CEEB]/40 dark:hover:bg-[#87CEEB]/5"
+            >
+              <span className="max-w-[130px] truncate">{name}</span>
+              <span className="shrink-0 text-zinc-400">{kcal} kcal</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── TipOfTheDay ──────────────────────────────────────────────────────────────
+
+type TipTotals = {
+  iron: number; vitamin_d: number; calcium: number; protein: number; fiber: number;
+  potassium: number; magnesium: number; vitamin_c: number; vitamin_b12: number;
+  folate: number; zinc: number; selenium: number; vitamin_k: number;
+  vitamin_e: number; vitamin_a: number;
+};
+
+function TipOfTheDay({ totals }: { totals: TipTotals & Record<string, number> }) {
+  const RDAS: Record<string, number> = {
+    iron: 8, vitamin_d: 20, calcium: 1000, protein: 50, fiber: 28,
+    potassium: 3400, magnesium: 420, vitamin_c: 90, vitamin_b12: 2.4,
+    folate: 400, zinc: 11, selenium: 55, vitamin_k: 120, vitamin_e: 15, vitamin_a: 900,
+  };
+
+  const low = Object.entries(RDAS)
+    .filter(([k, rda]) => (totals[k] ?? 0) < rda * 0.5)
+    .map(([k]) => k);
+
+  const relevant = TIPS.filter(
+    (t) => t.nutrients.length === 0 || t.nutrients.some((n) => low.includes(n))
+  );
+  const pool = relevant.length > 0 ? relevant : TIPS;
+
+  // Deterministic pick: same tip all day, rotates daily
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86_400_000
+  );
+  const tip = pool[dayOfYear % pool.length];
+
+  const taggedNutrient = tip.nutrients[0];
+  const isPersonalised = taggedNutrient && low.includes(taggedNutrient);
+
+  return (
+    <div className="mt-6 rounded-2xl border border-zinc-200/70 bg-white p-5 dark:border-blue-950/70 dark:bg-zinc-900">
+      <div className="flex items-start gap-3">
+        <span className="text-xl leading-none">💡</span>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            {isPersonalised
+              ? `Low on ${taggedNutrient.replace(/_/g, " ")} · Tip of the Day`
+              : "Tip of the Day"}
+          </p>
+          <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">{tip.tip}</p>
+        </div>
+      </div>
     </div>
   );
 }

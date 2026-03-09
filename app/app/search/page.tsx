@@ -507,8 +507,10 @@ export default function SearchPage() {
             return (
               <div
                 key={food.customFoodId ?? `${food.fdcId}-${i}`}
-                className={`flex items-center gap-3 rounded-xl border bg-white p-4 transition-colors hover:bg-[#E0E0E0] dark:bg-gray-900 dark:hover:bg-gray-800 ${
-                  isCustom ? "border-[#4169E1]/30 dark:border-[#87CEEB]/20" : "border-[#D3D8E0] dark:border-gray-800"
+                className={`flex items-center gap-3 rounded-xl border bg-white p-4 transition-colors dark:bg-gray-900 ${
+                  isCustom
+                    ? "border-[#4169E1]/30 hover:bg-zinc-100 dark:border-[#87CEEB]/20 dark:hover:bg-zinc-800"
+                    : "border-[#D3D8E0] hover:bg-[#E0E0E0] dark:border-gray-800 dark:hover:bg-gray-800"
                 }`}
               >
                 <button onClick={() => openModal(food)} className="flex-1 text-left">

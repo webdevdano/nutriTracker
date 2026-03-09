@@ -252,6 +252,12 @@ export const api = createApi({
       query: (id) => ({ url: `api/foods/custom?id=${id}`, method: "DELETE" }),
       invalidatesTags: (_res, _err, id) => [{ type: "CustomFoods", id }, { type: "CustomFoods", id: "LIST" }],
     }),
+
+    // ── Streak ──────────────────────────────────────────────────────
+    getStreak: builder.query<{ streak: number; longestStreak: number }, void>({
+      query: () => "api/streak",
+      transformResponse: (res: { streak: number; longestStreak: number }) => res,
+    }),
   }),
 });
 
@@ -278,4 +284,5 @@ export const {
   useCreateCustomFoodMutation,
   useUpdateCustomFoodMutation,
   useDeleteCustomFoodMutation,
+  useGetStreakQuery,
 } = api;
