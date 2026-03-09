@@ -833,7 +833,7 @@ function DailySummaryCard({
 
   let insight = "Start logging to see your progress today.";
   if (logCount === 0) {
-    insight = "No meals logged yet — add your first food to get started.";
+    insight = "No meals logged yet: add your first food to get started.";
   } else if (calOver) {
     insight = `You've gone over your calorie goal today by ${Math.round(totals.calories - calGoal)} kcal.`;
   } else if (over.length > 0) {
@@ -994,11 +994,23 @@ function StatCard({
         <div className="mt-3">
           <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-800">
             <div
-              className="h-2 rounded-full bg-green-500 dark:bg-green-400 transition-all"
+              className={`h-2 rounded-full transition-all ${
+                percentage > 100
+                  ? "bg-red-500 dark:bg-red-400"
+                  : percentage >= 80
+                  ? "bg-amber-400 dark:bg-amber-300"
+                  : "bg-emerald-500 dark:bg-emerald-400"
+              }`}
               style={{ width: `${Math.min(100, percentage)}%`, minWidth: percentage === 0 ? '8px' : undefined }}
             />
           </div>
-          <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{Math.round(percentage)}% of goal</div>
+          <div className={`mt-1 text-xs transition-colors ${
+            percentage > 100
+              ? "font-medium text-red-500 dark:text-red-400"
+              : percentage >= 80
+              ? "font-medium text-amber-500 dark:text-amber-400"
+              : "text-zinc-500 dark:text-zinc-400"
+          }`}>{Math.round(percentage)}% of goal</div>
         </div>
       )}
     </div>
