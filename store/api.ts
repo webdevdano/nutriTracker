@@ -60,6 +60,10 @@ export type UsdaFood = {
   description: string;
   dataType?: string;
   brandOwner?: string;
+  /** "usda" | "off" | "custom" — set by clients, not the API */
+  source?: string;
+  /** id of CustomFood row when source === "custom" */
+  customFoodId?: string;
   foodNutrients?: Array<{
     nutrientName: string;
     value: number;
@@ -86,12 +90,29 @@ export type Favorite = {
   fat: number | null;
 };
 
+export type CustomFood = {
+  id: string;
+  name: string;
+  serving_size: number | null;
+  serving_unit: string;
+  category: string | null;
+  barcode: string | null;
+  calories: number | null;
+  protein: number | null;
+  carbs: number | null;
+  fat: number | null;
+  fiber: number | null;
+  sodium: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
 // ─── RTK Query API ────────────────────────────────────────────────────────────
 
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }),
-  tagTypes: ["FoodLog", "Goals", "Grocery", "Favorites"],
+  tagTypes: ["FoodLog", "Goals", "Grocery", "Favorites", "CustomFoods"],
 
   endpoints: (builder) => ({
     // ── Food Logs ──────────────────────────────────────────────────────────
@@ -204,6 +225,33 @@ export const api = createApi({
       query: (id) => ({ url: `api/favorites?id=${id}`, method: "DELETE" }),
       invalidatesTags: [{ type: "Favorites", id: "LIST" }],
     }),
+
+    // ── Custom Foods ──────────────────────────────────────────────────────
+    getCustomFoods: builder.query<CustomFood[], string>({
+      query: (q) => `api/foods/custom${q ? `?q=${encodeURIComponent(q)}` : ""}`,
+      transformResponse: (res: { foods: CustomFood[] }) => res.foods ?? [],
+      providesTags: (result) =>
+        result
+          ? [...result.map(({ id }) => ({ type: "CustomFoods" as const, id })), { type: "CustomFoods", id: "LIST" }]
+          : [{ type: "CustomFoods", id: "LIST" }],
+    }),
+
+    createCustomFood: builder.mutation<CustomFood, Omit<CustomFood, "id" | "created_at" | "updated_at">>({
+      query: (body) => ({ url: "api/foods/custom", method: "POST", body }),
+      transformResponse: (res: { food: CustomFood }) => res.food,
+      invalidatesTags: [{ type: "CustomFoods", id: "LIST" }],
+    }),
+
+    updateCustomFood: builder.mutation<CustomFood, Partial<CustomFood> & { id: string }>({
+      query: (body) => ({ url: "api/foods/custom", method: "PATCH", body }),
+      transformResponse: (res: { food: CustomFood }) => res.food,
+      invalidatesTags: (_res, _err, { id }) => [{ type: "CustomFoods", id }, { type: "CustomFoods", id: "LIST" }],
+    }),
+
+    deleteCustomFood: builder.mutation<void, string>({
+      query: (id) => ({ url: `api/foods/custom?id=${id}`, method: "DELETE" }),
+      invalidatesTags: (_res, _err, id) => [{ type: "CustomFoods", id }, { type: "CustomFoods", id: "LIST" }],
+    }),
   }),
 });
 
@@ -226,4 +274,8 @@ export const {
   useGetFavoritesQuery,
   useAddFavoriteMutation,
   useDeleteFavoriteMutation,
+  useGetCustomFoodsQuery,
+  useCreateCustomFoodMutation,
+  useUpdateCustomFoodMutation,
+  useDeleteCustomFoodMutation,
 } = api;

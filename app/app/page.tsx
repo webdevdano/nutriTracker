@@ -23,6 +23,10 @@ import {
   // Apollo Client: today's dashboard aggregate (one round-trip for logs + goals + profile)
   DASHBOARD_QUERY,
 } from "@/graphql/queries";
+import {
+  PieChart, Pie, Cell,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer,
+} from "recharts";
 
 type UserGoal = {
   calories_goal: number | null;
@@ -431,32 +435,18 @@ export default function TodayPage() {
         </div>
       )}
 
-      {/* Main Macros - Use StatCard for consistency */}
+      {/* Main Macros */}
       <div className="mt-6 grid gap-4 sm:grid-cols-4">
-        <StatCard 
-          label="Calories"
-          value={Math.round(totals.calories)}
-          goal={goals?.calories_goal}
-        />
-        <StatCard 
-          label="Protein"
-          value={Math.round(totals.protein)}
-          goal={goals?.protein_goal}
-          unit="g"
-        />
-        <StatCard 
-          label="Carbs"
-          value={Math.round(totals.carbs)}
-          goal={goals?.carbs_goal}
-          unit="g"
-        />
-        <StatCard 
-          label="Fat"
-          value={Math.round(totals.fat)}
-          goal={goals?.fat_goal}
-          unit="g"
-        />
+        <StatCard label="Calories" value={Math.round(totals.calories)} goal={goals?.calories_goal} />
+        <StatCard label="Protein"  value={Math.round(totals.protein)}  goal={goals?.protein_goal}  unit="g" />
+        <StatCard label="Carbs"    value={Math.round(totals.carbs)}    goal={goals?.carbs_goal}    unit="g" />
+        <StatCard label="Fat"      value={Math.round(totals.fat)}      goal={goals?.fat_goal}      unit="g" />
       </div>
+
+      {/* Meal Breakdown Pie — today only, needs at least one log */}
+      {timeView === 'today' && logs.length > 0 && (
+        <MealPieChart logs={logs} />
+      )}
 
       {/* Additional Nutrients Section */}
       <div className="mt-6 rounded-2xl border border-zinc-200/70 p-5 dark:border-blue-950/70 bg-white dark:bg-zinc-900">
@@ -767,6 +757,66 @@ function NutrientCard({
   );
 }
 
+function MealPieChart({ logs }: { logs: FoodLog[] }) {
+  const MEALS = [
+    { key: 'BREAKFAST', label: 'Breakfast', color: '#f59e0b' },
+    { key: 'LUNCH',     label: 'Lunch',     color: '#4169E1' },
+    { key: 'DINNER',    label: 'Dinner',    color: '#6366f1' },
+    { key: 'SNACK',     label: 'Snack',     color: '#22c55e' },
+  ];
+
+  const data = MEALS.map(({ key, label, color }) => ({
+    name: label,
+    color,
+    value: Math.round(
+      logs
+        .filter((l) => (l.meal_type ?? 'SNACK') === key)
+        .reduce((s, l) => s + (l.calories || 0) * l.quantity, 0)
+    ),
+  })).filter((d) => d.value > 0);
+
+  if (data.length === 0) return null;
+
+  const total = data.reduce((s, d) => s + d.value, 0);
+
+  return (
+    <div className="mt-6 rounded-2xl border border-zinc-200/70 bg-white p-5 dark:border-blue-950/70 dark:bg-zinc-900">
+      <h3 className="mb-4 text-sm font-semibold">Meal Breakdown</h3>
+      <div className="flex flex-col items-center gap-6 sm:flex-row">
+        <PieChart width={180} height={180}>
+          <Pie
+            data={data}
+            cx={85} cy={85}
+            innerRadius={52} outerRadius={80}
+            dataKey="value"
+            strokeWidth={2}
+            stroke="transparent"
+            isAnimationActive
+          >
+            {data.map((entry, i) => (
+              <Cell key={i} fill={entry.color} />
+            ))}
+          </Pie>
+          <Tooltip
+            formatter={(val) => [`${val} kcal`, '']}
+            contentStyle={{ fontSize: 12, borderRadius: 8 }}
+          />
+        </PieChart>
+        <div className="flex flex-wrap gap-x-6 gap-y-2">
+          {data.map((d) => (
+            <div key={d.name} className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: d.color }} />
+              <span className="text-xs text-zinc-600 dark:text-zinc-400">{d.name}</span>
+              <span className="text-xs font-semibold tabular-nums">{d.value} kcal</span>
+              <span className="text-xs text-zinc-400">({Math.round((d.value / total) * 100)}%)</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Chart({ 
   data, 
   metric, 
@@ -780,55 +830,54 @@ function Chart({
   goal?: number | null;
   color?: string;
 }) {
-  const maxValue = useMemo(() => {
-    const dataMax = Math.max(...data.map(d => d[metric]));
-    return goal && goal > dataMax ? goal * 1.1 : dataMax * 1.1;
-  }, [data, metric, goal]);
+  const formatted = data.map((d) => ({
+    ...d,
+    date: new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+  }));
 
   return (
     <div className="rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800/50">
       <div className="mb-3 flex items-center justify-between">
         <h4 className="text-xs font-semibold">{label}</h4>
-        {goal && (
-          <div className="text-xs text-zinc-500">Goal: {goal}</div>
-        )}
+        {goal && <div className="text-xs text-zinc-500">Goal: {goal}</div>}
       </div>
-      <div className="relative h-32">
-        <div className="absolute inset-0 flex items-end justify-between gap-1">
-          {data.map((item, i) => {
-            const height = maxValue > 0 ? (item[metric] / maxValue) * 100 : 0;
-            const isGoalMet = goal ? item[metric] >= goal : false;
-            
-            return (
-              <div key={i} className="flex-1 flex flex-col items-center justify-end h-full group relative">
-                <div
-                  className="w-full rounded-t transition-all hover:opacity-80"
-                  style={{ 
-                    height: `${height}%`,
-                    backgroundColor: isGoalMet ? '#22c55e' : color,
-                    minHeight: height > 0 ? '2px' : '0'
-                  }}
-                />
-                {/* Tooltip */}
-                <div className="absolute bottom-full mb-2 hidden group-hover:block bg-black/90 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
-                  {new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}: {Math.round(item[metric])}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        {/* Goal line */}
-        {goal && maxValue > 0 && (
-          <div 
-            className="absolute left-0 right-0 border-t-2 border-dashed border-zinc-400 dark:border-zinc-600"
-            style={{ bottom: `${(goal / maxValue) * 100}%` }}
+      <ResponsiveContainer width="100%" height={130}>
+        <LineChart data={formatted} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+          <XAxis
+            dataKey="date"
+            tick={{ fontSize: 10, fill: '#9ca3af' }}
+            tickLine={false}
+            axisLine={false}
+            interval="preserveStartEnd"
           />
-        )}
-      </div>
-      <div className="mt-2 flex items-center justify-between text-xs text-zinc-500">
-        <span>{data.length > 0 ? new Date(data[0].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
-        <span>{data.length > 0 ? new Date(data[data.length - 1].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
-      </div>
+          <YAxis
+            tick={{ fontSize: 10, fill: '#9ca3af' }}
+            tickLine={false}
+            axisLine={false}
+          />
+          <Tooltip
+            contentStyle={{ fontSize: 12, borderRadius: 8 }}
+            formatter={(val) => [typeof val === 'number' ? Math.round(val) : val, label]}
+          />
+          {goal && (
+            <ReferenceLine
+              y={goal}
+              stroke="#9ca3af"
+              strokeDasharray="4 4"
+              label={{ value: 'Goal', position: 'insideTopRight', fontSize: 10, fill: '#9ca3af' }}
+            />
+          )}
+          <Line
+            type="monotone"
+            dataKey={metric}
+            stroke={color}
+            strokeWidth={2}
+            dot={{ r: 3, fill: color, strokeWidth: 0 }}
+            activeDot={{ r: 5 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }
