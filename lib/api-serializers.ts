@@ -4,6 +4,8 @@ import type {
   GroceryList,
   SavedFavorite,
   Profile,
+  UserRecipe,
+  SavedRecipe,
 } from "./generated/prisma";
 
 // Convert Prisma Decimal / null to plain number | null
@@ -126,5 +128,47 @@ export function serializeProfile(profile: Profile) {
     fitness_goal: profile.fitnessGoal,
     created_at: profile.createdAt instanceof Date ? profile.createdAt.toISOString() : profile.createdAt,
     updated_at: profile.updatedAt instanceof Date ? profile.updatedAt.toISOString() : profile.updatedAt,
+  };
+}
+
+// Serialize Prisma UserRecipe → snake_case
+export function serializeUserRecipe(r: UserRecipe) {
+  return {
+    id: r.id,
+    user_id: r.userId,
+    title: r.title,
+    description: r.description,
+    ingredients: r.ingredients,
+    instructions: r.instructions,
+    servings: r.servings,
+    prep_time: r.prepTime,
+    cook_time: r.cookTime,
+    image_url: r.imageUrl,
+    calories: n(r.calories),
+    protein: n(r.protein),
+    carbs: n(r.carbs),
+    fat: n(r.fat),
+    fiber: n(r.fiber),
+    sodium: n(r.sodium),
+    created_at: r.createdAt instanceof Date ? r.createdAt.toISOString() : r.createdAt,
+    updated_at: r.updatedAt instanceof Date ? r.updatedAt.toISOString() : r.updatedAt,
+  };
+}
+
+// Serialize Prisma SavedRecipe → snake_case
+export function serializeSavedRecipe(r: SavedRecipe) {
+  return {
+    id: r.id,
+    user_id: r.userId,
+    spoonacular_id: r.spoonacularId,
+    title: r.title,
+    image: r.image,
+    servings: r.servings,
+    ready_in_minutes: r.readyInMinutes,
+    calories: n(r.calories),
+    protein: n(r.protein),
+    carbs: n(r.carbs),
+    fat: n(r.fat),
+    created_at: r.createdAt instanceof Date ? r.createdAt.toISOString() : r.createdAt,
   };
 }

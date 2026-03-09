@@ -180,6 +180,7 @@ export async function getRandomRecipes(
 ): Promise<{ recipes: RecipeInformation[] }> {
   const params: Record<string, string> = {
     number: number.toString(),
+    includeNutrition: "true",
   };
 
   if (tags) params.tags = tags;

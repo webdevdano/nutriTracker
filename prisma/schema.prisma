@@ -34,6 +34,8 @@ model User {
   groceryList   GroceryList[]
   savedFavorites SavedFavorite[]
   customFoods   CustomFood[]
+  userRecipes   UserRecipe[]
+  savedRecipes  SavedRecipe[]
 }
 
 model Account {
@@ -309,4 +311,59 @@ model CustomFood {
 
   @@index([userId])
   @@index([userId, name])
+}
+
+// =====================================================
+// USER RECIPES
+// Recipes created and saved by the user
+// =====================================================
+
+model UserRecipe {
+  id           String   @id @default(uuid())
+  userId       String
+  title        String
+  description  String?
+  ingredients  String[]
+  instructions String?
+  servings     Int      @default(1)
+  prepTime     Int?     // minutes
+  cookTime     Int?     // minutes
+  imageUrl     String?
+
+  // Nutrition per serving
+  calories Decimal?
+  protein  Decimal?
+  carbs    Decimal?
+  fat      Decimal?
+  fiber    Decimal?
+  sodium   Decimal?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Recipes saved/bookmarked from Spoonacular
+model SavedRecipe {
+  id             String   @id @default(uuid())
+  userId         String
+  spoonacularId  Int
+  title          String
+  image          String?
+  servings       Int?
+  readyInMinutes Int?
+  calories       Decimal?
+  protein        Decimal?
+  carbs          Decimal?
+  fat            Decimal?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, spoonacularId])
+  @@index([userId])
 }

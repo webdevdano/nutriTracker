@@ -108,12 +108,46 @@ export type CustomFood = {
   updated_at: string;
 };
 
+export type UserRecipe = {
+  id: string;
+  title: string;
+  description: string | null;
+  ingredients: string[];
+  instructions: string | null;
+  servings: number;
+  prep_time: number | null;
+  cook_time: number | null;
+  image_url: string | null;
+  calories: number | null;
+  protein: number | null;
+  carbs: number | null;
+  fat: number | null;
+  fiber: number | null;
+  sodium: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SavedRecipe = {
+  id: string;
+  spoonacular_id: number;
+  title: string;
+  image: string | null;
+  servings: number | null;
+  ready_in_minutes: number | null;
+  calories: number | null;
+  protein: number | null;
+  carbs: number | null;
+  fat: number | null;
+  created_at: string;
+};
+
 // ─── RTK Query API ────────────────────────────────────────────────────────────
 
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }),
-  tagTypes: ["FoodLog", "Goals", "Grocery", "Favorites", "CustomFoods"],
+  tagTypes: ["FoodLog", "Goals", "Grocery", "Favorites", "CustomFoods", "UserRecipes", "SavedRecipes"],
 
   endpoints: (builder) => ({
     // ── Food Logs ──────────────────────────────────────────────────────────
@@ -259,6 +293,51 @@ export const api = createApi({
       query: () => "api/streak",
       transformResponse: (res: { streak: number; longestStreak: number }) => res,
     }),
+
+    // ── User Recipes (CRUD) ───────────────────────────────────────────────
+    getUserRecipes: builder.query<UserRecipe[], void>({
+      query: () => "api/recipes/user-recipes",
+      transformResponse: (res: { recipes: UserRecipe[] }) => res.recipes ?? [],
+      providesTags: (result) =>
+        result
+          ? [...result.map(({ id }) => ({ type: "UserRecipes" as const, id })), { type: "UserRecipes", id: "LIST" }]
+          : [{ type: "UserRecipes", id: "LIST" }],
+    }),
+
+    createUserRecipe: builder.mutation<UserRecipe, Omit<UserRecipe, "id" | "created_at" | "updated_at">>({
+      query: (body) => ({ url: "api/recipes/user-recipes", method: "POST", body }),
+      transformResponse: (res: { recipe: UserRecipe }) => res.recipe,
+      invalidatesTags: [{ type: "UserRecipes", id: "LIST" }],
+    }),
+
+    updateUserRecipe: builder.mutation<UserRecipe, Partial<UserRecipe> & { id: string }>({
+      query: ({ id, ...body }) => ({ url: `api/recipes/user-recipes/${id}`, method: "PUT", body }),
+      transformResponse: (res: { recipe: UserRecipe }) => res.recipe,
+      invalidatesTags: (_res, _err, { id }) => [{ type: "UserRecipes", id }, { type: "UserRecipes", id: "LIST" }],
+    }),
+
+    deleteUserRecipe: builder.mutation<void, string>({
+      query: (id) => ({ url: `api/recipes/user-recipes/${id}`, method: "DELETE" }),
+      invalidatesTags: (_res, _err, id) => [{ type: "UserRecipes", id }, { type: "UserRecipes", id: "LIST" }],
+    }),
+
+    // ── Saved (Bookmarked) Spoonacular Recipes ────────────────────────────
+    getSavedRecipes: builder.query<SavedRecipe[], void>({
+      query: () => "api/recipes/saved",
+      transformResponse: (res: { saved: SavedRecipe[] }) => res.saved ?? [],
+      providesTags: [{ type: "SavedRecipes", id: "LIST" }],
+    }),
+
+    saveRecipe: builder.mutation<SavedRecipe, Omit<SavedRecipe, "id" | "created_at">>({
+      query: (body) => ({ url: "api/recipes/saved", method: "POST", body }),
+      transformResponse: (res: { saved: SavedRecipe }) => res.saved,
+      invalidatesTags: [{ type: "SavedRecipes", id: "LIST" }],
+    }),
+
+    unsaveRecipe: builder.mutation<void, number>({
+      query: (id) => ({ url: `api/recipes/saved?id=${id}`, method: "DELETE" }),
+      invalidatesTags: [{ type: "SavedRecipes", id: "LIST" }],
+    }),
   }),
 });
 
@@ -286,4 +365,11 @@ export const {
   useUpdateCustomFoodMutation,
   useDeleteCustomFoodMutation,
   useGetStreakQuery,
+  useGetUserRecipesQuery,
+  useCreateUserRecipeMutation,
+  useUpdateUserRecipeMutation,
+  useDeleteUserRecipeMutation,
+  useGetSavedRecipesQuery,
+  useSaveRecipeMutation,
+  useUnsaveRecipeMutation,
 } = api;
