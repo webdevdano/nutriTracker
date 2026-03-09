@@ -1,8 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import Toast from "@/components/Toast";
+import {
+  useGetGroceryItemsQuery,
+  useAddGroceryItemMutation,
+  useUpdateGroceryItemMutation,
+  useDeleteGroceryItemMutation,
+  useGetFavoritesQuery,
+  useDeleteFavoriteMutation,
+  useAddFoodLogMutation,
+  useGetFoodLogsQuery,
+  type GroceryItem,
+  type Favorite,
+} from "@/store/api";
 
 // Superfood nutrient mapping
 const SUPERFOOD_NUTRIENTS: Record<string, string[]> = {
@@ -34,27 +48,6 @@ const MAIN_PROTEINS: Record<string, string[]> = {
   Tempeh: ["Protein", "Calcium", "Iron", "Magnesium", "Phosphorus", "Manganese"],
 };
 
-type GroceryItem = {
-  id: string;
-  food_name: string;
-  quantity: number;
-  unit: string;
-  purchased: boolean;
-  created_at: string;
-};
-
-type Favorite = {
-  id: string;
-  fdc_id: number;
-  food_name: string;
-  calories: number | null;
-  protein: number | null;
-  carbs: number | null;
-  fat: number | null;
-  serving_size: number;
-  created_at: string;
-};
-
 type MealPlanMeal = {
   id: number;
   title: string;
@@ -65,267 +58,235 @@ type MealPlanMeal = {
 
 type MealPlan = {
   meals: MealPlanMeal[];
-  nutrients: {
-    calories: number;
-    protein: number;
-    fat: number;
-    carbohydrates: number;
-  };
+  nutrients: { calories: number; protein: number; fat: number; carbohydrates: number };
 };
 
 export default function GroceryPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'grocery' | 'favorites'>('grocery');
-  const [items, setItems] = useState<GroceryItem[]>([]);
-  const [favorites, setFavorites] = useState<Favorite[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [newItem, setNewItem] = useState("");
-  const [addingItem, setAddingItem] = useState(false);
-  const [showMealPlan, setShowMealPlan] = useState(false);
+  const { status } = useSession();
+  const isGuest = status === "unauthenticated";
+
+  const [activeTab, setActiveTab]         = useState<"grocery" | "favorites">("grocery");
+  const [newItem, setNewItem]              = useState("");
+  const [showMealPlan, setShowMealPlan]    = useState(false);
   const [generatingPlan, setGeneratingPlan] = useState(false);
-  const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
-  // Removed unused showNutrientChecklist state
+  const [mealPlan, setMealPlan]            = useState<MealPlan | null>(null);
+  const [toast, setToast]                  = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
 
-  // Combined lookup: every known food → nutrients it provides
-  const ALL_FOOD_NUTRIENTS: Record<string, string[]> = {
-    ...SUPERFOOD_NUTRIENTS,
-    ...MAIN_PROTEINS,
-  };
+  // ── RTK Query ────────────────────────────────────────────────────────────
+  const { data: items = [],     isLoading: loadingItems } = useGetGroceryItemsQuery(undefined, { skip: isGuest });
+  const { data: favorites = [], isLoading: loadingFavs  } = useGetFavoritesQuery(undefined,     { skip: isGuest });
+  const loading = loadingItems || loadingFavs;
 
-  // All unique nutrients across both maps
-  const ALL_NUTRIENTS = Array.from(
-    new Set(Object.values(ALL_FOOD_NUTRIENTS).flat())
-  ).sort((a, b) => a.localeCompare(b));
+  const today    = new Date().toISOString().split("T")[0];
+  const sevenAgo = new Date(Date.now() - 6 * 86_400_000).toISOString().split("T")[0];
+  const { data: recentLogs = [] } = useGetFoodLogsQuery(
+    { start: sevenAgo, end: today },
+    { skip: isGuest }
+  );
 
-  // For each nutrient, find grocery items that provide it (checks both maps)
-  const getNutrientChecklist = () => {
-    return ALL_NUTRIENTS.map((nutrient) => {
-      const foods: string[] = [];
-      items.forEach((item) => {
-        Object.entries(ALL_FOOD_NUTRIENTS).forEach(([knownFood, nutrients]) => {
-          if (
-            item.food_name.toLowerCase().includes(knownFood.toLowerCase()) &&
-            nutrients.includes(nutrient) &&
-            !foods.includes(item.food_name)
-          ) {
-            foods.push(item.food_name);
-          }
+  const [addItem,    { isLoading: addingItem }]  = useAddGroceryItemMutation();
+  const [updateItem]                              = useUpdateGroceryItemMutation();
+  const [deleteItem]                              = useDeleteGroceryItemMutation();
+  const [deleteFav]                               = useDeleteFavoriteMutation();
+  const [addFoodLog]                              = useAddFoodLogMutation();
+
+  // ── Suggested from recent logs ──────────────────────────────────────────
+  const suggestions = useMemo(() => {
+    const inList = new Set(items.map((i) => i.food_name.toLowerCase()));
+    const seen   = new Set<string>();
+    const result: string[] = [];
+    for (const log of recentLogs) {
+      const name = log.food_name.replace(/\s*\(\d+g\)$/, "").trim();
+      const key  = name.toLowerCase();
+      if (!seen.has(key) && !inList.has(key)) {
+        seen.add(key);
+        result.push(name);
+        if (result.length === 8) break;
+      }
+    }
+    return result;
+  }, [recentLogs, items]);
+
+  // ── Nutrient Checklist ──────────────────────────────────────────────────
+  const ALL_FOOD_NUTRIENTS: Record<string, string[]> = { ...SUPERFOOD_NUTRIENTS, ...MAIN_PROTEINS };
+  const ALL_NUTRIENTS = useMemo(
+    () => Array.from(new Set(Object.values(ALL_FOOD_NUTRIENTS).flat())).sort(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  const nutrientChecklist = useMemo(
+    () =>
+      ALL_NUTRIENTS.map((nutrient) => {
+        const foods: string[] = [];
+        items.forEach((item) => {
+          Object.entries(ALL_FOOD_NUTRIENTS).forEach(([knownFood, nutrients]) => {
+            if (
+              item.food_name.toLowerCase().includes(knownFood.toLowerCase()) &&
+              nutrients.includes(nutrient) &&
+              !foods.includes(item.food_name)
+            ) {
+              foods.push(item.food_name);
+            }
+          });
         });
-      });
-      return { nutrient, foods };
-    });
-  };
-  const nutrientChecklist = getNutrientChecklist();
+        return { nutrient, foods };
+      }),
+    [ALL_NUTRIENTS, items, ALL_FOOD_NUTRIENTS]
+  );
 
-  useEffect(() => {
-    loadItems();
-    loadFavorites();
-  }, []);
-
-  async function loadItems() {
-    try {
-      const response = await fetch("/api/grocery");
-      const data = await response.json();
-      if (response.ok) {
-        setItems(data.items || []);
-      }
-    } catch (error) {
-      console.error("Failed to load grocery list:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function loadFavorites() {
-    try {
-      const response = await fetch("/api/favorites");
-      const data = await response.json();
-      if (response.ok) {
-        setFavorites(data.favorites || []);
-      }
-    } catch (error) {
-      console.error("Failed to load favorites:", error);
-    }
-  }
-
+  // ── Handlers ─────────────────────────────────────────────────────────────
   async function handleAddItem(e: React.FormEvent) {
     e.preventDefault();
-    if (!newItem.trim()) return;
-
-    setAddingItem(true);
+    const name = newItem.trim();
+    if (!name) return;
     try {
-      const response = await fetch("/api/grocery", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ food_name: newItem }),
-      });
+      await addItem({ food_name: name }).unwrap();
+      setNewItem("");
+    } catch {
+      setToast({ message: "Failed to add item", type: "error" });
+    }
+  }
 
-      if (response.ok) {
-        setNewItem("");
-        await loadItems();
-      }
-    } catch (error) {
-      console.error("Failed to add item:", error);
-    } finally {
-      setAddingItem(false);
+  async function handleSuggestion(name: string) {
+    try {
+      await addItem({ food_name: name }).unwrap();
+      setToast({ message: `${name} added`, type: "success" });
+    } catch {
+      setToast({ message: "Failed to add item", type: "error" });
     }
   }
 
   async function togglePurchased(item: GroceryItem) {
     try {
-      const response = await fetch("/api/grocery", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: item.id, purchased: !item.purchased }),
-      });
-
-      if (response.ok) {
-        await loadItems();
-      }
-    } catch (error) {
-      console.error("Failed to update item:", error);
+      await updateItem({ id: item.id, purchased: !item.purchased }).unwrap();
+    } catch {
+      setToast({ message: "Failed to update item", type: "error" });
     }
   }
 
-  async function deleteItem(id: string) {
+  async function handleDeleteItem(id: string) {
     try {
-      const response = await fetch(`/api/grocery?id=${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        await loadItems();
-      }
-    } catch (error) {
-      console.error("Failed to delete item:", error);
+      await deleteItem(id).unwrap();
+    } catch {
+      setToast({ message: "Failed to remove item", type: "error" });
     }
   }
 
   async function clearPurchased() {
-    const purchasedItems = items.filter((item) => item.purchased);
-    await Promise.all(purchasedItems.map((item) => deleteItem(item.id)));
+    const purchased = items.filter((i) => i.purchased);
+    await Promise.all(purchased.map((i) => deleteItem(i.id)));
   }
 
   async function generateMealPlan() {
     setGeneratingPlan(true);
     try {
-      const response = await fetch("/api/meal-plan?timeFrame=day&targetCalories=2000");
-      const data = await response.json();
-      
-      if (response.ok) {
-        setMealPlan(data);
-        setShowMealPlan(true);
-      }
-    } catch (error) {
-      console.error("Failed to generate meal plan:", error);
-    } finally {
-      setGeneratingPlan(false);
-    }
+      const res  = await fetch("/api/meal-plan?timeFrame=day&targetCalories=2000");
+      const data = await res.json();
+      if (res.ok) { setMealPlan(data); setShowMealPlan(true); }
+    } catch { /* silent */ }
+    finally { setGeneratingPlan(false); }
   }
 
-  async function deleteFavorite(id: string) {
+  async function handleDeleteFav(id: string) {
     try {
-      const response = await fetch(`/api/favorites?id=${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        setFavorites(favorites.filter((fav) => fav.id !== id));
-      }
-    } catch (error) {
-      console.error("Failed to delete favorite:", error);
+      await deleteFav(id).unwrap();
+    } catch {
+      setToast({ message: "Failed to remove favourite", type: "error" });
     }
   }
 
-  async function addFavoriteToLog(favorite: Favorite) {
+  async function addFavToLog(fav: Favorite) {
     try {
-      const response = await fetch("/api/foods/log", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fdc_id: favorite.fdc_id,
-          food_name: favorite.food_name,
-          calories: favorite.calories,
-          protein: favorite.protein,
-          carbs: favorite.carbs,
-          fat: favorite.fat,
-          quantity: favorite.serving_size / 100,
-          meal_type: "Snack",
-        }),
-      });
-
-      if (response.ok) {
-        setToast({ message: `${favorite.food_name} added to today's log!`, type: 'success' });
-        setTimeout(() => router.push("/app"), 1500);
-      }
-    } catch (error) {
-      console.error("Failed to add to log:", error);
+      await addFoodLog({
+        fdc_id:     fav.fdc_id,
+        food_name:  fav.food_name,
+        calories:   fav.calories ?? 0,
+        protein:    fav.protein  ?? 0,
+        carbs:      fav.carbs    ?? 0,
+        fat:        fav.fat      ?? 0,
+        quantity:   (fav.serving_size ?? 100) / 100,
+        meal_type:  "SNACK",
+        date:       today,
+        time:       new Date().toISOString(),
+      }).unwrap();
+      setToast({ message: `${fav.food_name} added to today's log`, type: "success" });
+      setTimeout(() => router.push("/app"), 1500);
+    } catch {
+      setToast({ message: "Failed to log food", type: "error" });
     }
   }
 
-  async function addFavoriteToGrocery(favorite: Favorite) {
+  async function addFavToGrocery(fav: Favorite) {
     try {
-      const response = await fetch("/api/grocery", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ food_name: favorite.food_name }),
-      });
-
-      if (response.ok) {
-        await loadItems();
-        setActiveTab('grocery');
-        setToast({ message: `${favorite.food_name} added to grocery list!`, type: 'success' });
-      }
-    } catch (error) {
-      console.error("Failed to add to grocery:", error);
+      await addItem({ food_name: fav.food_name }).unwrap();
+      setActiveTab("grocery");
+      setToast({ message: `${fav.food_name} added to grocery list`, type: "success" });
+    } catch {
+      setToast({ message: "Failed to add to grocery list", type: "error" });
     }
   }
 
-  const unpurchasedItems = items.filter((item) => !item.purchased);
-  const purchasedItems = items.filter((item) => item.purchased);
+  const unpurchased = items.filter((i) => !i.purchased);
+  const purchased   = items.filter((i) =>  i.purchased);
+
+  // ── Guest guard ──────────────────────────────────────────────────────────
+  if (isGuest) {
+    return (
+      <div className="mx-auto w-full max-w-3xl px-6 py-8">
+        <h1 className="text-2xl font-semibold tracking-tight">Lists</h1>
+        <div className="mt-6 rounded-2xl border border-[#4169E1]/30 bg-[#4169E1]/5 p-8 text-center dark:bg-blue-950/30">
+          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-200">Sign in to manage your grocery list and favourites.</p>
+          <div className="mt-4 flex justify-center gap-3">
+            <Link href="/signup" className="rounded-full bg-[#4169E1] px-5 py-2 text-sm font-medium text-white hover:bg-[#000080]">Get started</Link>
+            <Link href="/login" className="rounded-full border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">Sign in</Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-8">
       <div className="flex flex-col md:flex-row md:items-start md:gap-6">
-        {/* Nutrient Checklist - Left Column, Sticky */}
-        <aside className="w-full md:w-64 lg:w-72 shrink-0 md:sticky md:top-28 mb-8 md:mb-0">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-md dark:border-zinc-800 dark:bg-zinc-900">
-            <h3 className="mb-2 flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              🌟 Nutrient Checklist
-            </h3>
+
+        {/* ── Sidebar ────────────────────────────────────────────────────── */}
+        <aside className="w-full md:w-64 lg:w-72 shrink-0 md:sticky md:top-28 mb-8 md:mb-0 space-y-6">
+          {/* Nutrient Checklist */}
+          <div className="rounded-2xl border border-zinc-200/70 bg-white p-4 dark:border-zinc-800/80 dark:bg-zinc-900">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">🌟 Nutrient Checklist</h3>
             <div className="flex flex-col gap-2">
               {nutrientChecklist.map(({ nutrient, foods }) => (
-                <div key={nutrient} className="flex items-center gap-2">
+                <div key={nutrient} className="flex items-start gap-2">
                   {foods.length > 0 ? (
-                    <svg className="h-5 w-5 shrink-0 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                     </svg>
                   ) : (
-                    <span className="inline-block h-5 w-5 shrink-0 rounded-full border-2 border-zinc-300 dark:border-zinc-700"></span>
+                    <span className="mt-0.5 inline-block h-4 w-4 shrink-0 rounded-full border-2 border-zinc-300 dark:border-zinc-700" />
                   )}
-                  <span className={`text-sm font-medium ${foods.length > 0 ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400 dark:text-zinc-600'}`}>{nutrient}</span>
-                  {foods.length > 0 && (
-                    <span className="ml-1 text-xs text-zinc-500 dark:text-zinc-400">({foods.join(', ')})</span>
-                  )}
+                  <span className={`text-xs leading-snug ${foods.length > 0 ? "font-medium" : "text-zinc-400 dark:text-zinc-600"}`}>
+                    {nutrient}
+                    {foods.length > 0 && (
+                      <span className="ml-1 font-normal text-zinc-400 dark:text-zinc-500">({foods.join(", ")})</span>
+                    )}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Main Protein Sources Section */}
-          <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-4 shadow-md dark:border-zinc-800 dark:bg-zinc-900">
-            <h3 className="mb-2 flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              🍗 Main Protein Sources
-            </h3>
+          {/* Main Proteins */}
+          <div className="rounded-2xl border border-zinc-200/70 bg-white p-4 dark:border-zinc-800/80 dark:bg-zinc-900">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">🍗 Protein Sources</h3>
             <div className="flex flex-col gap-3">
               {Object.entries(MAIN_PROTEINS).map(([protein, nutrients]) => (
-                <div key={protein} className="">
-                  <div className="font-medium text-zinc-900 dark:text-zinc-100">{protein}</div>
-                  <div className="mt-1 flex flex-wrap gap-2">
-                    {nutrients.map((nutrient) => (
-                      <span key={nutrient} className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700">
-                        {nutrient}
+                <div key={protein}>
+                  <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">{protein}</p>
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {nutrients.map((n) => (
+                      <span key={n} className="rounded-full border border-zinc-200 bg-zinc-100 px-2 py-0.5 text-[10px] text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                        {n}
                       </span>
                     ))}
                   </div>
@@ -334,218 +295,172 @@ export default function GroceryPage() {
             </div>
           </div>
         </aside>
-        {/* Main Content Area: Header, Tabs, Grocery List */}
+
+        {/* ── Main content ─────────────────────────────────────────────────── */}
         <div className="flex-1 min-w-0">
-          <div className="mb-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-semibold tracking-tight">Lists</h1>
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                  Manage your grocery list and saved favorites
-                </p>
-              </div>
-              {activeTab === 'grocery' && (
-                <button
-                  onClick={generateMealPlan}
-                  disabled={generatingPlan}
-                  className="h-10 rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
-                >
-                  {generatingPlan ? "Generating..." : "📅 Meal Plan"}
-                </button>
-              )}
+
+          {/* Header */}
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">Lists</h1>
+              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Grocery list &amp; saved favourites</p>
             </div>
+            {activeTab === "grocery" && (
+              <button
+                onClick={generateMealPlan}
+                disabled={generatingPlan}
+                className="h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+              >
+                {generatingPlan ? "Generating…" : "📅 Meal Plan"}
+              </button>
+            )}
           </div>
 
           {/* Tabs */}
-          <div className="mb-6 flex gap-2 rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
-            <button
-              onClick={() => setActiveTab('grocery')}
-              className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === 'grocery'
-                  ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900'
-                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
-              }`}
-            >
-              🛒 Grocery List
-            </button>
-            <button
-              onClick={() => setActiveTab('favorites')}
-              className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === 'favorites'
-                  ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900'
-                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
-              }`}
-            >
-              ⭐ Saved Favorites
-            </button>
+          <div className="mb-6 flex gap-1 rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
+            {(["grocery", "favorites"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex-1 rounded-full py-1.5 text-sm font-medium transition-colors ${
+                  activeTab === tab
+                    ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                    : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                }`}
+              >
+                {tab === "grocery" ? "🛒 Grocery" : "⭐ Favourites"}
+              </button>
+            ))}
           </div>
 
-          {/* Grocery List Tab */}
-          {activeTab === 'grocery' && (
+          {/* ── Grocery tab ────────────────────────────────────────────────── */}
+          {activeTab === "grocery" && (
             <>
-              <form onSubmit={handleAddItem} className="mb-6">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    className="h-11 flex-1 rounded-xl border border-zinc-300 bg-transparent px-4 text-sm dark:border-zinc-700"
-                    placeholder="Add item to grocery list..."
-                    value={newItem}
-                    onChange={(e) => setNewItem(e.target.value)}
-                  />
-                  <button
-                    type="submit"
-                    className="h-11 rounded-full bg-zinc-900 px-6 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
-                    disabled={addingItem || !newItem.trim()}
-                  >
-                    Add
-                  </button>
-                </div>
+              {/* Add item form */}
+              <form onSubmit={handleAddItem} className="mb-5 flex gap-2">
+                <input
+                  type="text"
+                  className="h-10 flex-1 rounded-xl border border-zinc-200 bg-transparent px-4 text-sm focus:border-[#4169E1] focus:outline-none dark:border-zinc-700 dark:focus:border-[#87CEEB]"
+                  placeholder="Add item to grocery list…"
+                  value={newItem}
+                  onChange={(e) => setNewItem(e.target.value)}
+                />
+                <button
+                  type="submit"
+                  disabled={addingItem || !newItem.trim()}
+                  className="h-10 rounded-full bg-zinc-900 px-5 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+                >
+                  Add
+                </button>
               </form>
 
-              {loading ? (
-                <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-                  Loading...
-                </div>
-              ) : items.length === 0 ? (
-                <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-zinc-800/80">
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Your grocery list is empty. Add items manually or from the search page.
+              {/* Suggested from recent logs */}
+              {suggestions.length > 0 && (
+                <div className="mb-6">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                    From your recent logs
                   </p>
+                  <div className="flex flex-wrap gap-2">
+                    {suggestions.map((name) => (
+                      <button
+                        key={name}
+                        onClick={() => handleSuggestion(name)}
+                        className="flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:border-[#4169E1]/40 hover:bg-[#4169E1]/5 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-[#87CEEB]/40 dark:hover:bg-[#87CEEB]/5"
+                      >
+                        <span>+</span>
+                        <span className="max-w-[160px] truncate">{name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {loading ? (
+                <div className="mt-8 text-center text-sm text-zinc-500">Loading…</div>
+              ) : items.length === 0 ? (
+                <div className="rounded-2xl border border-zinc-200/70 bg-white p-8 text-center dark:border-zinc-800/80 dark:bg-zinc-900">
+                  <p className="text-sm text-zinc-500">Your grocery list is empty. Add items above or from the Search page.</p>
                 </div>
               ) : (
-                <>
-                  {unpurchasedItems.length > 0 && (
+                <div className="space-y-6">
+                  {/* To Buy */}
+                  {unpurchased.length > 0 && (
                     <div>
-                      <h2 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                        To Buy ({unpurchasedItems.length})
-                      </h2>
+                      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                        To Buy ({unpurchased.length})
+                      </p>
                       <div className="space-y-2">
-                        {unpurchasedItems.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex items-center gap-3 rounded-xl border border-zinc-200/70 p-3 dark:border-zinc-800/80"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={item.purchased}
-                              onChange={() => togglePurchased(item)}
-                              className="h-4 w-4 cursor-pointer rounded border-zinc-300 dark:border-zinc-700"
-                            />
-                            <div className="flex-1">
-                              <div className="text-sm font-medium">{item.food_name}</div>
-                              <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                                {item.quantity} {item.unit}
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => deleteItem(item.id)}
-                              className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
-                            >
-                              Remove
-                            </button>
-                          </div>
+                        {unpurchased.map((item) => (
+                          <GroceryRow key={item.id} item={item} onToggle={togglePurchased} onDelete={handleDeleteItem} />
                         ))}
                       </div>
                     </div>
                   )}
 
-                  {purchasedItems.length > 0 && (
+                  {/* Purchased */}
+                  {purchased.length > 0 && (
                     <div>
                       <div className="mb-3 flex items-center justify-between">
-                        <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                          Purchased ({purchasedItems.length})
-                        </h2>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                          Purchased ({purchased.length})
+                        </p>
                         <button
                           onClick={clearPurchased}
-                          className="text-xs text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+                          className="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                         >
-                          Clear All
+                          Clear all
                         </button>
                       </div>
-                      <div className="space-y-2">
-                        {purchasedItems.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex items-center gap-3 rounded-xl border border-zinc-200/70 p-3 opacity-60 dark:border-zinc-800/80"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={item.purchased}
-                              onChange={() => togglePurchased(item)}
-                              className="h-4 w-4 cursor-pointer rounded border-zinc-300 dark:border-zinc-700"
-                            />
-                            <div className="flex-1">
-                              <div className="text-sm font-medium line-through">{item.food_name}</div>
-                              <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                                {item.quantity} {item.unit}
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => deleteItem(item.id)}
-                              className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
-                            >
-                              Remove
-                            </button>
-                          </div>
+                      <div className="space-y-2 opacity-60">
+                        {purchased.map((item) => (
+                          <GroceryRow key={item.id} item={item} onToggle={togglePurchased} onDelete={handleDeleteItem} />
                         ))}
                       </div>
                     </div>
                   )}
-                </>
+                </div>
               )}
             </>
           )}
 
-          {/* Favorites Tab */}
-          {activeTab === 'favorites' && (
+          {/* ── Favourites tab ─────────────────────────────────────────────── */}
+          {activeTab === "favorites" && (
             <>
               {loading ? (
-                <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-                  Loading...
-                </div>
+                <div className="mt-8 text-center text-sm text-zinc-500">Loading…</div>
               ) : favorites.length === 0 ? (
-                <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-zinc-800/80">
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    No saved favorites yet. Add favorites from the Search page for quick access!
-                  </p>
+                <div className="rounded-2xl border border-zinc-200/70 bg-white p-8 text-center dark:border-zinc-800/80 dark:bg-zinc-900">
+                  <p className="text-sm text-zinc-500">No saved favourites yet. Star foods from the Search page.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {favorites.map((favorite) => (
-                    <div
-                      key={favorite.id}
-                      className="rounded-xl border border-zinc-200/70 p-4 dark:border-zinc-800/80"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="text-sm font-semibold">{favorite.food_name}</h3>
-                          <div className="mt-2 flex gap-4 text-xs text-zinc-600 dark:text-zinc-400">
-                            <span>{Math.round(favorite.calories || 0)} cal</span>
-                            <span>{Math.round(favorite.protein || 0)}g protein</span>
-                            <span>{Math.round(favorite.carbs || 0)}g carbs</span>
-                            <span>{Math.round(favorite.fat || 0)}g fat</span>
+                  {favorites.map((fav) => (
+                    <div key={fav.id} className="rounded-2xl border border-zinc-200/70 bg-white p-4 dark:border-zinc-800/80 dark:bg-zinc-900">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold">{fav.food_name}</p>
+                          <div className="mt-1 flex gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+                            <span>{Math.round(fav.calories || 0)} kcal</span>
+                            <span>P {Math.round(fav.protein || 0)}g</span>
+                            <span>C {Math.round(fav.carbs || 0)}g</span>
+                            <span>F {Math.round(fav.fat || 0)}g</span>
                           </div>
-                          <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-                            Per {favorite.serving_size}g serving
-                          </div>
+                          <p className="mt-0.5 text-xs text-zinc-400">Per {fav.serving_size ?? 100}g serving</p>
                         </div>
-                        <button
-                          onClick={() => deleteFavorite(favorite.id)}
-                          className="text-xs text-red-600 hover:text-red-700 dark:text-red-400"
-                        >
+                        <button onClick={() => handleDeleteFav(fav.id)} className="shrink-0 text-xs text-red-500 hover:text-red-700 dark:text-red-400">
                           Remove
                         </button>
                       </div>
                       <div className="mt-3 flex gap-2">
                         <button
-                          onClick={() => addFavoriteToGrocery(favorite)}
-                          className="rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+                          onClick={() => addFavToGrocery(fav)}
+                          className="rounded-full bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
                         >
-                          Add to Grocery
+                          + Grocery
                         </button>
                         <button
-                          onClick={() => addFavoriteToLog(favorite)}
-                          className="rounded-full bg-blue-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-blue-700 dark:bg-blue-400 dark:text-zinc-900 dark:hover:bg-blue-500"
+                          onClick={() => addFavToLog(fav)}
+                          className="rounded-full bg-[#4169E1] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#000080] dark:bg-[#87CEEB] dark:text-zinc-900"
                         >
                           Log Today
                         </button>
@@ -559,91 +474,86 @@ export default function GroceryPage() {
         </div>
       </div>
 
-
-
       {/* Meal Plan Modal */}
       {showMealPlan && mealPlan && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setShowMealPlan(false)}
-        >
-          <div
-            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowMealPlan(false)}>
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Daily Meal Plan</h2>
-              <button
-                onClick={() => setShowMealPlan(false)}
-                className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-              >
-                ✕
-              </button>
+              <h2 className="text-lg font-semibold">Daily Meal Plan</h2>
+              <button onClick={() => setShowMealPlan(false)} className="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">✕</button>
             </div>
-
-            <div className="mb-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-              <h3 className="mb-2 text-sm font-semibold">Daily Totals</h3>
-              <div className="grid grid-cols-4 gap-3 text-center">
-                <div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Calories</div>
-                  <div className="text-sm font-semibold">{Math.round(mealPlan.nutrients.calories)}</div>
+            <div className="mb-4 grid grid-cols-4 gap-3 rounded-xl border border-zinc-200 p-4 text-center dark:border-zinc-800">
+              {[
+                { label: "Calories", value: Math.round(mealPlan.nutrients.calories) },
+                { label: "Protein",  value: `${Math.round(mealPlan.nutrients.protein)}g` },
+                { label: "Carbs",    value: `${Math.round(mealPlan.nutrients.carbohydrates)}g` },
+                { label: "Fat",      value: `${Math.round(mealPlan.nutrients.fat)}g` },
+              ].map(({ label, value }) => (
+                <div key={label}>
+                  <p className="text-xs text-zinc-500">{label}</p>
+                  <p className="text-sm font-semibold">{value}</p>
                 </div>
-                <div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Protein</div>
-                  <div className="text-sm font-semibold">{Math.round(mealPlan.nutrients.protein)}g</div>
-                </div>
-                <div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Carbs</div>
-                  <div className="text-sm font-semibold">{Math.round(mealPlan.nutrients.carbohydrates)}g</div>
-                </div>
-                <div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Fat</div>
-                  <div className="text-sm font-semibold">{Math.round(mealPlan.nutrients.fat)}g</div>
-                </div>
-              </div>
+              ))}
             </div>
-
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold">Meals</h3>
               {mealPlan.meals.map((meal) => (
-                <div
-                  key={meal.id}
-                  className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
-                >
-                  <h4 className="font-medium">{meal.title}</h4>
-                  <div className="mt-2 flex gap-3 text-xs text-zinc-600 dark:text-zinc-400">
+                <div key={meal.id} className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
+                  <p className="text-sm font-semibold">{meal.title}</p>
+                  <div className="mt-1.5 flex gap-3 text-xs text-zinc-500">
                     <span>⏱️ {meal.readyInMinutes} min</span>
                     <span>🍽️ {meal.servings} servings</span>
                   </div>
                   {meal.sourceUrl && (
-                    <a
-                      href={meal.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-2 inline-block text-xs text-blue-600 hover:underline dark:text-blue-400"
-                    >
+                    <a href={meal.sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-1.5 inline-block text-xs text-[#4169E1] hover:underline dark:text-[#87CEEB]">
                       View Recipe →
                     </a>
                   )}
                 </div>
               ))}
             </div>
-
-            <div className="mt-6 text-center text-xs text-zinc-600 dark:text-zinc-400">
-              Note: Add individual recipe ingredients to your grocery list from the Meals page
-            </div>
           </div>
         </div>
       )}
 
-      {/* Toast Notification */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onCloseAction={() => setToast(null)}
-        />
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} onCloseAction={() => setToast(null)} />}
+    </div>
+  );
+}
+
+// ─── GroceryRow ───────────────────────────────────────────────────────────────
+
+function GroceryRow({
+  item,
+  onToggle,
+  onDelete,
+}: {
+  item: GroceryItem;
+  onToggle: (item: GroceryItem) => void;
+  onDelete: (id: string) => void;
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-zinc-200/70 bg-white px-4 py-3 dark:border-zinc-800/80 dark:bg-zinc-900">
+      <input
+        type="checkbox"
+        checked={item.purchased}
+        onChange={() => onToggle(item)}
+        className="h-4 w-4 cursor-pointer rounded accent-[#4169E1]"
+      />
+      <div className="flex-1 min-w-0">
+        <p className={`truncate text-sm font-medium ${item.purchased ? "line-through text-zinc-400" : ""}`}>{item.food_name}</p>
+        {(item.quantity !== 1 || item.unit) && (
+          <p className="text-xs text-zinc-400">{item.quantity} {item.unit ?? "serving"}</p>
+        )}
+      </div>
+      <button
+        onClick={() => onDelete(item.id)}
+        className="shrink-0 rounded-full p-1 text-zinc-400 hover:bg-zinc-100 hover:text-red-500 dark:hover:bg-zinc-800 dark:hover:text-red-400"
+        aria-label="Remove"
+      >
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
   );
 }

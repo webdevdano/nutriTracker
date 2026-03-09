@@ -73,7 +73,7 @@ export type UsdaFood = {
 
 export type GroceryItem = {
   id: string;
-  item_name: string;
+  food_name: string;
   quantity: number;
   unit: string | null;
   purchased: boolean;
@@ -88,6 +88,7 @@ export type Favorite = {
   protein: number | null;
   carbs: number | null;
   fat: number | null;
+  serving_size: number | null;
 };
 
 export type CustomFood = {
@@ -191,7 +192,7 @@ export const api = createApi({
           : [{ type: "Grocery", id: "LIST" }],
     }),
 
-    addGroceryItem: builder.mutation<GroceryItem, { item_name: string; quantity?: number; unit?: string; category?: string }>({
+    addGroceryItem: builder.mutation<GroceryItem, { food_name: string; quantity?: number; unit?: string }>({
       query: (body) => ({ url: "api/grocery", method: "POST", body }),
       invalidatesTags: [{ type: "Grocery", id: "LIST" }],
     }),
