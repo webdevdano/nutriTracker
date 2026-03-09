@@ -62,6 +62,7 @@ export async function POST(request: Request) {
         date: body.date ? new Date(body.date) : new Date(),
         fdcId: body.fdc_id,
         foodName: body.food_name,
+        mealType: body.meal_type ?? "SNACK",
         servingSize: body.serving_size,
         servingUnit: body.serving_unit,
         calories: body.calories,
@@ -120,7 +121,7 @@ export async function PATCH(request: Request) {
     // Map snake_case fields to camelCase
     const data: Record<string, unknown> = {};
     const fieldMap: Record<string, string> = {
-      food_name: "foodName", serving_size: "servingSize", serving_unit: "servingUnit",
+      food_name: "foodName", meal_type: "mealType", serving_size: "servingSize", serving_unit: "servingUnit",
       saturated_fat: "saturatedFat", trans_fat: "transFat",
       polyunsaturated_fat: "polyunsaturatedFat", monounsaturated_fat: "monounsaturatedFat",
       added_sugars: "addedSugars", vitamin_a: "vitaminA", vitamin_c: "vitaminC",

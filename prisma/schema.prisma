@@ -75,6 +75,13 @@ model VerificationToken {
 // APP MODELS
 // =====================================================
 
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
 model Profile {
   id                  String   @id @default(uuid())
   userId              String   @unique
@@ -122,6 +129,7 @@ model FoodLog {
   // Food snapshot from USDA
   fdcId       Int
   foodName    String
+  mealType    MealType @default(SNACK)
   servingSize Decimal?
   servingUnit String?
 

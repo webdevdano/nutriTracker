@@ -21,6 +21,7 @@ export function serializeFoodLog(log: FoodLog) {
     time: log.time instanceof Date ? log.time.toISOString() : log.time,
     fdc_id: log.fdcId,
     food_name: log.foodName,
+    meal_type: log.mealType,
     serving_size: n(log.servingSize),
     serving_unit: log.servingUnit,
     calories: n(log.calories),
