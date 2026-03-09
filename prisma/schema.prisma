@@ -251,3 +251,22 @@ model SavedFavorite {
   @@index([userId])
   @@index([userId, fdcId])
 }
+
+// =====================================================
+// FOOD LOOKUP CACHE
+// Reduces external API calls for USDA + Open Food Facts
+// =====================================================
+
+model FoodCache {
+  id        String   @id @default(uuid())
+  /// "usda:search:{query}:{page}:{pageSize}", "usda:detail:{fdcId}", "off:barcode:{code}", "off:search:{query}:{page}"
+  cacheKey  String   @unique
+  source    String   // "usda" | "off"
+  data      Json
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cacheKey])
+  @@index([expiresAt])
+}

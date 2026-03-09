@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getFoodDetails } from "@/lib/usda";
+import { getFoodDetailsService } from "@/lib/food-service";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +15,7 @@ export async function GET(
       return NextResponse.json({ error: "Invalid fdcId" }, { status: 400 });
     }
 
-    const data = await getFoodDetails(fdcIdNum);
+    const data = await getFoodDetailsService(fdcIdNum);
     return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json(

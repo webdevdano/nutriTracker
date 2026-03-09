@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { searchFoods } from "@/lib/usda";
+import { searchFoodsService } from "@/lib/food-service";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const data = await searchFoods(query.trim(), pageNumber, pageSize);
+    const data = await searchFoodsService(query.trim(), pageNumber, pageSize);
     return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json(
