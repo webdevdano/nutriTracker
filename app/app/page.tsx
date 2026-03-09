@@ -306,6 +306,13 @@ export default function TodayPage() {
           </div>
         </div>
       )}
+      {/* Daily Summary Card — only meaningful in today view */}
+      {timeView === 'today' && !isGuest && (
+        <div className="mb-6">
+          <DailySummaryCard totals={totals} goals={goals} logCount={logs.length} />
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Progress</h1>
@@ -794,6 +801,103 @@ function Chart({
         <span>{data.length > 0 ? new Date(data[0].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
         <span>{data.length > 0 ? new Date(data[data.length - 1].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
       </div>
+    </div>
+  );
+}
+
+function DailySummaryCard({
+  totals,
+  goals,
+  logCount,
+}: {
+  totals: { calories: number; protein: number; carbs: number; fat: number; fiber: number; sodium: number };
+  goals: UserGoal | null;
+  logCount: number;
+}) {
+  const calGoal = goals?.calories_goal ?? 0;
+  const calRemaining = calGoal > 0 ? Math.max(0, calGoal - Math.round(totals.calories)) : null;
+  const calOver = calGoal > 0 && totals.calories > calGoal;
+
+  // Data-driven insight: find the macro closest to goal without going over
+  const macros = [
+    { name: "Protein",  value: totals.protein, goal: goals?.protein_goal },
+    { name: "Carbs",    value: totals.carbs,   goal: goals?.carbs_goal },
+    { name: "Fat",      value: totals.fat,     goal: goals?.fat_goal },
+    { name: "Fiber",    value: totals.fiber,   goal: 28 },
+  ];
+  const withPct = macros
+    .filter((m) => m.goal && m.goal > 0 && m.value > 0)
+    .map((m) => ({ ...m, pct: Math.round((m.value / m.goal!) * 100) }));
+  const best = withPct.filter((m) => m.pct <= 100).sort((a, b) => b.pct - a.pct)[0] ?? null;
+  const over  = withPct.filter((m) => m.pct > 100);
+
+  let insight = "Start logging to see your progress today.";
+  if (logCount === 0) {
+    insight = "No meals logged yet — add your first food to get started.";
+  } else if (calOver) {
+    insight = `You've gone over your calorie goal today by ${Math.round(totals.calories - calGoal)} kcal.`;
+  } else if (over.length > 0) {
+    insight = `${over.map((m) => m.name).join(" & ")} ${over.length === 1 ? "is" : "are"} over the daily goal.`;
+  } else if (best) {
+    insight = `Best macro today: ${best.name} at ${best.pct}% of goal.`;
+  } else if (calGoal > 0 && calRemaining !== null) {
+    insight = `${calRemaining} kcal remaining — you're on track.`;
+  }
+
+  // Progress colour
+  const calPct = calGoal > 0 ? Math.min(100, (totals.calories / calGoal) * 100) : 0;
+  const barColor =
+    calOver ? "bg-red-500" :
+    calPct >= 80 ? "bg-amber-400" :
+    "bg-emerald-500";
+
+  return (
+    <div className="rounded-2xl border border-zinc-200/70 bg-white p-5 dark:border-blue-950/70 dark:bg-zinc-900">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* Calories remaining */}
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            {calOver ? "Calories over goal" : calGoal > 0 ? "Calories remaining" : "Calories logged"}
+          </p>
+          <p className={`mt-1 text-4xl font-bold tabular-nums ${
+            calOver ? "text-red-500" : "text-zinc-900 dark:text-zinc-50"
+          }`}>
+            {calGoal > 0
+              ? `${calOver ? "+" : ""}${Math.abs(calGoal - Math.round(totals.calories))}`
+              : Math.round(totals.calories)}
+            <span className="ml-1 text-base font-normal text-zinc-500">kcal</span>
+          </p>
+          {calGoal > 0 && (
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              {Math.round(totals.calories)} consumed · {calGoal} goal
+            </p>
+          )}
+        </div>
+
+        {/* Insight */}
+        <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800 sm:max-w-xs">
+          <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">{insight}</p>
+        </div>
+      </div>
+
+      {/* Calorie progress bar */}
+      {calGoal > 0 && (
+        <div className="mt-4">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+            <div
+              className={`h-full rounded-full transition-all ${barColor}`}
+              style={{ width: `${calPct}%`, minWidth: calPct > 0 ? "4px" : undefined }}
+            />
+          </div>
+          <div className="mt-1 flex justify-between text-xs text-zinc-400">
+            <span>0</span>
+            <span className={calPct >= 80 && !calOver ? "font-medium text-amber-500" : calOver ? "font-medium text-red-500" : ""}>
+              {Math.round(calPct)}%
+            </span>
+            <span>{calGoal}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
