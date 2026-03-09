@@ -42,11 +42,19 @@ export type SpoonacularRecipe = {
   title: string;
   image: string;
   imageType: string;
+  servings?: number;
+  readyInMinutes?: number;
+  sourceUrl?: string;
+  summary?: string;
+  cuisines?: string[];
+  dishTypes?: string[];
+  diets?: string[];
   nutrition?: {
     nutrients: Array<{
       name: string;
       amount: number;
       unit: string;
+      percentOfDailyNeeds?: number;
     }>;
   };
 };
@@ -54,13 +62,17 @@ export type SpoonacularRecipe = {
 export async function searchRecipes(
   query: string,
   number: number = 10,
-  addRecipeNutrition: boolean = true
-): Promise<{ results: SpoonacularRecipe[] }> {
-  return spoonacularFetch("/recipes/complexSearch", {
-    query,
+  addRecipeNutrition: boolean = true,
+  sort: string = "popularity"
+): Promise<{ results: SpoonacularRecipe[]; totalResults: number }> {
+  const params: Record<string, string> = {
     number: number.toString(),
     addRecipeNutrition: addRecipeNutrition.toString(),
-  });
+    sort,
+    sortDirection: "desc",
+  };
+  if (query) params.query = query;
+  return spoonacularFetch("/recipes/complexSearch", params);
 }
 
 // Get recipe information
