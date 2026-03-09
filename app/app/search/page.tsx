@@ -76,21 +76,16 @@ export default function SearchPage() {
     dispatch(setScannedBarcode(barcode));
     setError(null);
     try {
-      const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+      const response = await fetch(`/api/foods/search?query=${encodeURIComponent(barcode)}`);
       const data = await response.json();
-      if (data.status === 1 && data.product) {
-        const food: UsdaFood = {
-          fdcId: parseInt(barcode) || 0,
-          description: data.product.product_name || "Unknown Product",
-          brandOwner: data.product.brands,
-          foodNutrients: [
-            { nutrientName: "Energy", value: data.product.nutriments.energy_100g || 0, unitName: "kcal" },
-            { nutrientName: "Protein", value: data.product.nutriments.proteins_100g || 0, unitName: "g" },
-            { nutrientName: "Carbohydrate, by difference", value: data.product.nutriments.carbohydrates_100g || 0, unitName: "g" },
-            { nutrientName: "Total lipid (fat)", value: data.product.nutriments.fat_100g || 0, unitName: "g" },
-          ],
-        };
-        setBarcodeResults([food]);
+      if (!response.ok) {
+        setError(data.error || "Barcode lookup failed.");
+        setBarcodeResults([]);
+        return;
+      }
+      const foods: UsdaFood[] = data.foods ?? [];
+      if (foods.length > 0) {
+        setBarcodeResults(foods);
       } else {
         setError("No product found for this barcode.");
         setBarcodeResults([]);
@@ -105,7 +100,10 @@ export default function SearchPage() {
     dispatch(setSelectedFood(food));
     dispatch(setServingSize(100));
     dispatch(setCustomServing(""));
-    dispatch(setMealType("Lunch"));
+    const hour = new Date().getHours();
+    const defaultMeal =
+      hour < 11 ? "Breakfast" : hour < 15 ? "Lunch" : hour < 20 ? "Dinner" : "Snack";
+    dispatch(setMealType(defaultMeal));
   }
 
   function closeModal() {
@@ -207,6 +205,7 @@ export default function SearchPage() {
       selenium,
       quantity: 1,
       time: new Date().toISOString(),
+      meal_type: mealType.toUpperCase(),
     });
 
     dispatch(setAdding(false));

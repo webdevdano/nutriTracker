@@ -45,6 +45,7 @@ export type FoodLog = {
   quantity: number;
   time: string;
   date?: string;
+  meal_type?: string;
 };
 
 export type UserGoal = {
