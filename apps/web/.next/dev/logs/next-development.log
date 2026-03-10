@@ -1,0 +1,13 @@
+[00:00:03.684] Server  LOG     ✓ Ready in 2.9s
+[00:04:11.083] Server  LOG     ○ Compiling / ...
+[00:04:16.610] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[00:04:16.610] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[00:04:24.761] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /app/learn. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[00:04:24.762] Server  WARN    ⚠ Unsupported metadata viewport is configured in metadata export in /app/learn. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+[00:04:35.599] Browser LOG     Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+[00:25:24.420] Server  LOG     ✓ Compiled in 148ms
+[02:00:27.468] Server  LOG     ✓ Compiled in 230ms
