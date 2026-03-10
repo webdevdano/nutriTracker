@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":["file:///Users/hs/Desktop/Portfolio_projects/nutritracker/apps/web/lib/prisma.ts"],"sourcesContent":["import { PrismaClient } from \"./generated/prisma\";\nimport { PrismaPg } from \"@prisma/adapter-pg\";\n\nconst globalForPrisma = globalThis as unknown as { prisma: PrismaClient };\n\nfunction makePrisma() {\n  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });\n  return new PrismaClient({ adapter });\n}\n\nexport const prisma = globalForPrisma.prisma ?? makePrisma();\n\nif (process.env.NODE_ENV !== \"production\") globalForPrisma.prisma = prisma;\n"],"names":[],"mappings":";;;;AAAA;AACA;;;;;;;AAEA,MAAM,kBAAkB;AAExB,SAAS;IACP,MAAM,UAAU,IAAI,gSAAQ,CAAC;QAAE,kBAAkB,QAAQ,GAAG,CAAC,YAAY;IAAC;IAC1E,OAAO,IAAI,qNAAY,CAAC;QAAE;IAAQ;AACpC;AAEO,MAAM,SAAS,gBAAgB,MAAM,IAAI;AAEhD,wCAA2C,gBAAgB,MAAM,GAAG"}}]
-}
