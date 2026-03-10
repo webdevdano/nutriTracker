@@ -153,13 +153,16 @@ export function getNutritionInfo(params: {
 
   const bmi = calcBmi(weightLbs, heightIn);
 
-  const tdeeByLevel = Object.fromEntries(
-    Object.entries(ACTIVITY_FACTORS).map(([level, f]) => [level, String(Math.round(bmr * f))])
-  ) as Record<string, string>;
-
   return {
     BMI: { bmi: bmi.toFixed(1), bmi_category: bmiCategory(bmi) },
-    Calories: { ...tdeeByLevel, recommended: String(calories) },
+    Calories: {
+      Sedentary: String(Math.round(bmr * 1.2)),
+      Low: String(Math.round(bmr * 1.375)),
+      Moderate: String(Math.round(bmr * 1.55)),
+      Active: String(Math.round(bmr * 1.725)),
+      "Very Active": String(Math.round(bmr * 1.9)),
+      recommended: String(calories),
+    },
     Macronutrients: {
       Protein: { grams: String(proteinG), calories: String(Math.round(proteinCal)) },
       Carbohydrates: { grams: String(carbsG), calories: String(Math.round(carbsCal)) },
