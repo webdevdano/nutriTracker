@@ -115,59 +115,35 @@ export default function ProfileSetupPage() {
         );
       }
 
-      // Parse nutrition data
-      const calories = parseInt(
-        nutritionData.BMI_EER?.["Estimated Daily Caloric Needs"]?.replace(/,/g, "") || "2000"
-      );
-      
+      // Parse nutrition data (local calculations format)
+      const baseCal = parseInt(nutritionData.Calories?.recommended || "2000");
+
       // Adjust calories based on fitness goal
-      let adjustedCalories = calories;
+      let adjustedCalories = baseCal;
       if (fitnessGoal === "shred") {
-        adjustedCalories = calories - 500;
+        adjustedCalories = baseCal - 500;
       } else if (fitnessGoal === "bulk") {
-        adjustedCalories = calories + 500;
+        adjustedCalories = baseCal + 300;
       }
-      
-      const macros = nutritionData.macronutrients_table?.["macronutrients-table"] || [];
-      const proteinRow = macros.find((row: string[]) => row[0] === "Protein");
-      const carbsRow = macros.find((row: string[]) => row[0] === "Carbohydrate");
-      const fatRow = macros.find((row: string[]) => row[0] === "Fat");
-      const fiberRow = macros.find((row: string[]) => row[0] === "Fiber");
 
-      const protein = parseInt(proteinRow?.[1] || "150");
-      const carbs = parseInt(carbsRow?.[1]?.split("-")[0] || "200");
-      const fat = parseInt(fatRow?.[1]?.split("-")[0] || "65");
-      const fiber = parseInt(fiberRow?.[1]?.split("-")[0] || "28");
+      const protein = parseInt(nutritionData.Macronutrients?.Protein?.grams || "150");
+      const carbs = parseInt(nutritionData.Macronutrients?.Carbohydrates?.grams || "200");
+      const fat = parseInt(nutritionData.Macronutrients?.Fat?.grams || "65");
+      const fiber = parseInt(nutritionData.Fiber?.grams || "28");
+      const vitamin_c = parseInt(nutritionData.Vitamins?.["Vitamin C"] || "90");
+      const vitamin_d = parseInt(nutritionData.Vitamins?.["Vitamin D"] || "15");
+      const calcium = parseInt(nutritionData.Minerals?.Calcium || "1000");
+      const iron = parseInt(nutritionData.Minerals?.Iron || "8");
+      const sodium = parseInt(nutritionData.Minerals?.Sodium || "2300");
+      const potassium = parseInt(nutritionData.Minerals?.Potassium || "3400");
 
-      // Extract micronutrient recommendations
-      const vitamins = nutritionData.vitamins_table?.["vitamins-table"] || [];
-      const minerals = nutritionData.minerals_table?.["minerals-table"] || [];
-
-      const vitaminCRow = vitamins.find((row: string[]) => row[0]?.includes("Vitamin C"));
-      const vitaminDRow = vitamins.find((row: string[]) => row[0]?.includes("Vitamin D"));
-      
-      const calciumRow = minerals.find((row: string[]) => row[0]?.includes("Calcium"));
-      const ironRow = minerals.find((row: string[]) => row[0]?.includes("Iron"));
-      const sodiumRow = minerals.find((row: string[]) => row[0]?.includes("Sodium"));
-      const potassiumRow = minerals.find((row: string[]) => row[0]?.includes("Potassium"));
-
-      const vitamin_c = parseInt(vitaminCRow?.[1]?.replace(/,/g, "") || "90");
-      const vitamin_d = parseInt(vitaminDRow?.[1]?.replace(/,/g, "") || "15");
-      const calcium = parseInt(calciumRow?.[1]?.replace(/,/g, "") || "1000");
-      const iron = parseInt(ironRow?.[1]?.replace(/,/g, "") || "8");
-      const sodium = parseInt(sodiumRow?.[1]?.replace(/,/g, "") || "2300");
-      const potassium = parseInt(potassiumRow?.[1]?.replace(/,/g, "") || "3400");
-
-      // Get BMI category
-      const bmiValue = parseFloat(bmiData.bmi || nutritionData.BMI_EER?.BMI || "0");
-      let bmiCategory = "Normal";
-      if (bmiValue < 18.5) bmiCategory = "Underweight";
-      else if (bmiValue >= 25 && bmiValue < 30) bmiCategory = "Overweight";
-      else if (bmiValue >= 30) bmiCategory = "Obese";
+      // Get BMI
+      const bmiValue = parseFloat(bmiData.bmi || nutritionData.BMI?.bmi || "0");
+      const bmiCategoryStr: string = bmiData.bmi_category || nutritionData.BMI?.bmi_category || "Normal weight";
 
       const result: CalculatedNeeds = {
         bmi: bmiValue.toFixed(1),
-        bmiCategory,
+        bmiCategory: bmiCategoryStr,
         calories: adjustedCalories,
         protein,
         carbs,
