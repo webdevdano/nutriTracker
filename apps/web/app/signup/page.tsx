@@ -7,6 +7,7 @@ export default function SignupPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -15,6 +16,12 @@ export default function SignupPage() {
     event.preventDefault();
     setLoading(true);
     setError(null);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
 
     // Register new user
     const res = await fetch("/api/auth/register", {
@@ -138,6 +145,24 @@ export default function SignupPage() {
                     minLength={6}
                   />
                   <span className="text-xs text-zinc-400">Minimum 6 characters</span>
+                </label>
+
+                <label className="grid gap-1.5">
+                  <span className="text-sm font-medium">Confirm password</span>
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    className="h-12 rounded-xl border border-zinc-300 bg-transparent px-3 text-base focus:border-[#4169E1] focus:outline-none focus:ring-2 focus:ring-[#4169E1]/20 dark:border-zinc-700 dark:focus:border-[#87CEEB] dark:focus:ring-[#87CEEB]/20"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    minLength={6}
+                  />
+                  {confirmPassword && password !== confirmPassword ? (
+                    <span className="text-xs text-red-500">Passwords do not match</span>
+                  ) : confirmPassword && password === confirmPassword ? (
+                    <span className="text-xs text-green-600 dark:text-green-400">Passwords match</span>
+                  ) : null}
                 </label>
 
                 {error ? (
