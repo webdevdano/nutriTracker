@@ -14,114 +14,106 @@ type Superfood = {
   serving: string;
 };
 
-const SUPERFOODS: Superfood[] = [
-  {
-    name: "Spinach",
-    emoji: "🥬",
-    description: "Nutrient-dense leafy green powerhouse",
-    nutrients: ["Iron", "Calcium", "Vitamin A", "Vitamin K", "Vitamin C", "Folate", "Magnesium"],
-    benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"],
-    serving: "1 cup cooked (180g)"
-  },
-  {
-    name: "Salmon",
-    emoji: "🐟",
-    description: "Omega-3 rich fatty fish",
-    nutrients: ["Protein", "Omega-3s", "Vitamin D", "Vitamin B12", "Selenium", "Niacin"],
-    benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"],
-    serving: "3 oz (85g)"
-  },
-  {
-    name: "Blueberries",
-    emoji: "🫐",
-    description: "Antioxidant-packed superfruit",
-    nutrients: ["Vitamin C", "Vitamin K", "Fiber", "Manganese"],
-    benefits: ["Brain health", "Anti-aging", "Supports heart health", "May improve memory"],
-    serving: "1 cup (148g)"
-  },
-  {
-    name: "Sweet Potato",
-    emoji: "🍠",
-    description: "Complex carb loaded with vitamins",
-    nutrients: ["Vitamin A", "Vitamin C", "Fiber", "Potassium", "Manganese", "Vitamin B6"],
-    benefits: ["Eye health", "Immune support", "Digestive health", "Stable energy"],
-    serving: "1 medium (150g)"
-  },
-  {
-    name: "Greek Yogurt",
-    emoji: "🥛",
-    description: "Protein-rich probiotic food",
-    nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"],
-    benefits: ["Gut health", "Bone strength", "Muscle building", "Immune support"],
-    serving: "1 cup (245g)"
-  },
-  {
-    name: "Quinoa",
-    emoji: "🌾",
-    description: "Complete protein grain alternative",
-    nutrients: ["Protein", "Fiber", "Magnesium", "Iron", "Zinc", "Folate", "Manganese"],
-    benefits: ["Complete protein", "Gluten-free", "Rich in minerals", "Supports digestion"],
-    serving: "1 cup cooked (185g)"
-  },
-  {
-    name: "Kale",
-    emoji: "🥗",
-    description: "Superfood leafy green champion",
-    nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Calcium", "Iron", "Folate"],
-    benefits: ["Bone health", "Anti-inflammatory", "Detoxification", "Cancer prevention"],
-    serving: "1 cup raw (67g)"
-  },
-  {
-    name: "Eggs",
-    emoji: "🥚",
-    description: "Complete protein with essential nutrients",
-    nutrients: ["Protein", "Vitamin B12", "Vitamin D", "Selenium", "Choline", "Riboflavin"],
-    benefits: ["Muscle building", "Brain health", "Eye health", "Nutrient-dense"],
-    serving: "1 large egg (50g)"
-  },
-  {
-    name: "Avocado",
-    emoji: "🥑",
-    description: "Healthy fat powerhouse",
-    nutrients: ["Healthy Fats", "Fiber", "Potassium", "Vitamin E", "Vitamin K", "Folate"],
-    benefits: ["Heart health", "Nutrient absorption", "Satiety", "Skin health"],
-    serving: "1/2 avocado (100g)"
-  },
-  {
-    name: "Broccoli",
-    emoji: "🥦",
-    description: "Cruciferous vegetable with cancer-fighting compounds",
-    nutrients: ["Vitamin C", "Vitamin K", "Folate", "Fiber", "Potassium", "Iron"],
-    benefits: ["Cancer prevention", "Bone health", "Digestive health", "Immune support"],
-    serving: "1 cup chopped (91g)"
-  },
-  {
-    name: "Chia Seeds",
-    emoji: "🌱",
-    description: "Tiny seeds packed with omega-3s",
-    nutrients: ["Omega-3 Fatty Acids", "Fiber", "Protein", "Calcium", "Magnesium", "Phosphorus"],
-    benefits: ["Heart health", "Digestive health", "Bone strength", "Blood sugar control"],
-    serving: "2 tbsp (28g)"
-  }
+const SUPERFOODS_GREENS: Superfood[] = [
+  { name: "Spinach", emoji: "🥬", description: "Nutrient-dense leafy green powerhouse", nutrients: ["Iron", "Calcium", "Vitamin A", "Vitamin K", "Vitamin C", "Folate", "Magnesium"], benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"], serving: "1 cup cooked (180g)" },
+  { name: "Kale", emoji: "🥗", description: "King of leafy greens — vitamin K champion", nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Calcium", "Iron", "Folate", "Manganese"], benefits: ["Bone health", "Anti-inflammatory", "Cancer prevention", "Detoxification"], serving: "1 cup raw (67g)" },
+  { name: "Broccoli", emoji: "🥦", description: "Cruciferous vegetable with cancer-fighting sulforaphane", nutrients: ["Sulforaphane", "Vitamin C", "Vitamin K", "Folate", "Fiber", "Potassium"], benefits: ["Cancer prevention", "Gut health", "Immune support", "Bone health"], serving: "1 cup chopped (91g)" },
+  { name: "Swiss Chard", emoji: "🌿", description: "Colorful leafy green with exceptional mineral content", nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Magnesium", "Iron", "Potassium"], benefits: ["Blood sugar control", "Bone health", "Antioxidant-rich", "Heart health"], serving: "1 cup cooked (175g)" },
+  { name: "Brussels Sprouts", emoji: "🥦", description: "Mini cabbages packed with sulforaphane and vitamin K", nutrients: ["Vitamin K", "Vitamin C", "Folate", "Fiber", "Sulforaphane", "Manganese"], benefits: ["Cancer prevention", "Digestive health", "Heart health", "Immune support"], serving: "1 cup cooked (156g)" },
+  { name: "Arugula", emoji: "🌿", description: "Peppery green high in nitrates for blood flow", nutrients: ["Nitrates", "Vitamin K", "Vitamin A", "Folate", "Calcium", "Vitamin C"], benefits: ["Exercise performance", "Blood pressure support", "Eye health", "Anti-inflammatory"], serving: "2 cups raw (80g)" },
+  { name: "Watercress", emoji: "🌿", description: "Most nutrient-dense food per calorie according to CDC", nutrients: ["Vitamin K", "Vitamin C", "Vitamin A", "Calcium", "PEITC", "Iodine"], benefits: ["Highest nutrient density of any food", "Cancer prevention", "Bone health", "Thyroid support"], serving: "2 cups (68g)" },
+  { name: "Bok Choy", emoji: "🥬", description: "Asian cruciferous green with calcium and vitamins", nutrients: ["Vitamin A", "Vitamin C", "Vitamin K", "Calcium", "Folate", "Potassium"], benefits: ["Bone health", "Immune support", "Anti-inflammatory", "Low calorie"], serving: "1 cup cooked (170g)" },
 ];
+
+const SUPERFOODS_BERRIES: Superfood[] = [
+  { name: "Blueberries", emoji: "🫐", description: "Highest antioxidant fruit — brain food", nutrients: ["Anthocyanins", "Vitamin C", "Vitamin K", "Fiber", "Manganese", "Pterostilbene"], benefits: ["Memory improvement", "Brain health", "Anti-aging", "Heart health"], serving: "1 cup (148g)" },
+  { name: "Pomegranate", emoji: "🍎", description: "Seeds bursting with punicalagin antioxidants", nutrients: ["Punicalagins", "Vitamin C", "Folate", "Potassium", "Fiber", "Vitamin K"], benefits: ["Strongest antioxidant of any fruit", "Heart health", "Anti-inflammatory", "Cancer prevention"], serving: "1/2 cup seeds (87g)" },
+  { name: "Acai", emoji: "🍇", description: "Amazonian berry with massive antioxidant score", nutrients: ["Anthocyanins", "Healthy Fats", "Fiber", "Iron", "Calcium", "Vitamin A"], benefits: ["Highest ORAC score of any food", "Heart health", "Brain health", "Anti-aging"], serving: "100g pulp" },
+  { name: "Tart Cherries", emoji: "🍒", description: "Only natural food source of melatonin", nutrients: ["Melatonin", "Anthocyanins", "Vitamin C", "Potassium", "Fiber", "Quercetin"], benefits: ["Sleep quality", "Muscle recovery", "Reduced DOMS", "Anti-inflammatory"], serving: "1 cup (138g)" },
+  { name: "Goji Berries", emoji: "🫐", description: "Ancient Chinese superfood with zeaxanthin", nutrients: ["Zeaxanthin", "Vitamin A", "Vitamin C", "Iron", "Protein", "Fiber"], benefits: ["Eye health", "Immune support", "Blood sugar control", "Anti-aging"], serving: "1 oz dried (28g)" },
+  { name: "Raspberries", emoji: "🫐", description: "High-fiber berry with powerful ellagic acid", nutrients: ["Fiber", "Vitamin C", "Manganese", "Ellagic Acid", "Vitamin K", "Folate"], benefits: ["Highest fiber berry", "Cancer prevention", "Blood sugar control", "Heart health"], serving: "1 cup (123g)" },
+  { name: "Elderberries", emoji: "🫐", description: "Most studied berry for immune defense", nutrients: ["Anthocyanins", "Vitamin C", "Fiber", "Quercetin", "Potassium", "Vitamin A"], benefits: ["Reduces cold/flu duration", "Antiviral properties", "Immune modulation", "Antioxidant-rich"], serving: "1 cup (145g) or extract" },
+];
+
+const SUPERFOODS_PROTEIN: Superfood[] = [
+  { name: "Salmon", emoji: "🐟", description: "Omega-3 rich fatty fish — brain and heart superfood", nutrients: ["Omega-3s", "Protein", "Vitamin D", "Vitamin B12", "Selenium", "Astaxanthin"], benefits: ["Heart health", "Brain function", "Reduces inflammation", "Muscle repair"], serving: "3 oz (85g)" },
+  { name: "Eggs", emoji: "🥚", description: "Most nutrient-complete whole food available", nutrients: ["Complete Protein", "Choline", "Vitamin D", "Vitamin B12", "Selenium", "Lutein"], benefits: ["Brain health via choline", "Eye health", "Muscle building", "Hormone production"], serving: "1 large egg (50g)" },
+  { name: "Greek Yogurt", emoji: "🥛", description: "Probiotic-rich protein food for gut and muscles", nutrients: ["Protein", "Probiotics", "Calcium", "Vitamin B12", "Phosphorus", "Selenium"], benefits: ["Gut microbiome support", "Bone strength", "Muscle building", "Immune support"], serving: "1 cup (245g)" },
+  { name: "Sardines", emoji: "🐟", description: "Tiny fish with bone-in calcium and omega-3s", nutrients: ["Omega-3s", "Calcium", "Vitamin D", "Vitamin B12", "Selenium", "Protein"], benefits: ["Bone health", "Heart health", "Brain function", "Sustainable seafood"], serving: "3 oz (85g)" },
+  { name: "Beef Liver", emoji: "🥩", description: "Most nutrient-dense organ meat — nature's multivitamin", nutrients: ["Vitamin A", "Vitamin B12", "Iron", "Copper", "Folate", "CoQ10"], benefits: ["Highest vitamin A food", "Energy production", "Red blood cell formation", "Immune function"], serving: "3 oz (85g)" },
+  { name: "Mackerel", emoji: "🐟", description: "Fatty fish with more omega-3s than salmon", nutrients: ["Omega-3s", "Vitamin D", "Vitamin B12", "Selenium", "Protein", "Niacin"], benefits: ["Heart health", "Anti-inflammatory", "Brain function", "Thyroid support"], serving: "3 oz (85g)" },
+];
+
+const SUPERFOODS_SEEDS_FATS: Superfood[] = [
+  { name: "Chia Seeds", emoji: "🌱", description: "Tiny seeds with the most omega-3s of any plant food", nutrients: ["Omega-3s", "Fiber", "Protein", "Calcium", "Magnesium", "Phosphorus"], benefits: ["Digestive health", "Heart health", "Bone strength", "Blood sugar control"], serving: "2 tbsp (28g)" },
+  { name: "Avocado", emoji: "🥑", description: "Healthy fat powerhouse with the most potassium of any fruit", nutrients: ["Monounsaturated Fats", "Potassium", "Fiber", "Vitamin E", "Vitamin K", "Folate"], benefits: ["Heart health", "Fat-soluble nutrient absorption", "Satiety", "Skin health"], serving: "1/2 avocado (100g)" },
+  { name: "Walnuts", emoji: "🥜", description: "Only nut with significant ALA omega-3s", nutrients: ["Omega-3 ALA", "Polyphenols", "Magnesium", "Phosphorus", "Copper", "Vitamin E"], benefits: ["Brain health", "Anti-inflammatory", "Heart health", "Gut microbiome support"], serving: "1 oz (28g)" },
+  { name: "Flaxseeds", emoji: "🌾", description: "Richest plant source of lignans and omega-3 ALA", nutrients: ["Omega-3 ALA", "Lignans", "Fiber", "Magnesium", "Phosphorus", "Thiamine"], benefits: ["Hormone balance", "Heart health", "Digestive health", "Cancer prevention via lignans"], serving: "2 tbsp ground (14g)" },
+  { name: "Hemp Seeds", emoji: "🌿", description: "Only seed with perfect 3:1 omega-6 to omega-3 ratio", nutrients: ["Complete Protein", "Omega-3 & Omega-6", "Magnesium", "Zinc", "Iron", "GLA"], benefits: ["Ideal omega ratio", "Complete plant protein", "Skin health", "Heart health"], serving: "3 tbsp (30g)" },
+  { name: "Extra Virgin Olive Oil", emoji: "🫒", description: "Mediterranean staple with oleocanthal anti-inflammatory", nutrients: ["Monounsaturated Fats", "Oleocanthal", "Polyphenols", "Vitamin E", "Vitamin K", "Squalene"], benefits: ["Heart health", "Anti-inflammatory", "Brain health", "Cancer prevention"], serving: "1 tbsp (14g)" },
+];
+
+const SUPERFOODS_FUNCTIONAL: Superfood[] = [
+  { name: "Turmeric", emoji: "🟡", description: "Golden spice with curcumin — most studied anti-inflammatory", nutrients: ["Curcumin", "Manganese", "Iron", "Potassium", "Vitamin C", "Fiber"], benefits: ["Anti-inflammatory", "Joint pain relief", "Brain health", "Cancer prevention"], serving: "1 tsp (3g) with black pepper" },
+  { name: "Ginger", emoji: "🫚", description: "Root with gingerol — anti-nausea and inflammation fighter", nutrients: ["Gingerol", "Shogaol", "Magnesium", "Potassium", "Vitamin C", "Manganese"], benefits: ["Nausea relief", "Anti-inflammatory", "Digestive health", "Muscle recovery"], serving: "1 tsp fresh grated (5g)" },
+  { name: "Garlic", emoji: "🧄", description: "Allicin-rich immune and cardiovascular superfood", nutrients: ["Allicin", "Alliin", "Vitamin C", "Manganese", "Selenium", "Vitamin B6"], benefits: ["Antibiotic properties", "Immune support", "Blood pressure reduction", "Heart health"], serving: "2 cloves (6g)" },
+  { name: "Matcha", emoji: "🍵", description: "Whole-leaf green tea with L-theanine calm energy", nutrients: ["EGCG", "L-theanine", "Catechins", "Vitamin C", "Chlorophyll", "Caffeine"], benefits: ["Calm alertness via L-theanine", "Fat burning", "Cancer prevention via EGCG", "Detoxification via chlorophyll"], serving: "1 tsp powder (2g)" },
+  { name: "Spirulina", emoji: "🟢", description: "Blue-green algae with the most protein per gram of any food", nutrients: ["Complete Protein", "Phycocyanin", "Iron", "Vitamin B12", "Beta-Carotene", "GLA"], benefits: ["Highest protein density", "Heavy metal detoxification", "Energy boost", "Anti-inflammatory"], serving: "1 tbsp (7g)" },
+  { name: "Lion's Mane Mushroom", emoji: "🍄", description: "Functional mushroom that stimulates nerve growth factor", nutrients: ["Hericenones", "Erinacines", "Beta-Glucans", "Copper", "Selenium", "Zinc"], benefits: ["Nerve growth factor stimulation", "Memory improvement", "Anxiety reduction", "Immune support"], serving: "1 cup cooked (70g)" },
+  { name: "Kimchi", emoji: "🥬", description: "Korean fermented cabbage with trillions of probiotics", nutrients: ["Probiotics", "Vitamin C", "Vitamin K", "Folate", "Iron", "Capsaicin"], benefits: ["Gut microbiome diversity", "Immune support", "Weight management", "Anti-inflammatory"], serving: "1/2 cup (75g)" },
+  { name: "Raw Cacao", emoji: "🍫", description: "Purest form of chocolate — highest magnesium food", nutrients: ["Magnesium", "Iron", "Flavanols", "Copper", "Manganese", "Theobromine"], benefits: ["Heart health", "Mood improvement via theobromine", "Blood pressure reduction", "Antioxidant-rich"], serving: "1 tbsp powder (7g)" },
+];
+
+const SUPERFOODS_ALL: Superfood[] = [...SUPERFOODS_GREENS, ...SUPERFOODS_BERRIES, ...SUPERFOODS_PROTEIN, ...SUPERFOODS_SEEDS_FATS, ...SUPERFOODS_FUNCTIONAL];
+
+const SUPERFOODS: Superfood[] = SUPERFOODS_ALL;
+
 const allNutrients = getAllNutrientsAlphabetically();
 
-const CARBS_FOODS: Superfood[] = [
-  { name: "Oats", emoji: "🌾", description: "Whole grain high in fiber and complex carbs", nutrients: ["Carbohydrates", "Fiber", "Protein", "Magnesium", "Iron", "Zinc"], benefits: ["Sustained energy", "Digestive health", "Heart health", "Blood sugar control"], serving: "1 cup cooked (156g)" },
-  { name: "Sweet Potato", emoji: "🍠", description: "Complex carb loaded with vitamins", nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Fiber", "Potassium", "Manganese"], benefits: ["Eye health", "Immune support", "Digestive health", "Stable energy"], serving: "1 medium (150g)" },
-  { name: "Brown Rice", emoji: "🍚", description: "Whole grain source of complex carbs", nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Phosphorus", "Selenium"], benefits: ["Long-lasting energy", "Digestive health", "Supports metabolism"], serving: "1 cup cooked (195g)" },
-  { name: "Banana", emoji: "🍌", description: "Natural sugars and potassium", nutrients: ["Carbohydrates", "Potassium", "Vitamin B6", "Vitamin C", "Fiber"], benefits: ["Quick energy", "Muscle function", "Digestive health"], serving: "1 medium (118g)" },
-  { name: "Quinoa", emoji: "🌱", description: "Gluten-free whole grain alternative", nutrients: ["Carbohydrates", "Protein", "Fiber", "Magnesium", "Iron", "Zinc"], benefits: ["Complete protein", "Sustained energy", "Rich in minerals"], serving: "1 cup cooked (185g)" },
-  { name: "Black Beans", emoji: "🫘", description: "Legume high in fiber and complex carbs", nutrients: ["Carbohydrates", "Protein", "Fiber", "Folate", "Magnesium", "Iron"], benefits: ["Digestive health", "Blood sugar control", "Heart health"], serving: "1 cup cooked (172g)" },
-  { name: "Buckwheat", emoji: "🌿", description: "Gluten-free pseudocereal rich in complex carbs", nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Manganese", "Copper", "Phosphorus"], benefits: ["Blood sugar control", "Heart health", "Digestive health", "Gluten-free energy"], serving: "1 cup cooked (168g)" },
-  { name: "Beets", emoji: "🟣", description: "Root vegetable with natural sugars and nitrates", nutrients: ["Carbohydrates", "Folate", "Manganese", "Potassium", "Fiber", "Vitamin C"], benefits: ["Improves blood flow", "Boosts stamina", "Supports liver health", "Antioxidant-rich"], serving: "1 cup cooked (170g)" },
-  { name: "Oranges", emoji: "🍊", description: "Citrus fruit packed with natural sugars and vitamin C", nutrients: ["Carbohydrates", "Vitamin C", "Fiber", "Folate", "Potassium", "Thiamine"], benefits: ["Immune support", "Skin health", "Aids iron absorption", "Heart health"], serving: "1 medium (130g)" },
-  { name: "Blueberries", emoji: "🫐", description: "Antioxidant-rich berries with natural sugars", nutrients: ["Carbohydrates", "Fiber", "Vitamin C", "Vitamin K", "Manganese"], benefits: ["Brain health", "Anti-aging", "Supports heart health", "Blood sugar support"], serving: "1 cup (148g)" },
-  { name: "Grapefruit", emoji: "🍋", description: "Low-sugar citrus with complex nutrients", nutrients: ["Carbohydrates", "Vitamin C", "Fiber", "Potassium", "Vitamin A", "Folate"], benefits: ["Weight management", "Immune support", "Heart health", "Blood sugar control"], serving: "1/2 medium (123g)" },
-  { name: "Apples", emoji: "🍎", description: "Fiber-rich fruit with natural sugars", nutrients: ["Carbohydrates", "Fiber", "Vitamin C", "Potassium", "Vitamin K"], benefits: ["Digestive health", "Heart health", "Blood sugar control", "Antioxidant-rich"], serving: "1 medium (182g)" },
-  { name: "Chickpeas", emoji: "🫘", description: "Legume high in complex carbs and protein", nutrients: ["Carbohydrates", "Protein", "Fiber", "Folate", "Iron", "Manganese"], benefits: ["Blood sugar control", "Digestive health", "Heart health", "Sustained energy"], serving: "1 cup cooked (164g)" },
-  { name: "Kidney Beans", emoji: "🫘", description: "Complex carb legume rich in fiber and iron", nutrients: ["Carbohydrates", "Fiber", "Protein", "Iron", "Folate", "Potassium"], benefits: ["Heart health", "Blood sugar management", "Digestive health", "Rich in iron"], serving: "1 cup cooked (177g)" },
+const CARBS_GRAINS: Superfood[] = [
+  { name: "Oats", emoji: "🌾", description: "Whole grain with the highest beta-glucan fiber content", nutrients: ["Carbohydrates", "Beta-Glucan", "Fiber", "Protein", "Magnesium", "Zinc"], benefits: ["Lowers LDL cholesterol", "Blood sugar control", "Sustained energy", "Gut health"], serving: "1 cup cooked (156g)" },
+  { name: "Brown Rice", emoji: "🍚", description: "Whole grain with the bran and germ intact", nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Phosphorus", "Selenium", "Manganese"], benefits: ["Long-lasting energy", "Digestive health", "Richer in nutrients than white rice", "Supports metabolism"], serving: "1 cup cooked (195g)" },
+  { name: "Quinoa", emoji: "🌱", description: "Gluten-free complete protein grain", nutrients: ["Carbohydrates", "Complete Protein", "Fiber", "Magnesium", "Iron", "Zinc"], benefits: ["Only grain with all 9 essential amino acids", "Sustained energy", "Gluten-free", "Rich in minerals"], serving: "1 cup cooked (185g)" },
+  { name: "Buckwheat", emoji: "🌿", description: "Gluten-free pseudocereal with a nutty flavour", nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Manganese", "Copper", "Rutin"], benefits: ["Blood sugar control", "Heart health", "Gluten-free", "Rich in antioxidant rutin"], serving: "1 cup cooked (168g)" },
+  { name: "Barley", emoji: "🌾", description: "Ancient grain richest in beta-glucan fiber", nutrients: ["Carbohydrates", "Beta-Glucan", "Fiber", "Selenium", "Manganese", "Phosphorus"], benefits: ["Strongest cholesterol-lowering grain", "Blood sugar control", "Gut health", "Heart health"], serving: "1 cup cooked (157g)" },
+  { name: "Farro", emoji: "🌾", description: "Ancient wheat grain with dense nutrition", nutrients: ["Carbohydrates", "Fiber", "Protein", "Magnesium", "Zinc", "Iron"], benefits: ["High fiber for a wheat grain", "Rich in protein", "Sustained energy", "Joint health"], serving: "1 cup cooked (200g)" },
+  { name: "Wild Rice", emoji: "🌾", description: "Native grass seed with more protein than white rice", nutrients: ["Carbohydrates", "Protein", "Fiber", "Manganese", "Phosphorus", "Zinc"], benefits: ["Higher protein than regular rice", "Rich in antioxidants", "Digestive health", "Heart health"], serving: "1 cup cooked (164g)" },
+  { name: "Corn / Grits", emoji: "🌽", description: "Starchy grain and vegetable dual food", nutrients: ["Carbohydrates", "Fiber", "Vitamin C", "Magnesium", "Thiamine", "Lutein"], benefits: ["Eye health", "Energy fuel", "Gut-friendly fiber", "Rich in lutein"], serving: "1 cup cooked (154g)" },
 ];
+
+const CARBS_LEGUMES: Superfood[] = [
+  { name: "Black Beans", emoji: "🫘", description: "Fiber and antioxidant-rich legume", nutrients: ["Carbohydrates", "Fiber", "Protein", "Folate", "Magnesium", "Iron"], benefits: ["Blood sugar control", "Heart health", "Digestive health", "High in anthocyanins"], serving: "1 cup cooked (172g)" },
+  { name: "Chickpeas", emoji: "🫘", description: "Versatile legume used in hummus and curries", nutrients: ["Carbohydrates", "Protein", "Fiber", "Folate", "Iron", "Manganese"], benefits: ["Blood sugar control", "Digestive health", "Heart health", "Satiety"], serving: "1 cup cooked (164g)" },
+  { name: "Kidney Beans", emoji: "🫘", description: "Hearty legume rich in fiber and iron", nutrients: ["Carbohydrates", "Fiber", "Protein", "Iron", "Folate", "Potassium"], benefits: ["Heart health", "Blood sugar management", "Digestive health", "Rich in iron"], serving: "1 cup cooked (177g)" },
+  { name: "Lentils", emoji: "🫙", description: "Fastest-cooking legume and iron powerhouse", nutrients: ["Carbohydrates", "Fiber", "Protein", "Iron", "Folate", "Manganese"], benefits: ["Highest iron per calorie of any plant food", "Heart health", "Gut health", "Stable blood sugar"], serving: "1 cup cooked (198g)" },
+  { name: "Edamame", emoji: "🫛", description: "Whole soy bean — carbs with complete protein", nutrients: ["Carbohydrates", "Complete Protein", "Fiber", "Folate", "Vitamin K", "Magnesium"], benefits: ["Complete plant protein", "Hormone balance", "Bone health", "Heart health"], serving: "1 cup (155g)" },
+  { name: "Green Peas", emoji: "🟢", description: "Sweet legume packed with vitamins and fiber", nutrients: ["Carbohydrates", "Fiber", "Vitamin C", "Vitamin K", "Thiamine", "Folate"], benefits: ["Immune support", "Digestive health", "Blood sugar control", "Eye health"], serving: "1 cup cooked (160g)" },
+  { name: "Pinto Beans", emoji: "🫘", description: "Creamy bean high in fiber and folate", nutrients: ["Carbohydrates", "Fiber", "Protein", "Folate", "Manganese", "Phosphorus"], benefits: ["Heart health", "Digestive health", "Blood sugar management", "Energy support"], serving: "1 cup cooked (171g)" },
+  { name: "Navy Beans", emoji: "🤍", description: "Small white bean highest in fiber of any legume", nutrients: ["Carbohydrates", "Fiber", "Protein", "Folate", "Manganese", "Thiamine"], benefits: ["Highest fiber bean", "Heart health", "Gut health", "Stable energy"], serving: "1 cup cooked (182g)" },
+];
+
+const CARBS_STARCHY_VEG: Superfood[] = [
+  { name: "Sweet Potato", emoji: "🍠", description: "Nutrient-dense root vegetable with complex carbs", nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Fiber", "Potassium", "Manganese"], benefits: ["Eye health", "Immune support", "Stable energy", "Anti-inflammatory"], serving: "1 medium (150g)" },
+  { name: "Beets", emoji: "🫚", description: "Root vegetable with nitrates that boost blood flow", nutrients: ["Carbohydrates", "Folate", "Manganese", "Potassium", "Nitrates", "Vitamin C"], benefits: ["Improves athletic stamina", "Blood pressure support", "Liver health", "Antioxidant-rich"], serving: "1 cup cooked (170g)" },
+  { name: "White Potato", emoji: "🥔", description: "Misunderstood whole food rich in potassium", nutrients: ["Carbohydrates", "Potassium", "Vitamin C", "Vitamin B6", "Fiber", "Resistant Starch"], benefits: ["Highest potassium vegetable", "Gut-feeding resistant starch when cooled", "Filling", "Affordable"], serving: "1 medium (213g)" },
+  { name: "Pumpkin", emoji: "🎃", description: "Low-calorie starchy squash loaded with vitamin A", nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Fiber", "Potassium", "Beta-Carotene"], benefits: ["Eye health", "Immune support", "Low calorie", "Antioxidant-rich"], serving: "1 cup cooked (245g)" },
+  { name: "Butternut Squash", emoji: "🥕", description: "Sweet squash with ample fiber and vitamin A", nutrients: ["Carbohydrates", "Vitamin A", "Vitamin C", "Fiber", "Magnesium", "Potassium"], benefits: ["Vision support", "Heart health", "Immune support", "Weight management"], serving: "1 cup cubed (205g)" },
+  { name: "Carrots", emoji: "🥕", description: "Beta-carotene rich root with moderate carbs", nutrients: ["Carbohydrates", "Beta-Carotene", "Vitamin K", "Potassium", "Fiber", "Vitamin C"], benefits: ["Eye health", "Immune support", "Skin health", "Heart health"], serving: "1 cup chopped (128g)" },
+  { name: "Parsnips", emoji: "🌿", description: "Mild root vegetable with more fiber than carrots", nutrients: ["Carbohydrates", "Fiber", "Folate", "Vitamin C", "Potassium", "Manganese"], benefits: ["Digestive health", "Immune support", "Heart health", "Low calorie density"], serving: "1 cup cooked (156g)" },
+];
+
+const CARBS_FRUITS: Superfood[] = [
+  { name: "Banana", emoji: "🍌", description: "Perfect pre-workout fruit with potassium", nutrients: ["Carbohydrates", "Potassium", "Vitamin B6", "Vitamin C", "Fiber", "Magnesium"], benefits: ["Quick energy", "Muscle cramp prevention", "Digestive health", "Mood support"], serving: "1 medium (118g)" },
+  { name: "Oranges", emoji: "🍊", description: "Citrus packed with vitamin C and natural sugars", nutrients: ["Carbohydrates", "Vitamin C", "Fiber", "Folate", "Potassium", "Thiamine"], benefits: ["Immune support", "Skin health", "Aids iron absorption", "Heart health"], serving: "1 medium (130g)" },
+  { name: "Blueberries", emoji: "🫐", description: "Low-sugar fruit with massive antioxidant load", nutrients: ["Carbohydrates", "Anthocyanins", "Vitamin C", "Vitamin K", "Fiber", "Manganese"], benefits: ["Brain health", "Memory improvement", "Heart health", "Anti-aging"], serving: "1 cup (148g)" },
+  { name: "Apples", emoji: "🍎", description: "Fiber-rich fruit with gut-feeding pectin", nutrients: ["Carbohydrates", "Pectin Fiber", "Vitamin C", "Potassium", "Quercetin", "Vitamin K"], benefits: ["Digestive health", "Heart health", "Blood sugar control", "Anti-inflammatory quercetin"], serving: "1 medium (182g)" },
+  { name: "Grapefruit", emoji: "🍊", description: "Low-GI citrus with fat-burning compounds", nutrients: ["Carbohydrates", "Vitamin C", "Fiber", "Potassium", "Vitamin A", "Folate"], benefits: ["Weight management", "Insulin sensitivity", "Heart health", "Immune support"], serving: "1/2 medium (123g)" },
+  { name: "Mango", emoji: "🥭", description: "Tropical fruit rich in vitamin C and A", nutrients: ["Carbohydrates", "Vitamin C", "Vitamin A", "Folate", "Fiber", "Copper"], benefits: ["Immune support", "Skin health", "Eye health", "Digestive enzymes"], serving: "1 cup (165g)" },
+  { name: "Dates", emoji: "🫙", description: "Concentrated natural sugar for quick energy", nutrients: ["Carbohydrates", "Potassium", "Magnesium", "Fiber", "Copper", "Vitamin B6"], benefits: ["Rapid energy", "Pre-workout fuel", "Bone health", "Digestive health"], serving: "2 dates (48g)" },
+  { name: "Pineapple", emoji: "🍍", description: "Tropical fruit with bromelain digestive enzymes", nutrients: ["Carbohydrates", "Vitamin C", "Manganese", "Bromelain", "Fiber", "Thiamine"], benefits: ["Digestion support", "Anti-inflammatory", "Immune support", "Joint health"], serving: "1 cup chunks (165g)" },
+];
+
+const CARBS_ALL: Superfood[] = [...CARBS_GRAINS, ...CARBS_LEGUMES, ...CARBS_STARCHY_VEG, ...CARBS_FRUITS];
 
 const PROTEINS_POULTRY: Superfood[] = [
   { name: "Chicken Breast", emoji: "🍗", description: "Lean animal protein", nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Low Fat"], benefits: ["Muscle building", "Weight management", "Supports metabolism", "Low in fat"], serving: "3 oz (85g)" },
@@ -407,20 +399,53 @@ function LearnPage() {
           </div>
         </>
       ) : view === 'carbohydrates' ? (
-        // Carbohydrates View: show food card UI like proteins, vitamins, minerals, superfoods
+        // Carbohydrates View
         <div>
           <div className="mb-6 rounded-xl bg-blue-50 p-6 dark:bg-blue-950/30">
             <h2 className="mb-2 text-2xl font-bold">🍞 Carbohydrates</h2>
-            <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates</p>
+            <p className="text-zinc-700 dark:text-zinc-300">Foods rich in carbohydrates, grouped by type</p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {CARBS_FOODS.map((carb, idx) => (
-              <SuperfoodCard
-                key={carb.name}
-                superfood={carb}
-                onClick={() => openFood(CARBS_FOODS, idx)}
-              />
-            ))}
+
+          <div className="space-y-10">
+            {/* Whole Grains */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🌾 Whole Grains</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {CARBS_GRAINS.map((food) => (
+                  <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(CARBS_ALL, CARBS_ALL.findIndex(f => f.name === food.name))} />
+                ))}
+              </div>
+            </div>
+
+            {/* Legumes */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🫘 Legumes & Beans</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {CARBS_LEGUMES.map((food) => (
+                  <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(CARBS_ALL, CARBS_ALL.findIndex(f => f.name === food.name))} />
+                ))}
+              </div>
+            </div>
+
+            {/* Starchy Vegetables */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🥔 Starchy Vegetables</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {CARBS_STARCHY_VEG.map((food) => (
+                  <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(CARBS_ALL, CARBS_ALL.findIndex(f => f.name === food.name))} />
+                ))}
+              </div>
+            </div>
+
+            {/* Fruits */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🍎 Fruits</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {CARBS_FRUITS.map((food) => (
+                  <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(CARBS_ALL, CARBS_ALL.findIndex(f => f.name === food.name))} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       ) : view === 'proteins' ? (
@@ -642,14 +667,57 @@ function LearnPage() {
                 Foods packed with multiple essential nutrients to supercharge your health
               </p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {SUPERFOODS.map((superfood, index) => (
-                <SuperfoodCard
-                  key={superfood.name}
-                  superfood={superfood}
-                  onClick={() => openFood(SUPERFOODS, index)}
-                />
-              ))}
+
+            <div className="space-y-10">
+              {/* Leafy Greens & Cruciferous */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🥬 Leafy Greens &amp; Cruciferous</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {SUPERFOODS_GREENS.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(SUPERFOODS_ALL, SUPERFOODS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Berries & Antioxidant Fruits */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🫐 Berries &amp; Antioxidant Fruits</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {SUPERFOODS_BERRIES.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(SUPERFOODS_ALL, SUPERFOODS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Protein Powerhouses */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🥚 Protein Powerhouses</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {SUPERFOODS_PROTEIN.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(SUPERFOODS_ALL, SUPERFOODS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Seeds, Nuts & Healthy Fats */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🌱 Seeds, Nuts &amp; Healthy Fats</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {SUPERFOODS_SEEDS_FATS.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(SUPERFOODS_ALL, SUPERFOODS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Functional & Adaptogenic */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🍵 Functional &amp; Adaptogenic</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {SUPERFOODS_FUNCTIONAL.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(SUPERFOODS_ALL, SUPERFOODS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         ) : (
