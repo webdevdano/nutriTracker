@@ -1,21 +1,12 @@
 /**
  * @jest-environment node
  *
- * Tests for GET /api/bmi — covers input validation and upstream API delegation.
- * rapidApiGetJson is mocked so no real network calls are made.
+ * Tests for GET /api/bmi — covers input validation and local Mifflin-St Jeor
+ * BMI calculation (no external API calls).
  */
 import { GET } from "@/app/api/bmi/route";
-import { rapidApiGetJson } from "@/lib/rapidapi";
-
-jest.mock("@/lib/rapidapi");
-
-const mockRapidApi = rapidApiGetJson as jest.MockedFunction<typeof rapidApiGetJson>;
 
 describe("GET /api/bmi", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   // ── Validation ─────────────────────────────────────────────────────────────
 
   it("returns 400 for an invalid measurement_units value", async () => {
@@ -68,45 +59,44 @@ describe("GET /api/bmi", () => {
     expect(body.error).toMatch(/cm/);
   });
 
-  // ── Success path ───────────────────────────────────────────────────────────
+  // ── Success path — std units ───────────────────────────────────────────────
+  // 5'9", 160 lbs → BMI = 703 * 160 / (69^2) ≈ 23.6
 
-  it("delegates to rapidApiGetJson and returns its data for std units", async () => {
-    mockRapidApi.mockResolvedValueOnce({ data: { bmi: 22.5, category: "Normal" }, status: 200 });
-
+  it("returns 200 with a numeric bmi string for std units", async () => {
     const req = new Request(
-      "http://localhost/api/bmi?measurement_units=std&feet=5&lbs=150"
+      "http://localhost/api/bmi?measurement_units=std&feet=5&inches=9&lbs=160"
     );
     const res = await GET(req);
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body.bmi).toBe(22.5);
-    expect(mockRapidApi).toHaveBeenCalledTimes(1);
-    expect(mockRapidApi).toHaveBeenCalledWith("/api/bmi", expect.any(URLSearchParams));
+    expect(typeof body.bmi).toBe("string");
+    expect(parseFloat(body.bmi)).toBeCloseTo(23.6, 0);
+    expect(body.bmi_category).toBeDefined();
+    expect(body.healthy_bmi_range).toBe("18.5 - 24.9");
   });
 
-  it("delegates to rapidApiGetJson and returns its data for met units", async () => {
-    mockRapidApi.mockResolvedValueOnce({ data: { bmi: 24.2 }, status: 200 });
-
+  it("returns Overweight category for a high-BMI std input", async () => {
+    // 5'6", 200 lbs → BMI ≈ 32.3 (Obese)
     const req = new Request(
-      "http://localhost/api/bmi?measurement_units=met&cm=175&kilos=74"
+      "http://localhost/api/bmi?measurement_units=std&feet=5&inches=6&lbs=200"
     );
     const res = await GET(req);
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body.bmi).toBe(24.2);
+    expect(parseFloat(body.bmi)).toBeGreaterThan(25);
   });
 
-  // ── Error path ─────────────────────────────────────────────────────────────
+  // ── Success path — metric units ────────────────────────────────────────────
+  // 175 cm, 70 kg → BMI = 70 / (1.75^2) ≈ 22.9
 
-  it("returns 500 and error message when rapidApiGetJson throws", async () => {
-    mockRapidApi.mockRejectedValueOnce(new Error("Missing RAPIDAPI_KEY"));
-
+  it("returns 200 with a numeric bmi string for metric units", async () => {
     const req = new Request(
-      "http://localhost/api/bmi?measurement_units=std&feet=5&lbs=150"
+      "http://localhost/api/bmi?measurement_units=met&cm=175&kilos=70"
     );
     const res = await GET(req);
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body.error).toMatch(/Missing RAPIDAPI_KEY/);
+    expect(typeof body.bmi).toBe("string");
+    expect(parseFloat(body.bmi)).toBeCloseTo(22.9, 0);
   });
 });
