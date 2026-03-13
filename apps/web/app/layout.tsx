@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NutriTracker",
-  description: "Track meals and nutritional totals with a fast, simple workflow.",
+  title: "NutriTracker — Nutrition tracking that goes deeper",
+  description: "Track every vitamin, mineral, and macronutrient — then learn which real foods cover your gaps. No supplements required.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -25,6 +25,18 @@ export const metadata: Metadata = {
   },
   applicationName: "NutriTracker",
   themeColor: "#4169E1",
+  openGraph: {
+    title: "NutriTracker — Nutrition tracking that goes deeper",
+    description: "Track every vitamin, mineral, and macronutrient — then learn which real foods cover your gaps. No supplements required.",
+    url: "https://nutritracker.vercel.app",
+    siteName: "NutriTracker",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NutriTracker — Nutrition tracking that goes deeper",
+    description: "Track every vitamin, mineral, and macronutrient — then learn which real foods cover your gaps. No supplements required.",
+  },
   viewport: {
     width: "device-width",
     initialScale: 1,

@@ -32,3 +32,18 @@ body {
 }
 
 @variant dark (&:where(.dark, .dark *));
+
+/* ── Reveal on scroll ── */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.65s ease,
+      transform 0.65s ease;
+  }
+  [data-reveal][data-revealed="true"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
