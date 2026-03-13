@@ -113,14 +113,73 @@ const CARBS_FOODS: Superfood[] = [
   { name: "Banana", emoji: "🍌", description: "Natural sugars and potassium", nutrients: ["Carbohydrates", "Potassium", "Vitamin B6", "Vitamin C", "Fiber"], benefits: ["Quick energy", "Muscle function", "Digestive health"], serving: "1 medium (118g)" },
   { name: "Quinoa", emoji: "🌱", description: "Gluten-free whole grain alternative", nutrients: ["Carbohydrates", "Protein", "Fiber", "Magnesium", "Iron", "Zinc"], benefits: ["Complete protein", "Sustained energy", "Rich in minerals"], serving: "1 cup cooked (185g)" },
   { name: "Black Beans", emoji: "🫘", description: "Legume high in fiber and complex carbs", nutrients: ["Carbohydrates", "Protein", "Fiber", "Folate", "Magnesium", "Iron"], benefits: ["Digestive health", "Blood sugar control", "Heart health"], serving: "1 cup cooked (172g)" },
+  { name: "Buckwheat", emoji: "🌿", description: "Gluten-free pseudocereal rich in complex carbs", nutrients: ["Carbohydrates", "Fiber", "Magnesium", "Manganese", "Copper", "Phosphorus"], benefits: ["Blood sugar control", "Heart health", "Digestive health", "Gluten-free energy"], serving: "1 cup cooked (168g)" },
+  { name: "Beets", emoji: "🟣", description: "Root vegetable with natural sugars and nitrates", nutrients: ["Carbohydrates", "Folate", "Manganese", "Potassium", "Fiber", "Vitamin C"], benefits: ["Improves blood flow", "Boosts stamina", "Supports liver health", "Antioxidant-rich"], serving: "1 cup cooked (170g)" },
+  { name: "Oranges", emoji: "🍊", description: "Citrus fruit packed with natural sugars and vitamin C", nutrients: ["Carbohydrates", "Vitamin C", "Fiber", "Folate", "Potassium", "Thiamine"], benefits: ["Immune support", "Skin health", "Aids iron absorption", "Heart health"], serving: "1 medium (130g)" },
+  { name: "Blueberries", emoji: "🫐", description: "Antioxidant-rich berries with natural sugars", nutrients: ["Carbohydrates", "Fiber", "Vitamin C", "Vitamin K", "Manganese"], benefits: ["Brain health", "Anti-aging", "Supports heart health", "Blood sugar support"], serving: "1 cup (148g)" },
+  { name: "Grapefruit", emoji: "🍋", description: "Low-sugar citrus with complex nutrients", nutrients: ["Carbohydrates", "Vitamin C", "Fiber", "Potassium", "Vitamin A", "Folate"], benefits: ["Weight management", "Immune support", "Heart health", "Blood sugar control"], serving: "1/2 medium (123g)" },
+  { name: "Apples", emoji: "🍎", description: "Fiber-rich fruit with natural sugars", nutrients: ["Carbohydrates", "Fiber", "Vitamin C", "Potassium", "Vitamin K"], benefits: ["Digestive health", "Heart health", "Blood sugar control", "Antioxidant-rich"], serving: "1 medium (182g)" },
+  { name: "Chickpeas", emoji: "🫘", description: "Legume high in complex carbs and protein", nutrients: ["Carbohydrates", "Protein", "Fiber", "Folate", "Iron", "Manganese"], benefits: ["Blood sugar control", "Digestive health", "Heart health", "Sustained energy"], serving: "1 cup cooked (164g)" },
+  { name: "Kidney Beans", emoji: "🫘", description: "Complex carb legume rich in fiber and iron", nutrients: ["Carbohydrates", "Fiber", "Protein", "Iron", "Folate", "Potassium"], benefits: ["Heart health", "Blood sugar management", "Digestive health", "Rich in iron"], serving: "1 cup cooked (177g)" },
 ];
 
-const PROTEINS_FOODS: Superfood[] = [
+const PROTEINS_POULTRY: Superfood[] = [
   { name: "Chicken Breast", emoji: "🍗", description: "Lean animal protein", nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Low Fat"], benefits: ["Muscle building", "Weight management", "Supports metabolism", "Low in fat"], serving: "3 oz (85g)" },
-  { name: "Lentils", emoji: "🥣", description: "Plant-based protein and fiber", nutrients: ["Protein", "Fiber", "Iron", "Folate", "Manganese", "Low Fat"], benefits: ["Heart health", "Digestive health", "Blood sugar control", "Rich in iron"], serving: "1 cup cooked (198g)" },
-  { name: "Greek Yogurt", emoji: "🥛", description: "High-protein dairy", nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"], benefits: ["Gut health", "Bone strength", "Muscle building", "Immune support"], serving: "1 cup (245g)" },
-  { name: "Tofu", emoji: "🍥", description: "Soy-based complete protein", nutrients: ["Protein", "Calcium", "Iron", "Magnesium", "Low Fat", "Isoflavones"], benefits: ["Heart health", "Bone health", "Plant-based protein", "Low in fat"], serving: "3 oz (85g)" },
+  { name: "Chicken Thigh", emoji: "🍗", description: "Juicier cut with more fat and flavor", nutrients: ["Protein", "Niacin", "Zinc", "Iron", "Vitamin B6", "Selenium"], benefits: ["Muscle building", "Higher iron than breast", "More satiating", "Rich in zinc"], serving: "3 oz (85g)" },
+  { name: "Turkey Breast", emoji: "🦃", description: "Lean poultry high in protein", nutrients: ["Protein", "Niacin", "Vitamin B6", "Phosphorus", "Selenium", "Zinc"], benefits: ["Muscle building", "Immune support", "Weight management", "Rich in B vitamins"], serving: "3 oz (85g)" },
+  { name: "Ground Turkey", emoji: "🦃", description: "Lean ground turkey for versatile cooking", nutrients: ["Protein", "Niacin", "Phosphorus", "Selenium", "Zinc", "Iron"], benefits: ["Lean muscle fuel", "Low in saturated fat", "Versatile cooking protein", "Weight management"], serving: "3 oz (85g)" },
+  { name: "Ground Beef (80/20)", emoji: "🥩", description: "Classic ground beef with balanced fat-to-protein ratio", nutrients: ["Protein", "Iron", "Zinc", "Vitamin B12", "Creatine", "Niacin"], benefits: ["Muscle building", "Rich in heme iron", "High in creatine", "Satisfying and energy-dense"], serving: "3 oz (85g)" },
+  { name: "Duck Breast", emoji: "🦆", description: "Rich poultry with higher fat content", nutrients: ["Protein", "Iron", "Zinc", "Niacin", "Riboflavin", "Selenium"], benefits: ["High-quality protein", "Rich in iron", "Supports red blood cells", "Energy dense"], serving: "3 oz (85g)" },
+  { name: "Lean Beef (Sirloin)", emoji: "🥩", description: "Red meat rich in complete protein and iron", nutrients: ["Protein", "Iron", "Zinc", "Vitamin B12", "Creatine", "Selenium"], benefits: ["Muscle building", "Rich in heme iron", "Supports red blood cells", "High in creatine"], serving: "3 oz (85g)" },
+  { name: "Lean Pork (Tenderloin)", emoji: "🥩", description: "One of the leanest cuts of red meat", nutrients: ["Protein", "Thiamine", "Niacin", "Phosphorus", "Selenium", "Zinc"], benefits: ["Muscle repair", "Rich in thiamine", "Low in fat", "Supports metabolism"], serving: "3 oz (85g)" },
+  { name: "Bison", emoji: "🦬", description: "Leaner than beef with a rich nutrient profile", nutrients: ["Protein", "Iron", "Zinc", "Vitamin B12", "Selenium", "Omega-3s"], benefits: ["Lower fat than beef", "Rich in heme iron", "Supports immunity", "Grass-fed omega-3s"], serving: "3 oz (85g)" },
+  { name: "Venison", emoji: "🦬", description: "Wild game meat — very lean and protein-dense", nutrients: ["Protein", "Iron", "Zinc", "Vitamin B12", "Niacin", "Phosphorus"], benefits: ["Very low in fat", "High protein density", "Rich in iron", "Wild-sourced nutrients"], serving: "3 oz (85g)" },
 ];
+
+const PROTEINS_FISH: Superfood[] = [
+  { name: "Salmon", emoji: "🐟", description: "Omega-3 rich fatty fish", nutrients: ["Protein", "Omega-3s", "Vitamin D", "Vitamin B12", "Selenium", "Niacin"], benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"], serving: "3 oz (85g)" },
+  { name: "Tuna", emoji: "🐠", description: "High-protein lean fish", nutrients: ["Protein", "Selenium", "Vitamin B12", "Niacin", "Omega-3s", "Vitamin D"], benefits: ["Muscle building", "Heart health", "Brain health", "Low in fat"], serving: "3 oz (85g)" },
+  { name: "Halibut", emoji: "🐡", description: "Dense white fish with clean protein", nutrients: ["Protein", "Selenium", "Magnesium", "Phosphorus", "Niacin", "Vitamin B6"], benefits: ["Muscle repair", "Supports metabolism", "Heart health", "Low in saturated fat"], serving: "3 oz (85g)" },
+  { name: "Tilapia", emoji: "🐟", description: "Mild white fish, low-fat protein", nutrients: ["Protein", "Phosphorus", "Selenium", "Niacin", "Vitamin B12"], benefits: ["Muscle building", "Bone health", "Weight management", "Low in calories"], serving: "3 oz (85g)" },
+  { name: "Cod", emoji: "🐟", description: "Lean white fish with mild flavor", nutrients: ["Protein", "Vitamin B12", "Iodine", "Selenium", "Phosphorus", "Niacin"], benefits: ["Thyroid support", "Muscle building", "Heart health", "Low in fat"], serving: "3 oz (85g)" },
+  { name: "Pollock", emoji: "🐟", description: "Affordable lean white fish", nutrients: ["Protein", "Selenium", "Vitamin B12", "Phosphorus", "Niacin"], benefits: ["Muscle repair", "Budget-friendly protein", "Heart health", "Low in calories"], serving: "3 oz (85g)" },
+  { name: "Dried Fish", emoji: "🐟", description: "Concentrated protein source", nutrients: ["Protein", "Calcium", "Iron", "Selenium", "Sodium", "Omega-3s"], benefits: ["High protein density", "Long shelf life", "Bone health", "Portable snack"], serving: "1 oz (28g)" },
+];
+
+const PROTEINS_SHELLFISH: Superfood[] = [
+  { name: "Shrimp", emoji: "🍤", description: "Low-calorie shellfish with lean protein", nutrients: ["Protein", "Selenium", "Iodine", "Phosphorus", "Vitamin B12", "Astaxanthin"], benefits: ["Muscle building", "Thyroid support", "Low in calories", "Antioxidant-rich"], serving: "3 oz (85g)" },
+  { name: "Lobster", emoji: "🦞", description: "Luxurious shellfish high in protein", nutrients: ["Protein", "Zinc", "Copper", "Selenium", "Phosphorus", "Vitamin B12"], benefits: ["Immune support", "Bone health", "Muscle building", "Rich in copper"], serving: "3 oz (85g)" },
+  { name: "Crab", emoji: "🦀", description: "Sweet shellfish with lean protein", nutrients: ["Protein", "Zinc", "Copper", "Selenium", "Vitamin B12", "Omega-3s"], benefits: ["Immune function", "Brain health", "Muscle repair", "Rich in minerals"], serving: "3 oz (85g)" },
+  { name: "Scallops", emoji: "🐚", description: "Low-fat shellfish with dense protein", nutrients: ["Protein", "Selenium", "Magnesium", "Phosphorus", "Vitamin B12", "Omega-3s"], benefits: ["Heart health", "Muscle building", "Very low in fat", "Brain health"], serving: "3 oz (85g)" },
+  { name: "Clams", emoji: "🐚", description: "Iron and B12 powerhouse shellfish", nutrients: ["Protein", "Vitamin B12", "Iron", "Zinc", "Selenium", "Omega-3s"], benefits: ["Highest B12 of any food", "Rich in iron", "Supports red blood cells", "Heart health"], serving: "3 oz (85g)" },
+  { name: "Oysters", emoji: "🐚", description: "Zinc-rich shellfish with dense nutrients", nutrients: ["Protein", "Zinc", "Iron", "Selenium", "Vitamin B12", "Omega-3s"], benefits: ["Highest food source of zinc", "Immune support", "Sexual health", "Heart health"], serving: "3 oz (85g)" },
+  { name: "Mussels", emoji: "🐚", description: "Sustainable shellfish rich in omega-3s", nutrients: ["Protein", "Omega-3s", "Vitamin B12", "Iron", "Manganese", "Selenium"], benefits: ["Heart health", "Brain function", "Sustainable protein", "Rich in B12"], serving: "3 oz (85g)" },
+];
+
+const PROTEINS_EGGS_DAIRY: Superfood[] = [
+  { name: "Eggs", emoji: "🥚", description: "Complete protein with essential nutrients", nutrients: ["Protein", "Vitamin B12", "Vitamin D", "Selenium", "Choline", "Riboflavin"], benefits: ["Muscle building", "Brain health", "Eye health", "Nutrient-dense"], serving: "1 large egg (50g)" },
+  { name: "Egg Whites", emoji: "🥚", description: "Pure protein with almost no fat or carbs", nutrients: ["Protein", "Riboflavin", "Selenium", "Potassium", "Low Fat", "Low Calorie"], benefits: ["Lean muscle building", "Very low calorie", "No cholesterol", "High protein density"], serving: "3 large whites (99g)" },
+  { name: "Greek Yogurt", emoji: "🥛", description: "High-protein probiotic dairy", nutrients: ["Protein", "Calcium", "Vitamin B12", "Probiotics", "Phosphorus", "Selenium"], benefits: ["Gut health", "Bone strength", "Muscle building", "Immune support"], serving: "1 cup (245g)" },
+  { name: "Cottage Cheese", emoji: "🥛", description: "High-protein, low-fat dairy with casein", nutrients: ["Protein", "Calcium", "Phosphorus", "Selenium", "Vitamin B12", "Riboflavin"], benefits: ["Slow-digesting protein", "Bone health", "Muscle repair overnight", "Low in fat"], serving: "1/2 cup (113g)" },
+  { name: "Milk", emoji: "🥛", description: "Complete protein with calcium and vitamin D", nutrients: ["Protein", "Calcium", "Vitamin D", "Vitamin B12", "Phosphorus", "Riboflavin"], benefits: ["Bone health", "Muscle recovery", "Immune support", "Hydration"], serving: "1 cup (244ml)" },
+  { name: "Parmesan Cheese", emoji: "🧀", description: "Aged hard cheese dense in protein and calcium", nutrients: ["Protein", "Calcium", "Phosphorus", "Vitamin A", "Zinc", "Vitamin B12"], benefits: ["Bone strength", "Muscle support", "Gut-friendly (low lactose)", "Rich in calcium"], serving: "1 oz (28g)" },
+  { name: "Cheddar Cheese", emoji: "🧀", description: "Protein-rich aged cheese", nutrients: ["Protein", "Calcium", "Vitamin A", "Phosphorus", "Vitamin K2", "Zinc"], benefits: ["Bone health", "Muscle support", "Vitamin K2 for arteries", "Satiating"], serving: "1 oz (28g)" },
+  { name: "Whey Protein", emoji: "🥤", description: "Fast-absorbing complete dairy protein", nutrients: ["Protein", "Leucine", "BCAAs", "Calcium", "Low Fat", "Low Carb"], benefits: ["Rapid muscle recovery", "Highest leucine content", "Easy to digest", "Convenient"], serving: "1 scoop (30g)" },
+];
+
+const PROTEINS_PLANT: Superfood[] = [
+  { name: "Lentils", emoji: "🥣", description: "Legume packed with protein and fiber", nutrients: ["Protein", "Fiber", "Iron", "Folate", "Manganese", "Low Fat"], benefits: ["Heart health", "Digestive health", "Blood sugar control", "Rich in iron"], serving: "1 cup cooked (198g)" },
+  { name: "Tofu", emoji: "🍥", description: "Soy-based complete protein", nutrients: ["Protein", "Calcium", "Iron", "Magnesium", "Low Fat", "Isoflavones"], benefits: ["Heart health", "Bone health", "Plant-based protein", "Low in fat"], serving: "3 oz (85g)" },
+  { name: "Tempeh", emoji: "🟫", description: "Fermented soy with dense protein", nutrients: ["Protein", "Fiber", "Iron", "Calcium", "Magnesium", "Probiotics"], benefits: ["Gut health", "Muscle building", "Bone strength", "Rich in iron"], serving: "3 oz (85g)" },
+  { name: "Edamame", emoji: "🫛", description: "Young soybeans — complete plant protein", nutrients: ["Protein", "Fiber", "Iron", "Folate", "Vitamin K", "Isoflavones"], benefits: ["Complete protein", "Heart health", "Bone health", "Easy snack"], serving: "1 cup (155g)" },
+  { name: "Black Beans", emoji: "🫘", description: "Fiber-rich legume with solid protein", nutrients: ["Protein", "Fiber", "Iron", "Folate", "Magnesium", "Antioxidants"], benefits: ["Blood sugar control", "Heart health", "Digestive health", "Antioxidant-rich"], serving: "1 cup cooked (172g)" },
+  { name: "Chickpeas", emoji: "🫘", description: "Versatile legume high in protein and fiber", nutrients: ["Protein", "Fiber", "Folate", "Iron", "Phosphorus", "Manganese"], benefits: ["Sustained energy", "Digestive health", "Heart health", "Blood sugar control"], serving: "1 cup cooked (164g)" },
+  { name: "Hemp Seeds", emoji: "🌿", description: "Complete plant protein with healthy fats", nutrients: ["Protein", "Omega-3s", "Omega-6s", "Magnesium", "Iron", "Zinc"], benefits: ["Complete amino acid profile", "Heart health", "Anti-inflammatory", "Easy to add to meals"], serving: "3 tbsp (30g)" },
+  { name: "Seitan", emoji: "🍞", description: "Wheat gluten — very high protein meat alternative", nutrients: ["Protein", "Selenium", "Iron", "Phosphorus", "Low Fat", "Low Carb"], benefits: ["Highest plant protein density", "Meat-like texture", "Low in fat", "Muscle building"], serving: "3 oz (85g)" },
+];
+
+// Flat list used for the food detail modal navigation within the proteins tab
+const PROTEINS_FOODS_ALL: Superfood[] = [...PROTEINS_POULTRY, ...PROTEINS_FISH, ...PROTEINS_SHELLFISH, ...PROTEINS_EGGS_DAIRY, ...PROTEINS_PLANT];
 
 const VITAMINS_FOODS: Superfood[] = [
   { name: "Spinach", emoji: "🥬", description: "Rich in vitamin K, A, C", nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"], benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"], serving: "1 cup cooked (180g)" },
@@ -262,20 +321,83 @@ function LearnPage() {
           </div>
         </div>
       ) : view === 'proteins' ? (
-        // Proteins Food Sources View
+        // Proteins Food Sources View — grouped by sub-category
         <div>
           <div className="mb-6 rounded-xl bg-orange-50 p-6 dark:bg-orange-950/30">
             <h2 className="mb-2 text-2xl font-bold">🍗 Proteins</h2>
-            <p className="text-zinc-700 dark:text-zinc-300">Foods rich in protein</p>
+            <p className="text-zinc-700 dark:text-zinc-300">Foods rich in protein, grouped by food type</p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {PROTEINS_FOODS.map((protein, idx) => (
-              <SuperfoodCard
-                key={protein.name}
-                superfood={protein}
-                onClick={() => openFood(PROTEINS_FOODS, idx)}
-              />
-            ))}
+
+          <div className="space-y-10">
+            {/* Poultry & Meat */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🍗 Poultry &amp; Meat</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {PROTEINS_POULTRY.map((food) => (
+                  <SuperfoodCard
+                    key={food.name}
+                    superfood={food}
+                    onClick={() => openFood(PROTEINS_FOODS_ALL, PROTEINS_FOODS_ALL.findIndex(f => f.name === food.name))}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Fish */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🐟 Fish</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {PROTEINS_FISH.map((food) => (
+                  <SuperfoodCard
+                    key={food.name}
+                    superfood={food}
+                    onClick={() => openFood(PROTEINS_FOODS_ALL, PROTEINS_FOODS_ALL.findIndex(f => f.name === food.name))}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Shellfish */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🍤 Shellfish</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {PROTEINS_SHELLFISH.map((food) => (
+                  <SuperfoodCard
+                    key={food.name}
+                    superfood={food}
+                    onClick={() => openFood(PROTEINS_FOODS_ALL, PROTEINS_FOODS_ALL.findIndex(f => f.name === food.name))}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Eggs & Dairy */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🥚 Eggs &amp; Dairy</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {PROTEINS_EGGS_DAIRY.map((food) => (
+                  <SuperfoodCard
+                    key={food.name}
+                    superfood={food}
+                    onClick={() => openFood(PROTEINS_FOODS_ALL, PROTEINS_FOODS_ALL.findIndex(f => f.name === food.name))}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Plant-Based */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🌱 Plant-Based</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {PROTEINS_PLANT.map((food) => (
+                  <SuperfoodCard
+                    key={food.name}
+                    superfood={food}
+                    onClick={() => openFood(PROTEINS_FOODS_ALL, PROTEINS_FOODS_ALL.findIndex(f => f.name === food.name))}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
         ) : view === 'vitamins' ? (
