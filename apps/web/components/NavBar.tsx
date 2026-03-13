@@ -12,10 +12,10 @@ const NAV_LINKS = [
   { href: "/app/measurements", label: "Measurements", exact: false },
   { href: "/app/workout",      label: "Workout",      exact: false },
   { href: "/app/grocery",      label: "Lists",        exact: false },
+  { href: "/app/learn",        label: "Learn",        exact: false },
 ];
 
 const RESOURCES_LINKS = [
-  { href: "/app/learn",    label: "Learn"    },
   { href: "/app/articles", label: "Articles" },
   { href: "/app/sources",  label: "Sources"  },
 ];
