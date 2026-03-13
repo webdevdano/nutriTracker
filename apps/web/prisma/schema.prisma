@@ -39,6 +39,9 @@ model User {
   weightLogs       WeightLog[]
   waterLogs        WaterLog[]
   measurementLogs  MeasurementLog[]
+  workoutSessions  WorkoutSession[]
+  exerciseSets     ExerciseSet[]
+  cardioLogs       CardioLog[]
 }
 
 model Account {
@@ -406,6 +409,110 @@ model WaterLog {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, date(sort: Desc)])
+}
+
+// =====================================================
+// WORKOUT TRACKING
+// Models are structured for Apple HealthKit / Google Fit
+// future integration (healthKitId / googleFitId fields)
+// =====================================================
+
+enum CardioActivity {
+  RUNNING
+  WALKING
+  CYCLING
+  SWIMMING
+  ROWING
+  ELLIPTICAL
+  STAIR_CLIMBER
+  JUMP_ROPE
+  HIIT
+  HIKING
+  OTHER
+}
+
+enum MuscleGroup {
+  CHEST
+  BACK
+  SHOULDERS
+  BICEPS
+  TRICEPS
+  FOREARMS
+  CORE
+  QUADS
+  HAMSTRINGS
+  GLUTES
+  CALVES
+  FULL_BODY
+  OTHER
+}
+
+// Top-level session — one per workout (can contain cardio logs + exercise sets)
+model WorkoutSession {
+  id             String   @id @default(uuid())
+  userId         String
+  date           DateTime @db.Date
+  name           String?  // e.g. "Push Day", "Morning Run"
+  notes          String?
+  durationMins   Int?
+  caloriesBurned Int?
+  // Health app future-proofing
+  healthKitId    String?
+  googleFitId    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cardioLogs   CardioLog[]
+  exerciseSets ExerciseSet[]
+
+  @@index([userId, date(sort: Desc)])
+}
+
+// One cardio entry per activity within a session
+model CardioLog {
+  id             String         @id @default(uuid())
+  sessionId      String
+  userId         String         // denormalized for history queries
+  activity       CardioActivity
+  durationMins   Int?
+  distanceMiles  Decimal?
+  caloriesBurned Int?
+  avgHeartRate   Int?
+  maxHeartRate   Int?
+  hrZone         Int?           // 1–5
+  pace           String?        // e.g. "8:30/mi"
+  notes          String?
+  healthKitId    String?
+  createdAt      DateTime       @default(now())
+
+  session WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User           @relation(fields: [userId],    references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([userId, activity])
+}
+
+// One row per set — enables progressive overload tracking per exercise
+model ExerciseSet {
+  id           String      @id @default(uuid())
+  sessionId    String
+  userId       String      // denormalized for history queries
+  exerciseName String
+  muscleGroup  MuscleGroup
+  setNumber    Int
+  reps         Int?
+  weightLbs    Decimal?
+  durationSecs Int?        // for time-based exercises (planks, holds)
+  notes        String?
+  healthKitId  String?
+  createdAt    DateTime    @default(now())
+
+  session WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User           @relation(fields: [userId],    references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([userId, exerciseName])
 }
 
 // =====================================================

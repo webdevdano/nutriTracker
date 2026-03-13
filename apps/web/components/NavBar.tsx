@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: "/app/meals",        label: "Meals",        exact: false },
   { href: "/app/nutrients",    label: "Nutrients",    exact: false },
   { href: "/app/measurements", label: "Measurements", exact: false },
+  { href: "/app/workout",      label: "Workout",      exact: false },
   { href: "/app/grocery",      label: "Lists",        exact: false },
 ];
 

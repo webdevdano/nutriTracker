@@ -383,6 +383,52 @@ exports.Prisma.WaterLogScalarFieldEnum = {
   loggedAt: 'loggedAt'
 };
 
+exports.Prisma.WorkoutSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  name: 'name',
+  notes: 'notes',
+  durationMins: 'durationMins',
+  caloriesBurned: 'caloriesBurned',
+  healthKitId: 'healthKitId',
+  googleFitId: 'googleFitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CardioLogScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  userId: 'userId',
+  activity: 'activity',
+  durationMins: 'durationMins',
+  distanceMiles: 'distanceMiles',
+  caloriesBurned: 'caloriesBurned',
+  avgHeartRate: 'avgHeartRate',
+  maxHeartRate: 'maxHeartRate',
+  hrZone: 'hrZone',
+  pace: 'pace',
+  notes: 'notes',
+  healthKitId: 'healthKitId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ExerciseSetScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  userId: 'userId',
+  exerciseName: 'exerciseName',
+  muscleGroup: 'muscleGroup',
+  setNumber: 'setNumber',
+  reps: 'reps',
+  weightLbs: 'weightLbs',
+  durationSecs: 'durationSecs',
+  notes: 'notes',
+  healthKitId: 'healthKitId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.MeasurementLogScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -434,6 +480,36 @@ exports.MealType = exports.$Enums.MealType = {
   SNACK: 'SNACK'
 };
 
+exports.CardioActivity = exports.$Enums.CardioActivity = {
+  RUNNING: 'RUNNING',
+  WALKING: 'WALKING',
+  CYCLING: 'CYCLING',
+  SWIMMING: 'SWIMMING',
+  ROWING: 'ROWING',
+  ELLIPTICAL: 'ELLIPTICAL',
+  STAIR_CLIMBER: 'STAIR_CLIMBER',
+  JUMP_ROPE: 'JUMP_ROPE',
+  HIIT: 'HIIT',
+  HIKING: 'HIKING',
+  OTHER: 'OTHER'
+};
+
+exports.MuscleGroup = exports.$Enums.MuscleGroup = {
+  CHEST: 'CHEST',
+  BACK: 'BACK',
+  SHOULDERS: 'SHOULDERS',
+  BICEPS: 'BICEPS',
+  TRICEPS: 'TRICEPS',
+  FOREARMS: 'FOREARMS',
+  CORE: 'CORE',
+  QUADS: 'QUADS',
+  HAMSTRINGS: 'HAMSTRINGS',
+  GLUTES: 'GLUTES',
+  CALVES: 'CALVES',
+  FULL_BODY: 'FULL_BODY',
+  OTHER: 'OTHER'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Account: 'Account',
@@ -451,6 +527,9 @@ exports.Prisma.ModelName = {
   SavedRecipe: 'SavedRecipe',
   WeightLog: 'WeightLog',
   WaterLog: 'WaterLog',
+  WorkoutSession: 'WorkoutSession',
+  CardioLog: 'CardioLog',
+  ExerciseSet: 'ExerciseSet',
   MeasurementLog: 'MeasurementLog'
 };
 

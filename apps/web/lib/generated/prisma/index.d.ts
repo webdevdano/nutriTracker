@@ -94,6 +94,21 @@ export type WeightLog = $Result.DefaultSelection<Prisma.$WeightLogPayload>
  */
 export type WaterLog = $Result.DefaultSelection<Prisma.$WaterLogPayload>
 /**
+ * Model WorkoutSession
+ * 
+ */
+export type WorkoutSession = $Result.DefaultSelection<Prisma.$WorkoutSessionPayload>
+/**
+ * Model CardioLog
+ * 
+ */
+export type CardioLog = $Result.DefaultSelection<Prisma.$CardioLogPayload>
+/**
+ * Model ExerciseSet
+ * 
+ */
+export type ExerciseSet = $Result.DefaultSelection<Prisma.$ExerciseSetPayload>
+/**
  * Model MeasurementLog
  * 
  */
@@ -112,11 +127,55 @@ export namespace $Enums {
 
 export type MealType = (typeof MealType)[keyof typeof MealType]
 
+
+export const CardioActivity: {
+  RUNNING: 'RUNNING',
+  WALKING: 'WALKING',
+  CYCLING: 'CYCLING',
+  SWIMMING: 'SWIMMING',
+  ROWING: 'ROWING',
+  ELLIPTICAL: 'ELLIPTICAL',
+  STAIR_CLIMBER: 'STAIR_CLIMBER',
+  JUMP_ROPE: 'JUMP_ROPE',
+  HIIT: 'HIIT',
+  HIKING: 'HIKING',
+  OTHER: 'OTHER'
+};
+
+export type CardioActivity = (typeof CardioActivity)[keyof typeof CardioActivity]
+
+
+export const MuscleGroup: {
+  CHEST: 'CHEST',
+  BACK: 'BACK',
+  SHOULDERS: 'SHOULDERS',
+  BICEPS: 'BICEPS',
+  TRICEPS: 'TRICEPS',
+  FOREARMS: 'FOREARMS',
+  CORE: 'CORE',
+  QUADS: 'QUADS',
+  HAMSTRINGS: 'HAMSTRINGS',
+  GLUTES: 'GLUTES',
+  CALVES: 'CALVES',
+  FULL_BODY: 'FULL_BODY',
+  OTHER: 'OTHER'
+};
+
+export type MuscleGroup = (typeof MuscleGroup)[keyof typeof MuscleGroup]
+
 }
 
 export type MealType = $Enums.MealType
 
 export const MealType: typeof $Enums.MealType
+
+export type CardioActivity = $Enums.CardioActivity
+
+export const CardioActivity: typeof $Enums.CardioActivity
+
+export type MuscleGroup = $Enums.MuscleGroup
+
+export const MuscleGroup: typeof $Enums.MuscleGroup
 
 /**
  * ##  Prisma Client ʲˢ
@@ -394,6 +453,36 @@ export class PrismaClient<
     * ```
     */
   get waterLog(): Prisma.WaterLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workoutSession`: Exposes CRUD operations for the **WorkoutSession** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkoutSessions
+    * const workoutSessions = await prisma.workoutSession.findMany()
+    * ```
+    */
+  get workoutSession(): Prisma.WorkoutSessionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cardioLog`: Exposes CRUD operations for the **CardioLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CardioLogs
+    * const cardioLogs = await prisma.cardioLog.findMany()
+    * ```
+    */
+  get cardioLog(): Prisma.CardioLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.exerciseSet`: Exposes CRUD operations for the **ExerciseSet** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ExerciseSets
+    * const exerciseSets = await prisma.exerciseSet.findMany()
+    * ```
+    */
+  get exerciseSet(): Prisma.ExerciseSetDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.measurementLog`: Exposes CRUD operations for the **MeasurementLog** model.
@@ -854,6 +943,9 @@ export namespace Prisma {
     SavedRecipe: 'SavedRecipe',
     WeightLog: 'WeightLog',
     WaterLog: 'WaterLog',
+    WorkoutSession: 'WorkoutSession',
+    CardioLog: 'CardioLog',
+    ExerciseSet: 'ExerciseSet',
     MeasurementLog: 'MeasurementLog'
   };
 
@@ -870,7 +962,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "profile" | "userGoals" | "foodLog" | "mealSuggestion" | "groceryList" | "savedFavorite" | "foodCache" | "customFood" | "userRecipe" | "savedRecipe" | "weightLog" | "waterLog" | "measurementLog"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "profile" | "userGoals" | "foodLog" | "mealSuggestion" | "groceryList" | "savedFavorite" | "foodCache" | "customFood" | "userRecipe" | "savedRecipe" | "weightLog" | "waterLog" | "workoutSession" | "cardioLog" | "exerciseSet" | "measurementLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2058,6 +2150,228 @@ export namespace Prisma {
           }
         }
       }
+      WorkoutSession: {
+        payload: Prisma.$WorkoutSessionPayload<ExtArgs>
+        fields: Prisma.WorkoutSessionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkoutSessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkoutSessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkoutSessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkoutSessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+          }
+          findMany: {
+            args: Prisma.WorkoutSessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>[]
+          }
+          create: {
+            args: Prisma.WorkoutSessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+          }
+          createMany: {
+            args: Prisma.WorkoutSessionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkoutSessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkoutSessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+          }
+          update: {
+            args: Prisma.WorkoutSessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkoutSessionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkoutSessionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkoutSessionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkoutSessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutSessionPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkoutSessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkoutSession>
+          }
+          groupBy: {
+            args: Prisma.WorkoutSessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkoutSessionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkoutSessionCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkoutSessionCountAggregateOutputType> | number
+          }
+        }
+      }
+      CardioLog: {
+        payload: Prisma.$CardioLogPayload<ExtArgs>
+        fields: Prisma.CardioLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CardioLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CardioLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload>
+          }
+          findFirst: {
+            args: Prisma.CardioLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CardioLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload>
+          }
+          findMany: {
+            args: Prisma.CardioLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload>[]
+          }
+          create: {
+            args: Prisma.CardioLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload>
+          }
+          createMany: {
+            args: Prisma.CardioLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CardioLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload>[]
+          }
+          delete: {
+            args: Prisma.CardioLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload>
+          }
+          update: {
+            args: Prisma.CardioLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.CardioLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CardioLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CardioLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.CardioLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CardioLogPayload>
+          }
+          aggregate: {
+            args: Prisma.CardioLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCardioLog>
+          }
+          groupBy: {
+            args: Prisma.CardioLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CardioLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CardioLogCountArgs<ExtArgs>
+            result: $Utils.Optional<CardioLogCountAggregateOutputType> | number
+          }
+        }
+      }
+      ExerciseSet: {
+        payload: Prisma.$ExerciseSetPayload<ExtArgs>
+        fields: Prisma.ExerciseSetFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ExerciseSetFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ExerciseSetFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload>
+          }
+          findFirst: {
+            args: Prisma.ExerciseSetFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ExerciseSetFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload>
+          }
+          findMany: {
+            args: Prisma.ExerciseSetFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload>[]
+          }
+          create: {
+            args: Prisma.ExerciseSetCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload>
+          }
+          createMany: {
+            args: Prisma.ExerciseSetCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ExerciseSetCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload>[]
+          }
+          delete: {
+            args: Prisma.ExerciseSetDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload>
+          }
+          update: {
+            args: Prisma.ExerciseSetUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload>
+          }
+          deleteMany: {
+            args: Prisma.ExerciseSetDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ExerciseSetUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ExerciseSetUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload>[]
+          }
+          upsert: {
+            args: Prisma.ExerciseSetUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExerciseSetPayload>
+          }
+          aggregate: {
+            args: Prisma.ExerciseSetAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExerciseSet>
+          }
+          groupBy: {
+            args: Prisma.ExerciseSetGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExerciseSetGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ExerciseSetCountArgs<ExtArgs>
+            result: $Utils.Optional<ExerciseSetCountAggregateOutputType> | number
+          }
+        }
+      }
       MeasurementLog: {
         payload: Prisma.$MeasurementLogPayload<ExtArgs>
         fields: Prisma.MeasurementLogFieldRefs
@@ -2256,6 +2570,9 @@ export namespace Prisma {
     savedRecipe?: SavedRecipeOmit
     weightLog?: WeightLogOmit
     waterLog?: WaterLogOmit
+    workoutSession?: WorkoutSessionOmit
+    cardioLog?: CardioLogOmit
+    exerciseSet?: ExerciseSetOmit
     measurementLog?: MeasurementLogOmit
   }
 
@@ -2348,6 +2665,9 @@ export namespace Prisma {
     weightLogs: number
     waterLogs: number
     measurementLogs: number
+    workoutSessions: number
+    exerciseSets: number
+    cardioLogs: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2362,6 +2682,9 @@ export namespace Prisma {
     weightLogs?: boolean | UserCountOutputTypeCountWeightLogsArgs
     waterLogs?: boolean | UserCountOutputTypeCountWaterLogsArgs
     measurementLogs?: boolean | UserCountOutputTypeCountMeasurementLogsArgs
+    workoutSessions?: boolean | UserCountOutputTypeCountWorkoutSessionsArgs
+    exerciseSets?: boolean | UserCountOutputTypeCountExerciseSetsArgs
+    cardioLogs?: boolean | UserCountOutputTypeCountCardioLogsArgs
   }
 
   // Custom InputTypes
@@ -2450,6 +2773,67 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountMeasurementLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MeasurementLogWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountWorkoutSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkoutSessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountExerciseSetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExerciseSetWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCardioLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CardioLogWhereInput
+  }
+
+
+  /**
+   * Count Type WorkoutSessionCountOutputType
+   */
+
+  export type WorkoutSessionCountOutputType = {
+    cardioLogs: number
+    exerciseSets: number
+  }
+
+  export type WorkoutSessionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cardioLogs?: boolean | WorkoutSessionCountOutputTypeCountCardioLogsArgs
+    exerciseSets?: boolean | WorkoutSessionCountOutputTypeCountExerciseSetsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * WorkoutSessionCountOutputType without action
+   */
+  export type WorkoutSessionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSessionCountOutputType
+     */
+    select?: WorkoutSessionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * WorkoutSessionCountOutputType without action
+   */
+  export type WorkoutSessionCountOutputTypeCountCardioLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CardioLogWhereInput
+  }
+
+  /**
+   * WorkoutSessionCountOutputType without action
+   */
+  export type WorkoutSessionCountOutputTypeCountExerciseSetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExerciseSetWhereInput
   }
 
 
@@ -2658,6 +3042,9 @@ export namespace Prisma {
     weightLogs?: boolean | User$weightLogsArgs<ExtArgs>
     waterLogs?: boolean | User$waterLogsArgs<ExtArgs>
     measurementLogs?: boolean | User$measurementLogsArgs<ExtArgs>
+    workoutSessions?: boolean | User$workoutSessionsArgs<ExtArgs>
+    exerciseSets?: boolean | User$exerciseSetsArgs<ExtArgs>
+    cardioLogs?: boolean | User$cardioLogsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2709,6 +3096,9 @@ export namespace Prisma {
     weightLogs?: boolean | User$weightLogsArgs<ExtArgs>
     waterLogs?: boolean | User$waterLogsArgs<ExtArgs>
     measurementLogs?: boolean | User$measurementLogsArgs<ExtArgs>
+    workoutSessions?: boolean | User$workoutSessionsArgs<ExtArgs>
+    exerciseSets?: boolean | User$exerciseSetsArgs<ExtArgs>
+    cardioLogs?: boolean | User$cardioLogsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2730,6 +3120,9 @@ export namespace Prisma {
       weightLogs: Prisma.$WeightLogPayload<ExtArgs>[]
       waterLogs: Prisma.$WaterLogPayload<ExtArgs>[]
       measurementLogs: Prisma.$MeasurementLogPayload<ExtArgs>[]
+      workoutSessions: Prisma.$WorkoutSessionPayload<ExtArgs>[]
+      exerciseSets: Prisma.$ExerciseSetPayload<ExtArgs>[]
+      cardioLogs: Prisma.$CardioLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3147,6 +3540,9 @@ export namespace Prisma {
     weightLogs<T extends User$weightLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$weightLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WeightLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     waterLogs<T extends User$waterLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$waterLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WaterLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     measurementLogs<T extends User$measurementLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$measurementLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MeasurementLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    workoutSessions<T extends User$workoutSessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$workoutSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    exerciseSets<T extends User$exerciseSetsArgs<ExtArgs> = {}>(args?: Subset<T, User$exerciseSetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cardioLogs<T extends User$cardioLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$cardioLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3871,6 +4267,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MeasurementLogScalarFieldEnum | MeasurementLogScalarFieldEnum[]
+  }
+
+  /**
+   * User.workoutSessions
+   */
+  export type User$workoutSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    where?: WorkoutSessionWhereInput
+    orderBy?: WorkoutSessionOrderByWithRelationInput | WorkoutSessionOrderByWithRelationInput[]
+    cursor?: WorkoutSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkoutSessionScalarFieldEnum | WorkoutSessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.exerciseSets
+   */
+  export type User$exerciseSetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    where?: ExerciseSetWhereInput
+    orderBy?: ExerciseSetOrderByWithRelationInput | ExerciseSetOrderByWithRelationInput[]
+    cursor?: ExerciseSetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExerciseSetScalarFieldEnum | ExerciseSetScalarFieldEnum[]
+  }
+
+  /**
+   * User.cardioLogs
+   */
+  export type User$cardioLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    where?: CardioLogWhereInput
+    orderBy?: CardioLogOrderByWithRelationInput | CardioLogOrderByWithRelationInput[]
+    cursor?: CardioLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CardioLogScalarFieldEnum | CardioLogScalarFieldEnum[]
   }
 
   /**
@@ -22097,6 +22565,3678 @@ export namespace Prisma {
 
 
   /**
+   * Model WorkoutSession
+   */
+
+  export type AggregateWorkoutSession = {
+    _count: WorkoutSessionCountAggregateOutputType | null
+    _avg: WorkoutSessionAvgAggregateOutputType | null
+    _sum: WorkoutSessionSumAggregateOutputType | null
+    _min: WorkoutSessionMinAggregateOutputType | null
+    _max: WorkoutSessionMaxAggregateOutputType | null
+  }
+
+  export type WorkoutSessionAvgAggregateOutputType = {
+    durationMins: number | null
+    caloriesBurned: number | null
+  }
+
+  export type WorkoutSessionSumAggregateOutputType = {
+    durationMins: number | null
+    caloriesBurned: number | null
+  }
+
+  export type WorkoutSessionMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    date: Date | null
+    name: string | null
+    notes: string | null
+    durationMins: number | null
+    caloriesBurned: number | null
+    healthKitId: string | null
+    googleFitId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkoutSessionMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    date: Date | null
+    name: string | null
+    notes: string | null
+    durationMins: number | null
+    caloriesBurned: number | null
+    healthKitId: string | null
+    googleFitId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkoutSessionCountAggregateOutputType = {
+    id: number
+    userId: number
+    date: number
+    name: number
+    notes: number
+    durationMins: number
+    caloriesBurned: number
+    healthKitId: number
+    googleFitId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkoutSessionAvgAggregateInputType = {
+    durationMins?: true
+    caloriesBurned?: true
+  }
+
+  export type WorkoutSessionSumAggregateInputType = {
+    durationMins?: true
+    caloriesBurned?: true
+  }
+
+  export type WorkoutSessionMinAggregateInputType = {
+    id?: true
+    userId?: true
+    date?: true
+    name?: true
+    notes?: true
+    durationMins?: true
+    caloriesBurned?: true
+    healthKitId?: true
+    googleFitId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkoutSessionMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    date?: true
+    name?: true
+    notes?: true
+    durationMins?: true
+    caloriesBurned?: true
+    healthKitId?: true
+    googleFitId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkoutSessionCountAggregateInputType = {
+    id?: true
+    userId?: true
+    date?: true
+    name?: true
+    notes?: true
+    durationMins?: true
+    caloriesBurned?: true
+    healthKitId?: true
+    googleFitId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkoutSessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkoutSession to aggregate.
+     */
+    where?: WorkoutSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkoutSessions to fetch.
+     */
+    orderBy?: WorkoutSessionOrderByWithRelationInput | WorkoutSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkoutSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkoutSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkoutSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkoutSessions
+    **/
+    _count?: true | WorkoutSessionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WorkoutSessionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkoutSessionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkoutSessionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkoutSessionMaxAggregateInputType
+  }
+
+  export type GetWorkoutSessionAggregateType<T extends WorkoutSessionAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkoutSession]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkoutSession[P]>
+      : GetScalarType<T[P], AggregateWorkoutSession[P]>
+  }
+
+
+
+
+  export type WorkoutSessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkoutSessionWhereInput
+    orderBy?: WorkoutSessionOrderByWithAggregationInput | WorkoutSessionOrderByWithAggregationInput[]
+    by: WorkoutSessionScalarFieldEnum[] | WorkoutSessionScalarFieldEnum
+    having?: WorkoutSessionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkoutSessionCountAggregateInputType | true
+    _avg?: WorkoutSessionAvgAggregateInputType
+    _sum?: WorkoutSessionSumAggregateInputType
+    _min?: WorkoutSessionMinAggregateInputType
+    _max?: WorkoutSessionMaxAggregateInputType
+  }
+
+  export type WorkoutSessionGroupByOutputType = {
+    id: string
+    userId: string
+    date: Date
+    name: string | null
+    notes: string | null
+    durationMins: number | null
+    caloriesBurned: number | null
+    healthKitId: string | null
+    googleFitId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkoutSessionCountAggregateOutputType | null
+    _avg: WorkoutSessionAvgAggregateOutputType | null
+    _sum: WorkoutSessionSumAggregateOutputType | null
+    _min: WorkoutSessionMinAggregateOutputType | null
+    _max: WorkoutSessionMaxAggregateOutputType | null
+  }
+
+  type GetWorkoutSessionGroupByPayload<T extends WorkoutSessionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkoutSessionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkoutSessionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkoutSessionGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkoutSessionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkoutSessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    date?: boolean
+    name?: boolean
+    notes?: boolean
+    durationMins?: boolean
+    caloriesBurned?: boolean
+    healthKitId?: boolean
+    googleFitId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    cardioLogs?: boolean | WorkoutSession$cardioLogsArgs<ExtArgs>
+    exerciseSets?: boolean | WorkoutSession$exerciseSetsArgs<ExtArgs>
+    _count?: boolean | WorkoutSessionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workoutSession"]>
+
+  export type WorkoutSessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    date?: boolean
+    name?: boolean
+    notes?: boolean
+    durationMins?: boolean
+    caloriesBurned?: boolean
+    healthKitId?: boolean
+    googleFitId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workoutSession"]>
+
+  export type WorkoutSessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    date?: boolean
+    name?: boolean
+    notes?: boolean
+    durationMins?: boolean
+    caloriesBurned?: boolean
+    healthKitId?: boolean
+    googleFitId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workoutSession"]>
+
+  export type WorkoutSessionSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    date?: boolean
+    name?: boolean
+    notes?: boolean
+    durationMins?: boolean
+    caloriesBurned?: boolean
+    healthKitId?: boolean
+    googleFitId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkoutSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "date" | "name" | "notes" | "durationMins" | "caloriesBurned" | "healthKitId" | "googleFitId" | "createdAt" | "updatedAt", ExtArgs["result"]["workoutSession"]>
+  export type WorkoutSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    cardioLogs?: boolean | WorkoutSession$cardioLogsArgs<ExtArgs>
+    exerciseSets?: boolean | WorkoutSession$exerciseSetsArgs<ExtArgs>
+    _count?: boolean | WorkoutSessionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type WorkoutSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type WorkoutSessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $WorkoutSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkoutSession"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      cardioLogs: Prisma.$CardioLogPayload<ExtArgs>[]
+      exerciseSets: Prisma.$ExerciseSetPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      date: Date
+      name: string | null
+      notes: string | null
+      durationMins: number | null
+      caloriesBurned: number | null
+      healthKitId: string | null
+      googleFitId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["workoutSession"]>
+    composites: {}
+  }
+
+  type WorkoutSessionGetPayload<S extends boolean | null | undefined | WorkoutSessionDefaultArgs> = $Result.GetResult<Prisma.$WorkoutSessionPayload, S>
+
+  type WorkoutSessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkoutSessionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkoutSessionCountAggregateInputType | true
+    }
+
+  export interface WorkoutSessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkoutSession'], meta: { name: 'WorkoutSession' } }
+    /**
+     * Find zero or one WorkoutSession that matches the filter.
+     * @param {WorkoutSessionFindUniqueArgs} args - Arguments to find a WorkoutSession
+     * @example
+     * // Get one WorkoutSession
+     * const workoutSession = await prisma.workoutSession.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkoutSessionFindUniqueArgs>(args: SelectSubset<T, WorkoutSessionFindUniqueArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkoutSession that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkoutSessionFindUniqueOrThrowArgs} args - Arguments to find a WorkoutSession
+     * @example
+     * // Get one WorkoutSession
+     * const workoutSession = await prisma.workoutSession.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkoutSessionFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkoutSessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkoutSession that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutSessionFindFirstArgs} args - Arguments to find a WorkoutSession
+     * @example
+     * // Get one WorkoutSession
+     * const workoutSession = await prisma.workoutSession.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkoutSessionFindFirstArgs>(args?: SelectSubset<T, WorkoutSessionFindFirstArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkoutSession that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutSessionFindFirstOrThrowArgs} args - Arguments to find a WorkoutSession
+     * @example
+     * // Get one WorkoutSession
+     * const workoutSession = await prisma.workoutSession.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkoutSessionFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkoutSessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkoutSessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutSessionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkoutSessions
+     * const workoutSessions = await prisma.workoutSession.findMany()
+     * 
+     * // Get first 10 WorkoutSessions
+     * const workoutSessions = await prisma.workoutSession.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workoutSessionWithIdOnly = await prisma.workoutSession.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkoutSessionFindManyArgs>(args?: SelectSubset<T, WorkoutSessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkoutSession.
+     * @param {WorkoutSessionCreateArgs} args - Arguments to create a WorkoutSession.
+     * @example
+     * // Create one WorkoutSession
+     * const WorkoutSession = await prisma.workoutSession.create({
+     *   data: {
+     *     // ... data to create a WorkoutSession
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkoutSessionCreateArgs>(args: SelectSubset<T, WorkoutSessionCreateArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkoutSessions.
+     * @param {WorkoutSessionCreateManyArgs} args - Arguments to create many WorkoutSessions.
+     * @example
+     * // Create many WorkoutSessions
+     * const workoutSession = await prisma.workoutSession.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkoutSessionCreateManyArgs>(args?: SelectSubset<T, WorkoutSessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkoutSessions and returns the data saved in the database.
+     * @param {WorkoutSessionCreateManyAndReturnArgs} args - Arguments to create many WorkoutSessions.
+     * @example
+     * // Create many WorkoutSessions
+     * const workoutSession = await prisma.workoutSession.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkoutSessions and only return the `id`
+     * const workoutSessionWithIdOnly = await prisma.workoutSession.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkoutSessionCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkoutSessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkoutSession.
+     * @param {WorkoutSessionDeleteArgs} args - Arguments to delete one WorkoutSession.
+     * @example
+     * // Delete one WorkoutSession
+     * const WorkoutSession = await prisma.workoutSession.delete({
+     *   where: {
+     *     // ... filter to delete one WorkoutSession
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkoutSessionDeleteArgs>(args: SelectSubset<T, WorkoutSessionDeleteArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkoutSession.
+     * @param {WorkoutSessionUpdateArgs} args - Arguments to update one WorkoutSession.
+     * @example
+     * // Update one WorkoutSession
+     * const workoutSession = await prisma.workoutSession.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkoutSessionUpdateArgs>(args: SelectSubset<T, WorkoutSessionUpdateArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkoutSessions.
+     * @param {WorkoutSessionDeleteManyArgs} args - Arguments to filter WorkoutSessions to delete.
+     * @example
+     * // Delete a few WorkoutSessions
+     * const { count } = await prisma.workoutSession.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkoutSessionDeleteManyArgs>(args?: SelectSubset<T, WorkoutSessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkoutSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutSessionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkoutSessions
+     * const workoutSession = await prisma.workoutSession.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkoutSessionUpdateManyArgs>(args: SelectSubset<T, WorkoutSessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkoutSessions and returns the data updated in the database.
+     * @param {WorkoutSessionUpdateManyAndReturnArgs} args - Arguments to update many WorkoutSessions.
+     * @example
+     * // Update many WorkoutSessions
+     * const workoutSession = await prisma.workoutSession.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkoutSessions and only return the `id`
+     * const workoutSessionWithIdOnly = await prisma.workoutSession.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkoutSessionUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkoutSessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkoutSession.
+     * @param {WorkoutSessionUpsertArgs} args - Arguments to update or create a WorkoutSession.
+     * @example
+     * // Update or create a WorkoutSession
+     * const workoutSession = await prisma.workoutSession.upsert({
+     *   create: {
+     *     // ... data to create a WorkoutSession
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkoutSession we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkoutSessionUpsertArgs>(args: SelectSubset<T, WorkoutSessionUpsertArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkoutSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutSessionCountArgs} args - Arguments to filter WorkoutSessions to count.
+     * @example
+     * // Count the number of WorkoutSessions
+     * const count = await prisma.workoutSession.count({
+     *   where: {
+     *     // ... the filter for the WorkoutSessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkoutSessionCountArgs>(
+      args?: Subset<T, WorkoutSessionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkoutSessionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkoutSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutSessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkoutSessionAggregateArgs>(args: Subset<T, WorkoutSessionAggregateArgs>): Prisma.PrismaPromise<GetWorkoutSessionAggregateType<T>>
+
+    /**
+     * Group by WorkoutSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutSessionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkoutSessionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkoutSessionGroupByArgs['orderBy'] }
+        : { orderBy?: WorkoutSessionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkoutSessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkoutSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkoutSession model
+   */
+  readonly fields: WorkoutSessionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkoutSession.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkoutSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    cardioLogs<T extends WorkoutSession$cardioLogsArgs<ExtArgs> = {}>(args?: Subset<T, WorkoutSession$cardioLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    exerciseSets<T extends WorkoutSession$exerciseSetsArgs<ExtArgs> = {}>(args?: Subset<T, WorkoutSession$exerciseSetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkoutSession model
+   */
+  interface WorkoutSessionFieldRefs {
+    readonly id: FieldRef<"WorkoutSession", 'String'>
+    readonly userId: FieldRef<"WorkoutSession", 'String'>
+    readonly date: FieldRef<"WorkoutSession", 'DateTime'>
+    readonly name: FieldRef<"WorkoutSession", 'String'>
+    readonly notes: FieldRef<"WorkoutSession", 'String'>
+    readonly durationMins: FieldRef<"WorkoutSession", 'Int'>
+    readonly caloriesBurned: FieldRef<"WorkoutSession", 'Int'>
+    readonly healthKitId: FieldRef<"WorkoutSession", 'String'>
+    readonly googleFitId: FieldRef<"WorkoutSession", 'String'>
+    readonly createdAt: FieldRef<"WorkoutSession", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkoutSession", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkoutSession findUnique
+   */
+  export type WorkoutSessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutSession to fetch.
+     */
+    where: WorkoutSessionWhereUniqueInput
+  }
+
+  /**
+   * WorkoutSession findUniqueOrThrow
+   */
+  export type WorkoutSessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutSession to fetch.
+     */
+    where: WorkoutSessionWhereUniqueInput
+  }
+
+  /**
+   * WorkoutSession findFirst
+   */
+  export type WorkoutSessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutSession to fetch.
+     */
+    where?: WorkoutSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkoutSessions to fetch.
+     */
+    orderBy?: WorkoutSessionOrderByWithRelationInput | WorkoutSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkoutSessions.
+     */
+    cursor?: WorkoutSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkoutSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkoutSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkoutSessions.
+     */
+    distinct?: WorkoutSessionScalarFieldEnum | WorkoutSessionScalarFieldEnum[]
+  }
+
+  /**
+   * WorkoutSession findFirstOrThrow
+   */
+  export type WorkoutSessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutSession to fetch.
+     */
+    where?: WorkoutSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkoutSessions to fetch.
+     */
+    orderBy?: WorkoutSessionOrderByWithRelationInput | WorkoutSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkoutSessions.
+     */
+    cursor?: WorkoutSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkoutSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkoutSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkoutSessions.
+     */
+    distinct?: WorkoutSessionScalarFieldEnum | WorkoutSessionScalarFieldEnum[]
+  }
+
+  /**
+   * WorkoutSession findMany
+   */
+  export type WorkoutSessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutSessions to fetch.
+     */
+    where?: WorkoutSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkoutSessions to fetch.
+     */
+    orderBy?: WorkoutSessionOrderByWithRelationInput | WorkoutSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkoutSessions.
+     */
+    cursor?: WorkoutSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkoutSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkoutSessions.
+     */
+    skip?: number
+    distinct?: WorkoutSessionScalarFieldEnum | WorkoutSessionScalarFieldEnum[]
+  }
+
+  /**
+   * WorkoutSession create
+   */
+  export type WorkoutSessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkoutSession.
+     */
+    data: XOR<WorkoutSessionCreateInput, WorkoutSessionUncheckedCreateInput>
+  }
+
+  /**
+   * WorkoutSession createMany
+   */
+  export type WorkoutSessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkoutSessions.
+     */
+    data: WorkoutSessionCreateManyInput | WorkoutSessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkoutSession createManyAndReturn
+   */
+  export type WorkoutSessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkoutSessions.
+     */
+    data: WorkoutSessionCreateManyInput | WorkoutSessionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkoutSession update
+   */
+  export type WorkoutSessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkoutSession.
+     */
+    data: XOR<WorkoutSessionUpdateInput, WorkoutSessionUncheckedUpdateInput>
+    /**
+     * Choose, which WorkoutSession to update.
+     */
+    where: WorkoutSessionWhereUniqueInput
+  }
+
+  /**
+   * WorkoutSession updateMany
+   */
+  export type WorkoutSessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkoutSessions.
+     */
+    data: XOR<WorkoutSessionUpdateManyMutationInput, WorkoutSessionUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkoutSessions to update
+     */
+    where?: WorkoutSessionWhereInput
+    /**
+     * Limit how many WorkoutSessions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkoutSession updateManyAndReturn
+   */
+  export type WorkoutSessionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkoutSessions.
+     */
+    data: XOR<WorkoutSessionUpdateManyMutationInput, WorkoutSessionUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkoutSessions to update
+     */
+    where?: WorkoutSessionWhereInput
+    /**
+     * Limit how many WorkoutSessions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkoutSession upsert
+   */
+  export type WorkoutSessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkoutSession to update in case it exists.
+     */
+    where: WorkoutSessionWhereUniqueInput
+    /**
+     * In case the WorkoutSession found by the `where` argument doesn't exist, create a new WorkoutSession with this data.
+     */
+    create: XOR<WorkoutSessionCreateInput, WorkoutSessionUncheckedCreateInput>
+    /**
+     * In case the WorkoutSession was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkoutSessionUpdateInput, WorkoutSessionUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkoutSession delete
+   */
+  export type WorkoutSessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+    /**
+     * Filter which WorkoutSession to delete.
+     */
+    where: WorkoutSessionWhereUniqueInput
+  }
+
+  /**
+   * WorkoutSession deleteMany
+   */
+  export type WorkoutSessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkoutSessions to delete
+     */
+    where?: WorkoutSessionWhereInput
+    /**
+     * Limit how many WorkoutSessions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkoutSession.cardioLogs
+   */
+  export type WorkoutSession$cardioLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    where?: CardioLogWhereInput
+    orderBy?: CardioLogOrderByWithRelationInput | CardioLogOrderByWithRelationInput[]
+    cursor?: CardioLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CardioLogScalarFieldEnum | CardioLogScalarFieldEnum[]
+  }
+
+  /**
+   * WorkoutSession.exerciseSets
+   */
+  export type WorkoutSession$exerciseSetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    where?: ExerciseSetWhereInput
+    orderBy?: ExerciseSetOrderByWithRelationInput | ExerciseSetOrderByWithRelationInput[]
+    cursor?: ExerciseSetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExerciseSetScalarFieldEnum | ExerciseSetScalarFieldEnum[]
+  }
+
+  /**
+   * WorkoutSession without action
+   */
+  export type WorkoutSessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutSession
+     */
+    select?: WorkoutSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutSession
+     */
+    omit?: WorkoutSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutSessionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CardioLog
+   */
+
+  export type AggregateCardioLog = {
+    _count: CardioLogCountAggregateOutputType | null
+    _avg: CardioLogAvgAggregateOutputType | null
+    _sum: CardioLogSumAggregateOutputType | null
+    _min: CardioLogMinAggregateOutputType | null
+    _max: CardioLogMaxAggregateOutputType | null
+  }
+
+  export type CardioLogAvgAggregateOutputType = {
+    durationMins: number | null
+    distanceMiles: Decimal | null
+    caloriesBurned: number | null
+    avgHeartRate: number | null
+    maxHeartRate: number | null
+    hrZone: number | null
+  }
+
+  export type CardioLogSumAggregateOutputType = {
+    durationMins: number | null
+    distanceMiles: Decimal | null
+    caloriesBurned: number | null
+    avgHeartRate: number | null
+    maxHeartRate: number | null
+    hrZone: number | null
+  }
+
+  export type CardioLogMinAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    userId: string | null
+    activity: $Enums.CardioActivity | null
+    durationMins: number | null
+    distanceMiles: Decimal | null
+    caloriesBurned: number | null
+    avgHeartRate: number | null
+    maxHeartRate: number | null
+    hrZone: number | null
+    pace: string | null
+    notes: string | null
+    healthKitId: string | null
+    createdAt: Date | null
+  }
+
+  export type CardioLogMaxAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    userId: string | null
+    activity: $Enums.CardioActivity | null
+    durationMins: number | null
+    distanceMiles: Decimal | null
+    caloriesBurned: number | null
+    avgHeartRate: number | null
+    maxHeartRate: number | null
+    hrZone: number | null
+    pace: string | null
+    notes: string | null
+    healthKitId: string | null
+    createdAt: Date | null
+  }
+
+  export type CardioLogCountAggregateOutputType = {
+    id: number
+    sessionId: number
+    userId: number
+    activity: number
+    durationMins: number
+    distanceMiles: number
+    caloriesBurned: number
+    avgHeartRate: number
+    maxHeartRate: number
+    hrZone: number
+    pace: number
+    notes: number
+    healthKitId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CardioLogAvgAggregateInputType = {
+    durationMins?: true
+    distanceMiles?: true
+    caloriesBurned?: true
+    avgHeartRate?: true
+    maxHeartRate?: true
+    hrZone?: true
+  }
+
+  export type CardioLogSumAggregateInputType = {
+    durationMins?: true
+    distanceMiles?: true
+    caloriesBurned?: true
+    avgHeartRate?: true
+    maxHeartRate?: true
+    hrZone?: true
+  }
+
+  export type CardioLogMinAggregateInputType = {
+    id?: true
+    sessionId?: true
+    userId?: true
+    activity?: true
+    durationMins?: true
+    distanceMiles?: true
+    caloriesBurned?: true
+    avgHeartRate?: true
+    maxHeartRate?: true
+    hrZone?: true
+    pace?: true
+    notes?: true
+    healthKitId?: true
+    createdAt?: true
+  }
+
+  export type CardioLogMaxAggregateInputType = {
+    id?: true
+    sessionId?: true
+    userId?: true
+    activity?: true
+    durationMins?: true
+    distanceMiles?: true
+    caloriesBurned?: true
+    avgHeartRate?: true
+    maxHeartRate?: true
+    hrZone?: true
+    pace?: true
+    notes?: true
+    healthKitId?: true
+    createdAt?: true
+  }
+
+  export type CardioLogCountAggregateInputType = {
+    id?: true
+    sessionId?: true
+    userId?: true
+    activity?: true
+    durationMins?: true
+    distanceMiles?: true
+    caloriesBurned?: true
+    avgHeartRate?: true
+    maxHeartRate?: true
+    hrZone?: true
+    pace?: true
+    notes?: true
+    healthKitId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CardioLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CardioLog to aggregate.
+     */
+    where?: CardioLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CardioLogs to fetch.
+     */
+    orderBy?: CardioLogOrderByWithRelationInput | CardioLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CardioLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CardioLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CardioLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CardioLogs
+    **/
+    _count?: true | CardioLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CardioLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CardioLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CardioLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CardioLogMaxAggregateInputType
+  }
+
+  export type GetCardioLogAggregateType<T extends CardioLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateCardioLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCardioLog[P]>
+      : GetScalarType<T[P], AggregateCardioLog[P]>
+  }
+
+
+
+
+  export type CardioLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CardioLogWhereInput
+    orderBy?: CardioLogOrderByWithAggregationInput | CardioLogOrderByWithAggregationInput[]
+    by: CardioLogScalarFieldEnum[] | CardioLogScalarFieldEnum
+    having?: CardioLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CardioLogCountAggregateInputType | true
+    _avg?: CardioLogAvgAggregateInputType
+    _sum?: CardioLogSumAggregateInputType
+    _min?: CardioLogMinAggregateInputType
+    _max?: CardioLogMaxAggregateInputType
+  }
+
+  export type CardioLogGroupByOutputType = {
+    id: string
+    sessionId: string
+    userId: string
+    activity: $Enums.CardioActivity
+    durationMins: number | null
+    distanceMiles: Decimal | null
+    caloriesBurned: number | null
+    avgHeartRate: number | null
+    maxHeartRate: number | null
+    hrZone: number | null
+    pace: string | null
+    notes: string | null
+    healthKitId: string | null
+    createdAt: Date
+    _count: CardioLogCountAggregateOutputType | null
+    _avg: CardioLogAvgAggregateOutputType | null
+    _sum: CardioLogSumAggregateOutputType | null
+    _min: CardioLogMinAggregateOutputType | null
+    _max: CardioLogMaxAggregateOutputType | null
+  }
+
+  type GetCardioLogGroupByPayload<T extends CardioLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CardioLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CardioLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CardioLogGroupByOutputType[P]>
+            : GetScalarType<T[P], CardioLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CardioLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    activity?: boolean
+    durationMins?: boolean
+    distanceMiles?: boolean
+    caloriesBurned?: boolean
+    avgHeartRate?: boolean
+    maxHeartRate?: boolean
+    hrZone?: boolean
+    pace?: boolean
+    notes?: boolean
+    healthKitId?: boolean
+    createdAt?: boolean
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cardioLog"]>
+
+  export type CardioLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    activity?: boolean
+    durationMins?: boolean
+    distanceMiles?: boolean
+    caloriesBurned?: boolean
+    avgHeartRate?: boolean
+    maxHeartRate?: boolean
+    hrZone?: boolean
+    pace?: boolean
+    notes?: boolean
+    healthKitId?: boolean
+    createdAt?: boolean
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cardioLog"]>
+
+  export type CardioLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    activity?: boolean
+    durationMins?: boolean
+    distanceMiles?: boolean
+    caloriesBurned?: boolean
+    avgHeartRate?: boolean
+    maxHeartRate?: boolean
+    hrZone?: boolean
+    pace?: boolean
+    notes?: boolean
+    healthKitId?: boolean
+    createdAt?: boolean
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cardioLog"]>
+
+  export type CardioLogSelectScalar = {
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    activity?: boolean
+    durationMins?: boolean
+    distanceMiles?: boolean
+    caloriesBurned?: boolean
+    avgHeartRate?: boolean
+    maxHeartRate?: boolean
+    hrZone?: boolean
+    pace?: boolean
+    notes?: boolean
+    healthKitId?: boolean
+    createdAt?: boolean
+  }
+
+  export type CardioLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "activity" | "durationMins" | "distanceMiles" | "caloriesBurned" | "avgHeartRate" | "maxHeartRate" | "hrZone" | "pace" | "notes" | "healthKitId" | "createdAt", ExtArgs["result"]["cardioLog"]>
+  export type CardioLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CardioLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CardioLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CardioLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CardioLog"
+    objects: {
+      session: Prisma.$WorkoutSessionPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      sessionId: string
+      userId: string
+      activity: $Enums.CardioActivity
+      durationMins: number | null
+      distanceMiles: Prisma.Decimal | null
+      caloriesBurned: number | null
+      avgHeartRate: number | null
+      maxHeartRate: number | null
+      hrZone: number | null
+      pace: string | null
+      notes: string | null
+      healthKitId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["cardioLog"]>
+    composites: {}
+  }
+
+  type CardioLogGetPayload<S extends boolean | null | undefined | CardioLogDefaultArgs> = $Result.GetResult<Prisma.$CardioLogPayload, S>
+
+  type CardioLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CardioLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CardioLogCountAggregateInputType | true
+    }
+
+  export interface CardioLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CardioLog'], meta: { name: 'CardioLog' } }
+    /**
+     * Find zero or one CardioLog that matches the filter.
+     * @param {CardioLogFindUniqueArgs} args - Arguments to find a CardioLog
+     * @example
+     * // Get one CardioLog
+     * const cardioLog = await prisma.cardioLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CardioLogFindUniqueArgs>(args: SelectSubset<T, CardioLogFindUniqueArgs<ExtArgs>>): Prisma__CardioLogClient<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CardioLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CardioLogFindUniqueOrThrowArgs} args - Arguments to find a CardioLog
+     * @example
+     * // Get one CardioLog
+     * const cardioLog = await prisma.cardioLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CardioLogFindUniqueOrThrowArgs>(args: SelectSubset<T, CardioLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CardioLogClient<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CardioLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CardioLogFindFirstArgs} args - Arguments to find a CardioLog
+     * @example
+     * // Get one CardioLog
+     * const cardioLog = await prisma.cardioLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CardioLogFindFirstArgs>(args?: SelectSubset<T, CardioLogFindFirstArgs<ExtArgs>>): Prisma__CardioLogClient<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CardioLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CardioLogFindFirstOrThrowArgs} args - Arguments to find a CardioLog
+     * @example
+     * // Get one CardioLog
+     * const cardioLog = await prisma.cardioLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CardioLogFindFirstOrThrowArgs>(args?: SelectSubset<T, CardioLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__CardioLogClient<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CardioLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CardioLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CardioLogs
+     * const cardioLogs = await prisma.cardioLog.findMany()
+     * 
+     * // Get first 10 CardioLogs
+     * const cardioLogs = await prisma.cardioLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cardioLogWithIdOnly = await prisma.cardioLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CardioLogFindManyArgs>(args?: SelectSubset<T, CardioLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CardioLog.
+     * @param {CardioLogCreateArgs} args - Arguments to create a CardioLog.
+     * @example
+     * // Create one CardioLog
+     * const CardioLog = await prisma.cardioLog.create({
+     *   data: {
+     *     // ... data to create a CardioLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends CardioLogCreateArgs>(args: SelectSubset<T, CardioLogCreateArgs<ExtArgs>>): Prisma__CardioLogClient<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CardioLogs.
+     * @param {CardioLogCreateManyArgs} args - Arguments to create many CardioLogs.
+     * @example
+     * // Create many CardioLogs
+     * const cardioLog = await prisma.cardioLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CardioLogCreateManyArgs>(args?: SelectSubset<T, CardioLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CardioLogs and returns the data saved in the database.
+     * @param {CardioLogCreateManyAndReturnArgs} args - Arguments to create many CardioLogs.
+     * @example
+     * // Create many CardioLogs
+     * const cardioLog = await prisma.cardioLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CardioLogs and only return the `id`
+     * const cardioLogWithIdOnly = await prisma.cardioLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CardioLogCreateManyAndReturnArgs>(args?: SelectSubset<T, CardioLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CardioLog.
+     * @param {CardioLogDeleteArgs} args - Arguments to delete one CardioLog.
+     * @example
+     * // Delete one CardioLog
+     * const CardioLog = await prisma.cardioLog.delete({
+     *   where: {
+     *     // ... filter to delete one CardioLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CardioLogDeleteArgs>(args: SelectSubset<T, CardioLogDeleteArgs<ExtArgs>>): Prisma__CardioLogClient<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CardioLog.
+     * @param {CardioLogUpdateArgs} args - Arguments to update one CardioLog.
+     * @example
+     * // Update one CardioLog
+     * const cardioLog = await prisma.cardioLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CardioLogUpdateArgs>(args: SelectSubset<T, CardioLogUpdateArgs<ExtArgs>>): Prisma__CardioLogClient<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CardioLogs.
+     * @param {CardioLogDeleteManyArgs} args - Arguments to filter CardioLogs to delete.
+     * @example
+     * // Delete a few CardioLogs
+     * const { count } = await prisma.cardioLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CardioLogDeleteManyArgs>(args?: SelectSubset<T, CardioLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CardioLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CardioLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CardioLogs
+     * const cardioLog = await prisma.cardioLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CardioLogUpdateManyArgs>(args: SelectSubset<T, CardioLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CardioLogs and returns the data updated in the database.
+     * @param {CardioLogUpdateManyAndReturnArgs} args - Arguments to update many CardioLogs.
+     * @example
+     * // Update many CardioLogs
+     * const cardioLog = await prisma.cardioLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CardioLogs and only return the `id`
+     * const cardioLogWithIdOnly = await prisma.cardioLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CardioLogUpdateManyAndReturnArgs>(args: SelectSubset<T, CardioLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CardioLog.
+     * @param {CardioLogUpsertArgs} args - Arguments to update or create a CardioLog.
+     * @example
+     * // Update or create a CardioLog
+     * const cardioLog = await prisma.cardioLog.upsert({
+     *   create: {
+     *     // ... data to create a CardioLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CardioLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CardioLogUpsertArgs>(args: SelectSubset<T, CardioLogUpsertArgs<ExtArgs>>): Prisma__CardioLogClient<$Result.GetResult<Prisma.$CardioLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CardioLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CardioLogCountArgs} args - Arguments to filter CardioLogs to count.
+     * @example
+     * // Count the number of CardioLogs
+     * const count = await prisma.cardioLog.count({
+     *   where: {
+     *     // ... the filter for the CardioLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends CardioLogCountArgs>(
+      args?: Subset<T, CardioLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CardioLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CardioLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CardioLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CardioLogAggregateArgs>(args: Subset<T, CardioLogAggregateArgs>): Prisma.PrismaPromise<GetCardioLogAggregateType<T>>
+
+    /**
+     * Group by CardioLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CardioLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CardioLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CardioLogGroupByArgs['orderBy'] }
+        : { orderBy?: CardioLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CardioLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCardioLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CardioLog model
+   */
+  readonly fields: CardioLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CardioLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CardioLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    session<T extends WorkoutSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkoutSessionDefaultArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CardioLog model
+   */
+  interface CardioLogFieldRefs {
+    readonly id: FieldRef<"CardioLog", 'String'>
+    readonly sessionId: FieldRef<"CardioLog", 'String'>
+    readonly userId: FieldRef<"CardioLog", 'String'>
+    readonly activity: FieldRef<"CardioLog", 'CardioActivity'>
+    readonly durationMins: FieldRef<"CardioLog", 'Int'>
+    readonly distanceMiles: FieldRef<"CardioLog", 'Decimal'>
+    readonly caloriesBurned: FieldRef<"CardioLog", 'Int'>
+    readonly avgHeartRate: FieldRef<"CardioLog", 'Int'>
+    readonly maxHeartRate: FieldRef<"CardioLog", 'Int'>
+    readonly hrZone: FieldRef<"CardioLog", 'Int'>
+    readonly pace: FieldRef<"CardioLog", 'String'>
+    readonly notes: FieldRef<"CardioLog", 'String'>
+    readonly healthKitId: FieldRef<"CardioLog", 'String'>
+    readonly createdAt: FieldRef<"CardioLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CardioLog findUnique
+   */
+  export type CardioLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CardioLog to fetch.
+     */
+    where: CardioLogWhereUniqueInput
+  }
+
+  /**
+   * CardioLog findUniqueOrThrow
+   */
+  export type CardioLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CardioLog to fetch.
+     */
+    where: CardioLogWhereUniqueInput
+  }
+
+  /**
+   * CardioLog findFirst
+   */
+  export type CardioLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CardioLog to fetch.
+     */
+    where?: CardioLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CardioLogs to fetch.
+     */
+    orderBy?: CardioLogOrderByWithRelationInput | CardioLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CardioLogs.
+     */
+    cursor?: CardioLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CardioLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CardioLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CardioLogs.
+     */
+    distinct?: CardioLogScalarFieldEnum | CardioLogScalarFieldEnum[]
+  }
+
+  /**
+   * CardioLog findFirstOrThrow
+   */
+  export type CardioLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CardioLog to fetch.
+     */
+    where?: CardioLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CardioLogs to fetch.
+     */
+    orderBy?: CardioLogOrderByWithRelationInput | CardioLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CardioLogs.
+     */
+    cursor?: CardioLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CardioLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CardioLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CardioLogs.
+     */
+    distinct?: CardioLogScalarFieldEnum | CardioLogScalarFieldEnum[]
+  }
+
+  /**
+   * CardioLog findMany
+   */
+  export type CardioLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CardioLogs to fetch.
+     */
+    where?: CardioLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CardioLogs to fetch.
+     */
+    orderBy?: CardioLogOrderByWithRelationInput | CardioLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CardioLogs.
+     */
+    cursor?: CardioLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CardioLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CardioLogs.
+     */
+    skip?: number
+    distinct?: CardioLogScalarFieldEnum | CardioLogScalarFieldEnum[]
+  }
+
+  /**
+   * CardioLog create
+   */
+  export type CardioLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CardioLog.
+     */
+    data: XOR<CardioLogCreateInput, CardioLogUncheckedCreateInput>
+  }
+
+  /**
+   * CardioLog createMany
+   */
+  export type CardioLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CardioLogs.
+     */
+    data: CardioLogCreateManyInput | CardioLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CardioLog createManyAndReturn
+   */
+  export type CardioLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many CardioLogs.
+     */
+    data: CardioLogCreateManyInput | CardioLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CardioLog update
+   */
+  export type CardioLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CardioLog.
+     */
+    data: XOR<CardioLogUpdateInput, CardioLogUncheckedUpdateInput>
+    /**
+     * Choose, which CardioLog to update.
+     */
+    where: CardioLogWhereUniqueInput
+  }
+
+  /**
+   * CardioLog updateMany
+   */
+  export type CardioLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CardioLogs.
+     */
+    data: XOR<CardioLogUpdateManyMutationInput, CardioLogUncheckedUpdateManyInput>
+    /**
+     * Filter which CardioLogs to update
+     */
+    where?: CardioLogWhereInput
+    /**
+     * Limit how many CardioLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CardioLog updateManyAndReturn
+   */
+  export type CardioLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * The data used to update CardioLogs.
+     */
+    data: XOR<CardioLogUpdateManyMutationInput, CardioLogUncheckedUpdateManyInput>
+    /**
+     * Filter which CardioLogs to update
+     */
+    where?: CardioLogWhereInput
+    /**
+     * Limit how many CardioLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CardioLog upsert
+   */
+  export type CardioLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CardioLog to update in case it exists.
+     */
+    where: CardioLogWhereUniqueInput
+    /**
+     * In case the CardioLog found by the `where` argument doesn't exist, create a new CardioLog with this data.
+     */
+    create: XOR<CardioLogCreateInput, CardioLogUncheckedCreateInput>
+    /**
+     * In case the CardioLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CardioLogUpdateInput, CardioLogUncheckedUpdateInput>
+  }
+
+  /**
+   * CardioLog delete
+   */
+  export type CardioLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+    /**
+     * Filter which CardioLog to delete.
+     */
+    where: CardioLogWhereUniqueInput
+  }
+
+  /**
+   * CardioLog deleteMany
+   */
+  export type CardioLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CardioLogs to delete
+     */
+    where?: CardioLogWhereInput
+    /**
+     * Limit how many CardioLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CardioLog without action
+   */
+  export type CardioLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CardioLog
+     */
+    select?: CardioLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CardioLog
+     */
+    omit?: CardioLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardioLogInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ExerciseSet
+   */
+
+  export type AggregateExerciseSet = {
+    _count: ExerciseSetCountAggregateOutputType | null
+    _avg: ExerciseSetAvgAggregateOutputType | null
+    _sum: ExerciseSetSumAggregateOutputType | null
+    _min: ExerciseSetMinAggregateOutputType | null
+    _max: ExerciseSetMaxAggregateOutputType | null
+  }
+
+  export type ExerciseSetAvgAggregateOutputType = {
+    setNumber: number | null
+    reps: number | null
+    weightLbs: Decimal | null
+    durationSecs: number | null
+  }
+
+  export type ExerciseSetSumAggregateOutputType = {
+    setNumber: number | null
+    reps: number | null
+    weightLbs: Decimal | null
+    durationSecs: number | null
+  }
+
+  export type ExerciseSetMinAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    userId: string | null
+    exerciseName: string | null
+    muscleGroup: $Enums.MuscleGroup | null
+    setNumber: number | null
+    reps: number | null
+    weightLbs: Decimal | null
+    durationSecs: number | null
+    notes: string | null
+    healthKitId: string | null
+    createdAt: Date | null
+  }
+
+  export type ExerciseSetMaxAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    userId: string | null
+    exerciseName: string | null
+    muscleGroup: $Enums.MuscleGroup | null
+    setNumber: number | null
+    reps: number | null
+    weightLbs: Decimal | null
+    durationSecs: number | null
+    notes: string | null
+    healthKitId: string | null
+    createdAt: Date | null
+  }
+
+  export type ExerciseSetCountAggregateOutputType = {
+    id: number
+    sessionId: number
+    userId: number
+    exerciseName: number
+    muscleGroup: number
+    setNumber: number
+    reps: number
+    weightLbs: number
+    durationSecs: number
+    notes: number
+    healthKitId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ExerciseSetAvgAggregateInputType = {
+    setNumber?: true
+    reps?: true
+    weightLbs?: true
+    durationSecs?: true
+  }
+
+  export type ExerciseSetSumAggregateInputType = {
+    setNumber?: true
+    reps?: true
+    weightLbs?: true
+    durationSecs?: true
+  }
+
+  export type ExerciseSetMinAggregateInputType = {
+    id?: true
+    sessionId?: true
+    userId?: true
+    exerciseName?: true
+    muscleGroup?: true
+    setNumber?: true
+    reps?: true
+    weightLbs?: true
+    durationSecs?: true
+    notes?: true
+    healthKitId?: true
+    createdAt?: true
+  }
+
+  export type ExerciseSetMaxAggregateInputType = {
+    id?: true
+    sessionId?: true
+    userId?: true
+    exerciseName?: true
+    muscleGroup?: true
+    setNumber?: true
+    reps?: true
+    weightLbs?: true
+    durationSecs?: true
+    notes?: true
+    healthKitId?: true
+    createdAt?: true
+  }
+
+  export type ExerciseSetCountAggregateInputType = {
+    id?: true
+    sessionId?: true
+    userId?: true
+    exerciseName?: true
+    muscleGroup?: true
+    setNumber?: true
+    reps?: true
+    weightLbs?: true
+    durationSecs?: true
+    notes?: true
+    healthKitId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ExerciseSetAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExerciseSet to aggregate.
+     */
+    where?: ExerciseSetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExerciseSets to fetch.
+     */
+    orderBy?: ExerciseSetOrderByWithRelationInput | ExerciseSetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExerciseSetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExerciseSets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExerciseSets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ExerciseSets
+    **/
+    _count?: true | ExerciseSetCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ExerciseSetAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ExerciseSetSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExerciseSetMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExerciseSetMaxAggregateInputType
+  }
+
+  export type GetExerciseSetAggregateType<T extends ExerciseSetAggregateArgs> = {
+        [P in keyof T & keyof AggregateExerciseSet]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExerciseSet[P]>
+      : GetScalarType<T[P], AggregateExerciseSet[P]>
+  }
+
+
+
+
+  export type ExerciseSetGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExerciseSetWhereInput
+    orderBy?: ExerciseSetOrderByWithAggregationInput | ExerciseSetOrderByWithAggregationInput[]
+    by: ExerciseSetScalarFieldEnum[] | ExerciseSetScalarFieldEnum
+    having?: ExerciseSetScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExerciseSetCountAggregateInputType | true
+    _avg?: ExerciseSetAvgAggregateInputType
+    _sum?: ExerciseSetSumAggregateInputType
+    _min?: ExerciseSetMinAggregateInputType
+    _max?: ExerciseSetMaxAggregateInputType
+  }
+
+  export type ExerciseSetGroupByOutputType = {
+    id: string
+    sessionId: string
+    userId: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps: number | null
+    weightLbs: Decimal | null
+    durationSecs: number | null
+    notes: string | null
+    healthKitId: string | null
+    createdAt: Date
+    _count: ExerciseSetCountAggregateOutputType | null
+    _avg: ExerciseSetAvgAggregateOutputType | null
+    _sum: ExerciseSetSumAggregateOutputType | null
+    _min: ExerciseSetMinAggregateOutputType | null
+    _max: ExerciseSetMaxAggregateOutputType | null
+  }
+
+  type GetExerciseSetGroupByPayload<T extends ExerciseSetGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExerciseSetGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExerciseSetGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExerciseSetGroupByOutputType[P]>
+            : GetScalarType<T[P], ExerciseSetGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExerciseSetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    exerciseName?: boolean
+    muscleGroup?: boolean
+    setNumber?: boolean
+    reps?: boolean
+    weightLbs?: boolean
+    durationSecs?: boolean
+    notes?: boolean
+    healthKitId?: boolean
+    createdAt?: boolean
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exerciseSet"]>
+
+  export type ExerciseSetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    exerciseName?: boolean
+    muscleGroup?: boolean
+    setNumber?: boolean
+    reps?: boolean
+    weightLbs?: boolean
+    durationSecs?: boolean
+    notes?: boolean
+    healthKitId?: boolean
+    createdAt?: boolean
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exerciseSet"]>
+
+  export type ExerciseSetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    exerciseName?: boolean
+    muscleGroup?: boolean
+    setNumber?: boolean
+    reps?: boolean
+    weightLbs?: boolean
+    durationSecs?: boolean
+    notes?: boolean
+    healthKitId?: boolean
+    createdAt?: boolean
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exerciseSet"]>
+
+  export type ExerciseSetSelectScalar = {
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    exerciseName?: boolean
+    muscleGroup?: boolean
+    setNumber?: boolean
+    reps?: boolean
+    weightLbs?: boolean
+    durationSecs?: boolean
+    notes?: boolean
+    healthKitId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ExerciseSetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "exerciseName" | "muscleGroup" | "setNumber" | "reps" | "weightLbs" | "durationSecs" | "notes" | "healthKitId" | "createdAt", ExtArgs["result"]["exerciseSet"]>
+  export type ExerciseSetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ExerciseSetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ExerciseSetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | WorkoutSessionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ExerciseSetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ExerciseSet"
+    objects: {
+      session: Prisma.$WorkoutSessionPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      sessionId: string
+      userId: string
+      exerciseName: string
+      muscleGroup: $Enums.MuscleGroup
+      setNumber: number
+      reps: number | null
+      weightLbs: Prisma.Decimal | null
+      durationSecs: number | null
+      notes: string | null
+      healthKitId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["exerciseSet"]>
+    composites: {}
+  }
+
+  type ExerciseSetGetPayload<S extends boolean | null | undefined | ExerciseSetDefaultArgs> = $Result.GetResult<Prisma.$ExerciseSetPayload, S>
+
+  type ExerciseSetCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ExerciseSetFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ExerciseSetCountAggregateInputType | true
+    }
+
+  export interface ExerciseSetDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ExerciseSet'], meta: { name: 'ExerciseSet' } }
+    /**
+     * Find zero or one ExerciseSet that matches the filter.
+     * @param {ExerciseSetFindUniqueArgs} args - Arguments to find a ExerciseSet
+     * @example
+     * // Get one ExerciseSet
+     * const exerciseSet = await prisma.exerciseSet.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExerciseSetFindUniqueArgs>(args: SelectSubset<T, ExerciseSetFindUniqueArgs<ExtArgs>>): Prisma__ExerciseSetClient<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ExerciseSet that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ExerciseSetFindUniqueOrThrowArgs} args - Arguments to find a ExerciseSet
+     * @example
+     * // Get one ExerciseSet
+     * const exerciseSet = await prisma.exerciseSet.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExerciseSetFindUniqueOrThrowArgs>(args: SelectSubset<T, ExerciseSetFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExerciseSetClient<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExerciseSet that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExerciseSetFindFirstArgs} args - Arguments to find a ExerciseSet
+     * @example
+     * // Get one ExerciseSet
+     * const exerciseSet = await prisma.exerciseSet.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExerciseSetFindFirstArgs>(args?: SelectSubset<T, ExerciseSetFindFirstArgs<ExtArgs>>): Prisma__ExerciseSetClient<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExerciseSet that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExerciseSetFindFirstOrThrowArgs} args - Arguments to find a ExerciseSet
+     * @example
+     * // Get one ExerciseSet
+     * const exerciseSet = await prisma.exerciseSet.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExerciseSetFindFirstOrThrowArgs>(args?: SelectSubset<T, ExerciseSetFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExerciseSetClient<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ExerciseSets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExerciseSetFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ExerciseSets
+     * const exerciseSets = await prisma.exerciseSet.findMany()
+     * 
+     * // Get first 10 ExerciseSets
+     * const exerciseSets = await prisma.exerciseSet.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const exerciseSetWithIdOnly = await prisma.exerciseSet.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ExerciseSetFindManyArgs>(args?: SelectSubset<T, ExerciseSetFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ExerciseSet.
+     * @param {ExerciseSetCreateArgs} args - Arguments to create a ExerciseSet.
+     * @example
+     * // Create one ExerciseSet
+     * const ExerciseSet = await prisma.exerciseSet.create({
+     *   data: {
+     *     // ... data to create a ExerciseSet
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExerciseSetCreateArgs>(args: SelectSubset<T, ExerciseSetCreateArgs<ExtArgs>>): Prisma__ExerciseSetClient<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ExerciseSets.
+     * @param {ExerciseSetCreateManyArgs} args - Arguments to create many ExerciseSets.
+     * @example
+     * // Create many ExerciseSets
+     * const exerciseSet = await prisma.exerciseSet.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExerciseSetCreateManyArgs>(args?: SelectSubset<T, ExerciseSetCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ExerciseSets and returns the data saved in the database.
+     * @param {ExerciseSetCreateManyAndReturnArgs} args - Arguments to create many ExerciseSets.
+     * @example
+     * // Create many ExerciseSets
+     * const exerciseSet = await prisma.exerciseSet.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ExerciseSets and only return the `id`
+     * const exerciseSetWithIdOnly = await prisma.exerciseSet.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExerciseSetCreateManyAndReturnArgs>(args?: SelectSubset<T, ExerciseSetCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ExerciseSet.
+     * @param {ExerciseSetDeleteArgs} args - Arguments to delete one ExerciseSet.
+     * @example
+     * // Delete one ExerciseSet
+     * const ExerciseSet = await prisma.exerciseSet.delete({
+     *   where: {
+     *     // ... filter to delete one ExerciseSet
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExerciseSetDeleteArgs>(args: SelectSubset<T, ExerciseSetDeleteArgs<ExtArgs>>): Prisma__ExerciseSetClient<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ExerciseSet.
+     * @param {ExerciseSetUpdateArgs} args - Arguments to update one ExerciseSet.
+     * @example
+     * // Update one ExerciseSet
+     * const exerciseSet = await prisma.exerciseSet.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExerciseSetUpdateArgs>(args: SelectSubset<T, ExerciseSetUpdateArgs<ExtArgs>>): Prisma__ExerciseSetClient<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ExerciseSets.
+     * @param {ExerciseSetDeleteManyArgs} args - Arguments to filter ExerciseSets to delete.
+     * @example
+     * // Delete a few ExerciseSets
+     * const { count } = await prisma.exerciseSet.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExerciseSetDeleteManyArgs>(args?: SelectSubset<T, ExerciseSetDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExerciseSets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExerciseSetUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ExerciseSets
+     * const exerciseSet = await prisma.exerciseSet.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExerciseSetUpdateManyArgs>(args: SelectSubset<T, ExerciseSetUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExerciseSets and returns the data updated in the database.
+     * @param {ExerciseSetUpdateManyAndReturnArgs} args - Arguments to update many ExerciseSets.
+     * @example
+     * // Update many ExerciseSets
+     * const exerciseSet = await prisma.exerciseSet.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ExerciseSets and only return the `id`
+     * const exerciseSetWithIdOnly = await prisma.exerciseSet.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ExerciseSetUpdateManyAndReturnArgs>(args: SelectSubset<T, ExerciseSetUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ExerciseSet.
+     * @param {ExerciseSetUpsertArgs} args - Arguments to update or create a ExerciseSet.
+     * @example
+     * // Update or create a ExerciseSet
+     * const exerciseSet = await prisma.exerciseSet.upsert({
+     *   create: {
+     *     // ... data to create a ExerciseSet
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ExerciseSet we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExerciseSetUpsertArgs>(args: SelectSubset<T, ExerciseSetUpsertArgs<ExtArgs>>): Prisma__ExerciseSetClient<$Result.GetResult<Prisma.$ExerciseSetPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ExerciseSets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExerciseSetCountArgs} args - Arguments to filter ExerciseSets to count.
+     * @example
+     * // Count the number of ExerciseSets
+     * const count = await prisma.exerciseSet.count({
+     *   where: {
+     *     // ... the filter for the ExerciseSets we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExerciseSetCountArgs>(
+      args?: Subset<T, ExerciseSetCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExerciseSetCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ExerciseSet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExerciseSetAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExerciseSetAggregateArgs>(args: Subset<T, ExerciseSetAggregateArgs>): Prisma.PrismaPromise<GetExerciseSetAggregateType<T>>
+
+    /**
+     * Group by ExerciseSet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExerciseSetGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExerciseSetGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExerciseSetGroupByArgs['orderBy'] }
+        : { orderBy?: ExerciseSetGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExerciseSetGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExerciseSetGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ExerciseSet model
+   */
+  readonly fields: ExerciseSetFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ExerciseSet.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExerciseSetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    session<T extends WorkoutSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkoutSessionDefaultArgs<ExtArgs>>): Prisma__WorkoutSessionClient<$Result.GetResult<Prisma.$WorkoutSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ExerciseSet model
+   */
+  interface ExerciseSetFieldRefs {
+    readonly id: FieldRef<"ExerciseSet", 'String'>
+    readonly sessionId: FieldRef<"ExerciseSet", 'String'>
+    readonly userId: FieldRef<"ExerciseSet", 'String'>
+    readonly exerciseName: FieldRef<"ExerciseSet", 'String'>
+    readonly muscleGroup: FieldRef<"ExerciseSet", 'MuscleGroup'>
+    readonly setNumber: FieldRef<"ExerciseSet", 'Int'>
+    readonly reps: FieldRef<"ExerciseSet", 'Int'>
+    readonly weightLbs: FieldRef<"ExerciseSet", 'Decimal'>
+    readonly durationSecs: FieldRef<"ExerciseSet", 'Int'>
+    readonly notes: FieldRef<"ExerciseSet", 'String'>
+    readonly healthKitId: FieldRef<"ExerciseSet", 'String'>
+    readonly createdAt: FieldRef<"ExerciseSet", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ExerciseSet findUnique
+   */
+  export type ExerciseSetFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    /**
+     * Filter, which ExerciseSet to fetch.
+     */
+    where: ExerciseSetWhereUniqueInput
+  }
+
+  /**
+   * ExerciseSet findUniqueOrThrow
+   */
+  export type ExerciseSetFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    /**
+     * Filter, which ExerciseSet to fetch.
+     */
+    where: ExerciseSetWhereUniqueInput
+  }
+
+  /**
+   * ExerciseSet findFirst
+   */
+  export type ExerciseSetFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    /**
+     * Filter, which ExerciseSet to fetch.
+     */
+    where?: ExerciseSetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExerciseSets to fetch.
+     */
+    orderBy?: ExerciseSetOrderByWithRelationInput | ExerciseSetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExerciseSets.
+     */
+    cursor?: ExerciseSetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExerciseSets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExerciseSets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExerciseSets.
+     */
+    distinct?: ExerciseSetScalarFieldEnum | ExerciseSetScalarFieldEnum[]
+  }
+
+  /**
+   * ExerciseSet findFirstOrThrow
+   */
+  export type ExerciseSetFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    /**
+     * Filter, which ExerciseSet to fetch.
+     */
+    where?: ExerciseSetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExerciseSets to fetch.
+     */
+    orderBy?: ExerciseSetOrderByWithRelationInput | ExerciseSetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExerciseSets.
+     */
+    cursor?: ExerciseSetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExerciseSets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExerciseSets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExerciseSets.
+     */
+    distinct?: ExerciseSetScalarFieldEnum | ExerciseSetScalarFieldEnum[]
+  }
+
+  /**
+   * ExerciseSet findMany
+   */
+  export type ExerciseSetFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    /**
+     * Filter, which ExerciseSets to fetch.
+     */
+    where?: ExerciseSetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExerciseSets to fetch.
+     */
+    orderBy?: ExerciseSetOrderByWithRelationInput | ExerciseSetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ExerciseSets.
+     */
+    cursor?: ExerciseSetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExerciseSets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExerciseSets.
+     */
+    skip?: number
+    distinct?: ExerciseSetScalarFieldEnum | ExerciseSetScalarFieldEnum[]
+  }
+
+  /**
+   * ExerciseSet create
+   */
+  export type ExerciseSetCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ExerciseSet.
+     */
+    data: XOR<ExerciseSetCreateInput, ExerciseSetUncheckedCreateInput>
+  }
+
+  /**
+   * ExerciseSet createMany
+   */
+  export type ExerciseSetCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ExerciseSets.
+     */
+    data: ExerciseSetCreateManyInput | ExerciseSetCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ExerciseSet createManyAndReturn
+   */
+  export type ExerciseSetCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * The data used to create many ExerciseSets.
+     */
+    data: ExerciseSetCreateManyInput | ExerciseSetCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExerciseSet update
+   */
+  export type ExerciseSetUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ExerciseSet.
+     */
+    data: XOR<ExerciseSetUpdateInput, ExerciseSetUncheckedUpdateInput>
+    /**
+     * Choose, which ExerciseSet to update.
+     */
+    where: ExerciseSetWhereUniqueInput
+  }
+
+  /**
+   * ExerciseSet updateMany
+   */
+  export type ExerciseSetUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ExerciseSets.
+     */
+    data: XOR<ExerciseSetUpdateManyMutationInput, ExerciseSetUncheckedUpdateManyInput>
+    /**
+     * Filter which ExerciseSets to update
+     */
+    where?: ExerciseSetWhereInput
+    /**
+     * Limit how many ExerciseSets to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExerciseSet updateManyAndReturn
+   */
+  export type ExerciseSetUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * The data used to update ExerciseSets.
+     */
+    data: XOR<ExerciseSetUpdateManyMutationInput, ExerciseSetUncheckedUpdateManyInput>
+    /**
+     * Filter which ExerciseSets to update
+     */
+    where?: ExerciseSetWhereInput
+    /**
+     * Limit how many ExerciseSets to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExerciseSet upsert
+   */
+  export type ExerciseSetUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ExerciseSet to update in case it exists.
+     */
+    where: ExerciseSetWhereUniqueInput
+    /**
+     * In case the ExerciseSet found by the `where` argument doesn't exist, create a new ExerciseSet with this data.
+     */
+    create: XOR<ExerciseSetCreateInput, ExerciseSetUncheckedCreateInput>
+    /**
+     * In case the ExerciseSet was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExerciseSetUpdateInput, ExerciseSetUncheckedUpdateInput>
+  }
+
+  /**
+   * ExerciseSet delete
+   */
+  export type ExerciseSetDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+    /**
+     * Filter which ExerciseSet to delete.
+     */
+    where: ExerciseSetWhereUniqueInput
+  }
+
+  /**
+   * ExerciseSet deleteMany
+   */
+  export type ExerciseSetDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExerciseSets to delete
+     */
+    where?: ExerciseSetWhereInput
+    /**
+     * Limit how many ExerciseSets to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExerciseSet without action
+   */
+  export type ExerciseSetDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExerciseSet
+     */
+    select?: ExerciseSetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExerciseSet
+     */
+    omit?: ExerciseSetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExerciseSetInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model MeasurementLog
    */
 
@@ -23713,6 +27853,61 @@ export namespace Prisma {
   export type WaterLogScalarFieldEnum = (typeof WaterLogScalarFieldEnum)[keyof typeof WaterLogScalarFieldEnum]
 
 
+  export const WorkoutSessionScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    date: 'date',
+    name: 'name',
+    notes: 'notes',
+    durationMins: 'durationMins',
+    caloriesBurned: 'caloriesBurned',
+    healthKitId: 'healthKitId',
+    googleFitId: 'googleFitId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkoutSessionScalarFieldEnum = (typeof WorkoutSessionScalarFieldEnum)[keyof typeof WorkoutSessionScalarFieldEnum]
+
+
+  export const CardioLogScalarFieldEnum: {
+    id: 'id',
+    sessionId: 'sessionId',
+    userId: 'userId',
+    activity: 'activity',
+    durationMins: 'durationMins',
+    distanceMiles: 'distanceMiles',
+    caloriesBurned: 'caloriesBurned',
+    avgHeartRate: 'avgHeartRate',
+    maxHeartRate: 'maxHeartRate',
+    hrZone: 'hrZone',
+    pace: 'pace',
+    notes: 'notes',
+    healthKitId: 'healthKitId',
+    createdAt: 'createdAt'
+  };
+
+  export type CardioLogScalarFieldEnum = (typeof CardioLogScalarFieldEnum)[keyof typeof CardioLogScalarFieldEnum]
+
+
+  export const ExerciseSetScalarFieldEnum: {
+    id: 'id',
+    sessionId: 'sessionId',
+    userId: 'userId',
+    exerciseName: 'exerciseName',
+    muscleGroup: 'muscleGroup',
+    setNumber: 'setNumber',
+    reps: 'reps',
+    weightLbs: 'weightLbs',
+    durationSecs: 'durationSecs',
+    notes: 'notes',
+    healthKitId: 'healthKitId',
+    createdAt: 'createdAt'
+  };
+
+  export type ExerciseSetScalarFieldEnum = (typeof ExerciseSetScalarFieldEnum)[keyof typeof ExerciseSetScalarFieldEnum]
+
+
   export const MeasurementLogScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -23873,6 +28068,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'CardioActivity'
+   */
+  export type EnumCardioActivityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CardioActivity'>
+    
+
+
+  /**
+   * Reference to a field of type 'CardioActivity[]'
+   */
+  export type ListEnumCardioActivityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CardioActivity[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'MuscleGroup'
+   */
+  export type EnumMuscleGroupFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MuscleGroup'>
+    
+
+
+  /**
+   * Reference to a field of type 'MuscleGroup[]'
+   */
+  export type ListEnumMuscleGroupFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MuscleGroup[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -23914,6 +28137,9 @@ export namespace Prisma {
     weightLogs?: WeightLogListRelationFilter
     waterLogs?: WaterLogListRelationFilter
     measurementLogs?: MeasurementLogListRelationFilter
+    workoutSessions?: WorkoutSessionListRelationFilter
+    exerciseSets?: ExerciseSetListRelationFilter
+    cardioLogs?: CardioLogListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -23938,6 +28164,9 @@ export namespace Prisma {
     weightLogs?: WeightLogOrderByRelationAggregateInput
     waterLogs?: WaterLogOrderByRelationAggregateInput
     measurementLogs?: MeasurementLogOrderByRelationAggregateInput
+    workoutSessions?: WorkoutSessionOrderByRelationAggregateInput
+    exerciseSets?: ExerciseSetOrderByRelationAggregateInput
+    cardioLogs?: CardioLogOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -23965,6 +28194,9 @@ export namespace Prisma {
     weightLogs?: WeightLogListRelationFilter
     waterLogs?: WaterLogListRelationFilter
     measurementLogs?: MeasurementLogListRelationFilter
+    workoutSessions?: WorkoutSessionListRelationFilter
+    exerciseSets?: ExerciseSetListRelationFilter
+    cardioLogs?: CardioLogListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -25499,6 +29731,299 @@ export namespace Prisma {
     loggedAt?: DateTimeWithAggregatesFilter<"WaterLog"> | Date | string
   }
 
+  export type WorkoutSessionWhereInput = {
+    AND?: WorkoutSessionWhereInput | WorkoutSessionWhereInput[]
+    OR?: WorkoutSessionWhereInput[]
+    NOT?: WorkoutSessionWhereInput | WorkoutSessionWhereInput[]
+    id?: StringFilter<"WorkoutSession"> | string
+    userId?: StringFilter<"WorkoutSession"> | string
+    date?: DateTimeFilter<"WorkoutSession"> | Date | string
+    name?: StringNullableFilter<"WorkoutSession"> | string | null
+    notes?: StringNullableFilter<"WorkoutSession"> | string | null
+    durationMins?: IntNullableFilter<"WorkoutSession"> | number | null
+    caloriesBurned?: IntNullableFilter<"WorkoutSession"> | number | null
+    healthKitId?: StringNullableFilter<"WorkoutSession"> | string | null
+    googleFitId?: StringNullableFilter<"WorkoutSession"> | string | null
+    createdAt?: DateTimeFilter<"WorkoutSession"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkoutSession"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    cardioLogs?: CardioLogListRelationFilter
+    exerciseSets?: ExerciseSetListRelationFilter
+  }
+
+  export type WorkoutSessionOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    name?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    durationMins?: SortOrderInput | SortOrder
+    caloriesBurned?: SortOrderInput | SortOrder
+    healthKitId?: SortOrderInput | SortOrder
+    googleFitId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    cardioLogs?: CardioLogOrderByRelationAggregateInput
+    exerciseSets?: ExerciseSetOrderByRelationAggregateInput
+  }
+
+  export type WorkoutSessionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WorkoutSessionWhereInput | WorkoutSessionWhereInput[]
+    OR?: WorkoutSessionWhereInput[]
+    NOT?: WorkoutSessionWhereInput | WorkoutSessionWhereInput[]
+    userId?: StringFilter<"WorkoutSession"> | string
+    date?: DateTimeFilter<"WorkoutSession"> | Date | string
+    name?: StringNullableFilter<"WorkoutSession"> | string | null
+    notes?: StringNullableFilter<"WorkoutSession"> | string | null
+    durationMins?: IntNullableFilter<"WorkoutSession"> | number | null
+    caloriesBurned?: IntNullableFilter<"WorkoutSession"> | number | null
+    healthKitId?: StringNullableFilter<"WorkoutSession"> | string | null
+    googleFitId?: StringNullableFilter<"WorkoutSession"> | string | null
+    createdAt?: DateTimeFilter<"WorkoutSession"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkoutSession"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    cardioLogs?: CardioLogListRelationFilter
+    exerciseSets?: ExerciseSetListRelationFilter
+  }, "id">
+
+  export type WorkoutSessionOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    name?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    durationMins?: SortOrderInput | SortOrder
+    caloriesBurned?: SortOrderInput | SortOrder
+    healthKitId?: SortOrderInput | SortOrder
+    googleFitId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkoutSessionCountOrderByAggregateInput
+    _avg?: WorkoutSessionAvgOrderByAggregateInput
+    _max?: WorkoutSessionMaxOrderByAggregateInput
+    _min?: WorkoutSessionMinOrderByAggregateInput
+    _sum?: WorkoutSessionSumOrderByAggregateInput
+  }
+
+  export type WorkoutSessionScalarWhereWithAggregatesInput = {
+    AND?: WorkoutSessionScalarWhereWithAggregatesInput | WorkoutSessionScalarWhereWithAggregatesInput[]
+    OR?: WorkoutSessionScalarWhereWithAggregatesInput[]
+    NOT?: WorkoutSessionScalarWhereWithAggregatesInput | WorkoutSessionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkoutSession"> | string
+    userId?: StringWithAggregatesFilter<"WorkoutSession"> | string
+    date?: DateTimeWithAggregatesFilter<"WorkoutSession"> | Date | string
+    name?: StringNullableWithAggregatesFilter<"WorkoutSession"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"WorkoutSession"> | string | null
+    durationMins?: IntNullableWithAggregatesFilter<"WorkoutSession"> | number | null
+    caloriesBurned?: IntNullableWithAggregatesFilter<"WorkoutSession"> | number | null
+    healthKitId?: StringNullableWithAggregatesFilter<"WorkoutSession"> | string | null
+    googleFitId?: StringNullableWithAggregatesFilter<"WorkoutSession"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WorkoutSession"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkoutSession"> | Date | string
+  }
+
+  export type CardioLogWhereInput = {
+    AND?: CardioLogWhereInput | CardioLogWhereInput[]
+    OR?: CardioLogWhereInput[]
+    NOT?: CardioLogWhereInput | CardioLogWhereInput[]
+    id?: StringFilter<"CardioLog"> | string
+    sessionId?: StringFilter<"CardioLog"> | string
+    userId?: StringFilter<"CardioLog"> | string
+    activity?: EnumCardioActivityFilter<"CardioLog"> | $Enums.CardioActivity
+    durationMins?: IntNullableFilter<"CardioLog"> | number | null
+    distanceMiles?: DecimalNullableFilter<"CardioLog"> | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: IntNullableFilter<"CardioLog"> | number | null
+    avgHeartRate?: IntNullableFilter<"CardioLog"> | number | null
+    maxHeartRate?: IntNullableFilter<"CardioLog"> | number | null
+    hrZone?: IntNullableFilter<"CardioLog"> | number | null
+    pace?: StringNullableFilter<"CardioLog"> | string | null
+    notes?: StringNullableFilter<"CardioLog"> | string | null
+    healthKitId?: StringNullableFilter<"CardioLog"> | string | null
+    createdAt?: DateTimeFilter<"CardioLog"> | Date | string
+    session?: XOR<WorkoutSessionScalarRelationFilter, WorkoutSessionWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CardioLogOrderByWithRelationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    activity?: SortOrder
+    durationMins?: SortOrderInput | SortOrder
+    distanceMiles?: SortOrderInput | SortOrder
+    caloriesBurned?: SortOrderInput | SortOrder
+    avgHeartRate?: SortOrderInput | SortOrder
+    maxHeartRate?: SortOrderInput | SortOrder
+    hrZone?: SortOrderInput | SortOrder
+    pace?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    healthKitId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    session?: WorkoutSessionOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type CardioLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CardioLogWhereInput | CardioLogWhereInput[]
+    OR?: CardioLogWhereInput[]
+    NOT?: CardioLogWhereInput | CardioLogWhereInput[]
+    sessionId?: StringFilter<"CardioLog"> | string
+    userId?: StringFilter<"CardioLog"> | string
+    activity?: EnumCardioActivityFilter<"CardioLog"> | $Enums.CardioActivity
+    durationMins?: IntNullableFilter<"CardioLog"> | number | null
+    distanceMiles?: DecimalNullableFilter<"CardioLog"> | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: IntNullableFilter<"CardioLog"> | number | null
+    avgHeartRate?: IntNullableFilter<"CardioLog"> | number | null
+    maxHeartRate?: IntNullableFilter<"CardioLog"> | number | null
+    hrZone?: IntNullableFilter<"CardioLog"> | number | null
+    pace?: StringNullableFilter<"CardioLog"> | string | null
+    notes?: StringNullableFilter<"CardioLog"> | string | null
+    healthKitId?: StringNullableFilter<"CardioLog"> | string | null
+    createdAt?: DateTimeFilter<"CardioLog"> | Date | string
+    session?: XOR<WorkoutSessionScalarRelationFilter, WorkoutSessionWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type CardioLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    activity?: SortOrder
+    durationMins?: SortOrderInput | SortOrder
+    distanceMiles?: SortOrderInput | SortOrder
+    caloriesBurned?: SortOrderInput | SortOrder
+    avgHeartRate?: SortOrderInput | SortOrder
+    maxHeartRate?: SortOrderInput | SortOrder
+    hrZone?: SortOrderInput | SortOrder
+    pace?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    healthKitId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: CardioLogCountOrderByAggregateInput
+    _avg?: CardioLogAvgOrderByAggregateInput
+    _max?: CardioLogMaxOrderByAggregateInput
+    _min?: CardioLogMinOrderByAggregateInput
+    _sum?: CardioLogSumOrderByAggregateInput
+  }
+
+  export type CardioLogScalarWhereWithAggregatesInput = {
+    AND?: CardioLogScalarWhereWithAggregatesInput | CardioLogScalarWhereWithAggregatesInput[]
+    OR?: CardioLogScalarWhereWithAggregatesInput[]
+    NOT?: CardioLogScalarWhereWithAggregatesInput | CardioLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CardioLog"> | string
+    sessionId?: StringWithAggregatesFilter<"CardioLog"> | string
+    userId?: StringWithAggregatesFilter<"CardioLog"> | string
+    activity?: EnumCardioActivityWithAggregatesFilter<"CardioLog"> | $Enums.CardioActivity
+    durationMins?: IntNullableWithAggregatesFilter<"CardioLog"> | number | null
+    distanceMiles?: DecimalNullableWithAggregatesFilter<"CardioLog"> | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: IntNullableWithAggregatesFilter<"CardioLog"> | number | null
+    avgHeartRate?: IntNullableWithAggregatesFilter<"CardioLog"> | number | null
+    maxHeartRate?: IntNullableWithAggregatesFilter<"CardioLog"> | number | null
+    hrZone?: IntNullableWithAggregatesFilter<"CardioLog"> | number | null
+    pace?: StringNullableWithAggregatesFilter<"CardioLog"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"CardioLog"> | string | null
+    healthKitId?: StringNullableWithAggregatesFilter<"CardioLog"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CardioLog"> | Date | string
+  }
+
+  export type ExerciseSetWhereInput = {
+    AND?: ExerciseSetWhereInput | ExerciseSetWhereInput[]
+    OR?: ExerciseSetWhereInput[]
+    NOT?: ExerciseSetWhereInput | ExerciseSetWhereInput[]
+    id?: StringFilter<"ExerciseSet"> | string
+    sessionId?: StringFilter<"ExerciseSet"> | string
+    userId?: StringFilter<"ExerciseSet"> | string
+    exerciseName?: StringFilter<"ExerciseSet"> | string
+    muscleGroup?: EnumMuscleGroupFilter<"ExerciseSet"> | $Enums.MuscleGroup
+    setNumber?: IntFilter<"ExerciseSet"> | number
+    reps?: IntNullableFilter<"ExerciseSet"> | number | null
+    weightLbs?: DecimalNullableFilter<"ExerciseSet"> | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: IntNullableFilter<"ExerciseSet"> | number | null
+    notes?: StringNullableFilter<"ExerciseSet"> | string | null
+    healthKitId?: StringNullableFilter<"ExerciseSet"> | string | null
+    createdAt?: DateTimeFilter<"ExerciseSet"> | Date | string
+    session?: XOR<WorkoutSessionScalarRelationFilter, WorkoutSessionWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ExerciseSetOrderByWithRelationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    exerciseName?: SortOrder
+    muscleGroup?: SortOrder
+    setNumber?: SortOrder
+    reps?: SortOrderInput | SortOrder
+    weightLbs?: SortOrderInput | SortOrder
+    durationSecs?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    healthKitId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    session?: WorkoutSessionOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ExerciseSetWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ExerciseSetWhereInput | ExerciseSetWhereInput[]
+    OR?: ExerciseSetWhereInput[]
+    NOT?: ExerciseSetWhereInput | ExerciseSetWhereInput[]
+    sessionId?: StringFilter<"ExerciseSet"> | string
+    userId?: StringFilter<"ExerciseSet"> | string
+    exerciseName?: StringFilter<"ExerciseSet"> | string
+    muscleGroup?: EnumMuscleGroupFilter<"ExerciseSet"> | $Enums.MuscleGroup
+    setNumber?: IntFilter<"ExerciseSet"> | number
+    reps?: IntNullableFilter<"ExerciseSet"> | number | null
+    weightLbs?: DecimalNullableFilter<"ExerciseSet"> | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: IntNullableFilter<"ExerciseSet"> | number | null
+    notes?: StringNullableFilter<"ExerciseSet"> | string | null
+    healthKitId?: StringNullableFilter<"ExerciseSet"> | string | null
+    createdAt?: DateTimeFilter<"ExerciseSet"> | Date | string
+    session?: XOR<WorkoutSessionScalarRelationFilter, WorkoutSessionWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ExerciseSetOrderByWithAggregationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    exerciseName?: SortOrder
+    muscleGroup?: SortOrder
+    setNumber?: SortOrder
+    reps?: SortOrderInput | SortOrder
+    weightLbs?: SortOrderInput | SortOrder
+    durationSecs?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    healthKitId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ExerciseSetCountOrderByAggregateInput
+    _avg?: ExerciseSetAvgOrderByAggregateInput
+    _max?: ExerciseSetMaxOrderByAggregateInput
+    _min?: ExerciseSetMinOrderByAggregateInput
+    _sum?: ExerciseSetSumOrderByAggregateInput
+  }
+
+  export type ExerciseSetScalarWhereWithAggregatesInput = {
+    AND?: ExerciseSetScalarWhereWithAggregatesInput | ExerciseSetScalarWhereWithAggregatesInput[]
+    OR?: ExerciseSetScalarWhereWithAggregatesInput[]
+    NOT?: ExerciseSetScalarWhereWithAggregatesInput | ExerciseSetScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ExerciseSet"> | string
+    sessionId?: StringWithAggregatesFilter<"ExerciseSet"> | string
+    userId?: StringWithAggregatesFilter<"ExerciseSet"> | string
+    exerciseName?: StringWithAggregatesFilter<"ExerciseSet"> | string
+    muscleGroup?: EnumMuscleGroupWithAggregatesFilter<"ExerciseSet"> | $Enums.MuscleGroup
+    setNumber?: IntWithAggregatesFilter<"ExerciseSet"> | number
+    reps?: IntNullableWithAggregatesFilter<"ExerciseSet"> | number | null
+    weightLbs?: DecimalNullableWithAggregatesFilter<"ExerciseSet"> | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: IntNullableWithAggregatesFilter<"ExerciseSet"> | number | null
+    notes?: StringNullableWithAggregatesFilter<"ExerciseSet"> | string | null
+    healthKitId?: StringNullableWithAggregatesFilter<"ExerciseSet"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ExerciseSet"> | Date | string
+  }
+
   export type MeasurementLogWhereInput = {
     AND?: MeasurementLogWhereInput | MeasurementLogWhereInput[]
     OR?: MeasurementLogWhereInput[]
@@ -25639,6 +30164,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -25663,6 +30191,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -25687,6 +30218,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -25711,6 +30245,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -27498,6 +32035,331 @@ export namespace Prisma {
     loggedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WorkoutSessionCreateInput = {
+    id?: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutWorkoutSessionsInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutSessionInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutSessionInput
+  }
+
+  export type WorkoutSessionUncheckedCreateInput = {
+    id?: string
+    userId: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutSessionInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type WorkoutSessionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutWorkoutSessionsNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutSessionNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutSessionNestedInput
+  }
+
+  export type WorkoutSessionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutSessionNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type WorkoutSessionCreateManyInput = {
+    id?: string
+    userId: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkoutSessionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkoutSessionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CardioLogCreateInput = {
+    id?: string
+    activity: $Enums.CardioActivity
+    durationMins?: number | null
+    distanceMiles?: Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: number | null
+    avgHeartRate?: number | null
+    maxHeartRate?: number | null
+    hrZone?: number | null
+    pace?: string | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+    session: WorkoutSessionCreateNestedOneWithoutCardioLogsInput
+    user: UserCreateNestedOneWithoutCardioLogsInput
+  }
+
+  export type CardioLogUncheckedCreateInput = {
+    id?: string
+    sessionId: string
+    userId: string
+    activity: $Enums.CardioActivity
+    durationMins?: number | null
+    distanceMiles?: Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: number | null
+    avgHeartRate?: number | null
+    maxHeartRate?: number | null
+    hrZone?: number | null
+    pace?: string | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CardioLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: WorkoutSessionUpdateOneRequiredWithoutCardioLogsNestedInput
+    user?: UserUpdateOneRequiredWithoutCardioLogsNestedInput
+  }
+
+  export type CardioLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CardioLogCreateManyInput = {
+    id?: string
+    sessionId: string
+    userId: string
+    activity: $Enums.CardioActivity
+    durationMins?: number | null
+    distanceMiles?: Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: number | null
+    avgHeartRate?: number | null
+    maxHeartRate?: number | null
+    hrZone?: number | null
+    pace?: string | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CardioLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CardioLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExerciseSetCreateInput = {
+    id?: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps?: number | null
+    weightLbs?: Decimal | DecimalJsLike | number | string | null
+    durationSecs?: number | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+    session: WorkoutSessionCreateNestedOneWithoutExerciseSetsInput
+    user: UserCreateNestedOneWithoutExerciseSetsInput
+  }
+
+  export type ExerciseSetUncheckedCreateInput = {
+    id?: string
+    sessionId: string
+    userId: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps?: number | null
+    weightLbs?: Decimal | DecimalJsLike | number | string | null
+    durationSecs?: number | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ExerciseSetUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: WorkoutSessionUpdateOneRequiredWithoutExerciseSetsNestedInput
+    user?: UserUpdateOneRequiredWithoutExerciseSetsNestedInput
+  }
+
+  export type ExerciseSetUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExerciseSetCreateManyInput = {
+    id?: string
+    sessionId: string
+    userId: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps?: number | null
+    weightLbs?: Decimal | DecimalJsLike | number | string | null
+    durationSecs?: number | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ExerciseSetUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExerciseSetUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type MeasurementLogCreateInput = {
     id?: string
     date: Date | string
@@ -27765,6 +32627,24 @@ export namespace Prisma {
     none?: MeasurementLogWhereInput
   }
 
+  export type WorkoutSessionListRelationFilter = {
+    every?: WorkoutSessionWhereInput
+    some?: WorkoutSessionWhereInput
+    none?: WorkoutSessionWhereInput
+  }
+
+  export type ExerciseSetListRelationFilter = {
+    every?: ExerciseSetWhereInput
+    some?: ExerciseSetWhereInput
+    none?: ExerciseSetWhereInput
+  }
+
+  export type CardioLogListRelationFilter = {
+    every?: CardioLogWhereInput
+    some?: CardioLogWhereInput
+    none?: CardioLogWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -27811,6 +32691,18 @@ export namespace Prisma {
   }
 
   export type MeasurementLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WorkoutSessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ExerciseSetOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CardioLogOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -29181,6 +34073,225 @@ export namespace Prisma {
     cups?: SortOrder
   }
 
+  export type WorkoutSessionCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    name?: SortOrder
+    notes?: SortOrder
+    durationMins?: SortOrder
+    caloriesBurned?: SortOrder
+    healthKitId?: SortOrder
+    googleFitId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkoutSessionAvgOrderByAggregateInput = {
+    durationMins?: SortOrder
+    caloriesBurned?: SortOrder
+  }
+
+  export type WorkoutSessionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    name?: SortOrder
+    notes?: SortOrder
+    durationMins?: SortOrder
+    caloriesBurned?: SortOrder
+    healthKitId?: SortOrder
+    googleFitId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkoutSessionMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    name?: SortOrder
+    notes?: SortOrder
+    durationMins?: SortOrder
+    caloriesBurned?: SortOrder
+    healthKitId?: SortOrder
+    googleFitId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkoutSessionSumOrderByAggregateInput = {
+    durationMins?: SortOrder
+    caloriesBurned?: SortOrder
+  }
+
+  export type EnumCardioActivityFilter<$PrismaModel = never> = {
+    equals?: $Enums.CardioActivity | EnumCardioActivityFieldRefInput<$PrismaModel>
+    in?: $Enums.CardioActivity[] | ListEnumCardioActivityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CardioActivity[] | ListEnumCardioActivityFieldRefInput<$PrismaModel>
+    not?: NestedEnumCardioActivityFilter<$PrismaModel> | $Enums.CardioActivity
+  }
+
+  export type WorkoutSessionScalarRelationFilter = {
+    is?: WorkoutSessionWhereInput
+    isNot?: WorkoutSessionWhereInput
+  }
+
+  export type CardioLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    activity?: SortOrder
+    durationMins?: SortOrder
+    distanceMiles?: SortOrder
+    caloriesBurned?: SortOrder
+    avgHeartRate?: SortOrder
+    maxHeartRate?: SortOrder
+    hrZone?: SortOrder
+    pace?: SortOrder
+    notes?: SortOrder
+    healthKitId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CardioLogAvgOrderByAggregateInput = {
+    durationMins?: SortOrder
+    distanceMiles?: SortOrder
+    caloriesBurned?: SortOrder
+    avgHeartRate?: SortOrder
+    maxHeartRate?: SortOrder
+    hrZone?: SortOrder
+  }
+
+  export type CardioLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    activity?: SortOrder
+    durationMins?: SortOrder
+    distanceMiles?: SortOrder
+    caloriesBurned?: SortOrder
+    avgHeartRate?: SortOrder
+    maxHeartRate?: SortOrder
+    hrZone?: SortOrder
+    pace?: SortOrder
+    notes?: SortOrder
+    healthKitId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CardioLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    activity?: SortOrder
+    durationMins?: SortOrder
+    distanceMiles?: SortOrder
+    caloriesBurned?: SortOrder
+    avgHeartRate?: SortOrder
+    maxHeartRate?: SortOrder
+    hrZone?: SortOrder
+    pace?: SortOrder
+    notes?: SortOrder
+    healthKitId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CardioLogSumOrderByAggregateInput = {
+    durationMins?: SortOrder
+    distanceMiles?: SortOrder
+    caloriesBurned?: SortOrder
+    avgHeartRate?: SortOrder
+    maxHeartRate?: SortOrder
+    hrZone?: SortOrder
+  }
+
+  export type EnumCardioActivityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CardioActivity | EnumCardioActivityFieldRefInput<$PrismaModel>
+    in?: $Enums.CardioActivity[] | ListEnumCardioActivityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CardioActivity[] | ListEnumCardioActivityFieldRefInput<$PrismaModel>
+    not?: NestedEnumCardioActivityWithAggregatesFilter<$PrismaModel> | $Enums.CardioActivity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCardioActivityFilter<$PrismaModel>
+    _max?: NestedEnumCardioActivityFilter<$PrismaModel>
+  }
+
+  export type EnumMuscleGroupFilter<$PrismaModel = never> = {
+    equals?: $Enums.MuscleGroup | EnumMuscleGroupFieldRefInput<$PrismaModel>
+    in?: $Enums.MuscleGroup[] | ListEnumMuscleGroupFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MuscleGroup[] | ListEnumMuscleGroupFieldRefInput<$PrismaModel>
+    not?: NestedEnumMuscleGroupFilter<$PrismaModel> | $Enums.MuscleGroup
+  }
+
+  export type ExerciseSetCountOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    exerciseName?: SortOrder
+    muscleGroup?: SortOrder
+    setNumber?: SortOrder
+    reps?: SortOrder
+    weightLbs?: SortOrder
+    durationSecs?: SortOrder
+    notes?: SortOrder
+    healthKitId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ExerciseSetAvgOrderByAggregateInput = {
+    setNumber?: SortOrder
+    reps?: SortOrder
+    weightLbs?: SortOrder
+    durationSecs?: SortOrder
+  }
+
+  export type ExerciseSetMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    exerciseName?: SortOrder
+    muscleGroup?: SortOrder
+    setNumber?: SortOrder
+    reps?: SortOrder
+    weightLbs?: SortOrder
+    durationSecs?: SortOrder
+    notes?: SortOrder
+    healthKitId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ExerciseSetMinOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    exerciseName?: SortOrder
+    muscleGroup?: SortOrder
+    setNumber?: SortOrder
+    reps?: SortOrder
+    weightLbs?: SortOrder
+    durationSecs?: SortOrder
+    notes?: SortOrder
+    healthKitId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ExerciseSetSumOrderByAggregateInput = {
+    setNumber?: SortOrder
+    reps?: SortOrder
+    weightLbs?: SortOrder
+    durationSecs?: SortOrder
+  }
+
+  export type EnumMuscleGroupWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MuscleGroup | EnumMuscleGroupFieldRefInput<$PrismaModel>
+    in?: $Enums.MuscleGroup[] | ListEnumMuscleGroupFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MuscleGroup[] | ListEnumMuscleGroupFieldRefInput<$PrismaModel>
+    not?: NestedEnumMuscleGroupWithAggregatesFilter<$PrismaModel> | $Enums.MuscleGroup
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMuscleGroupFilter<$PrismaModel>
+    _max?: NestedEnumMuscleGroupFilter<$PrismaModel>
+  }
+
   export type MeasurementLogUserIdDateCompoundUniqueInput = {
     userId: string
     date: Date | string
@@ -29365,6 +34476,27 @@ export namespace Prisma {
     connect?: MeasurementLogWhereUniqueInput | MeasurementLogWhereUniqueInput[]
   }
 
+  export type WorkoutSessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<WorkoutSessionCreateWithoutUserInput, WorkoutSessionUncheckedCreateWithoutUserInput> | WorkoutSessionCreateWithoutUserInput[] | WorkoutSessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WorkoutSessionCreateOrConnectWithoutUserInput | WorkoutSessionCreateOrConnectWithoutUserInput[]
+    createMany?: WorkoutSessionCreateManyUserInputEnvelope
+    connect?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+  }
+
+  export type ExerciseSetCreateNestedManyWithoutUserInput = {
+    create?: XOR<ExerciseSetCreateWithoutUserInput, ExerciseSetUncheckedCreateWithoutUserInput> | ExerciseSetCreateWithoutUserInput[] | ExerciseSetUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExerciseSetCreateOrConnectWithoutUserInput | ExerciseSetCreateOrConnectWithoutUserInput[]
+    createMany?: ExerciseSetCreateManyUserInputEnvelope
+    connect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+  }
+
+  export type CardioLogCreateNestedManyWithoutUserInput = {
+    create?: XOR<CardioLogCreateWithoutUserInput, CardioLogUncheckedCreateWithoutUserInput> | CardioLogCreateWithoutUserInput[] | CardioLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CardioLogCreateOrConnectWithoutUserInput | CardioLogCreateOrConnectWithoutUserInput[]
+    createMany?: CardioLogCreateManyUserInputEnvelope
+    connect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -29452,6 +34584,27 @@ export namespace Prisma {
     connectOrCreate?: MeasurementLogCreateOrConnectWithoutUserInput | MeasurementLogCreateOrConnectWithoutUserInput[]
     createMany?: MeasurementLogCreateManyUserInputEnvelope
     connect?: MeasurementLogWhereUniqueInput | MeasurementLogWhereUniqueInput[]
+  }
+
+  export type WorkoutSessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<WorkoutSessionCreateWithoutUserInput, WorkoutSessionUncheckedCreateWithoutUserInput> | WorkoutSessionCreateWithoutUserInput[] | WorkoutSessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WorkoutSessionCreateOrConnectWithoutUserInput | WorkoutSessionCreateOrConnectWithoutUserInput[]
+    createMany?: WorkoutSessionCreateManyUserInputEnvelope
+    connect?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+  }
+
+  export type ExerciseSetUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ExerciseSetCreateWithoutUserInput, ExerciseSetUncheckedCreateWithoutUserInput> | ExerciseSetCreateWithoutUserInput[] | ExerciseSetUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExerciseSetCreateOrConnectWithoutUserInput | ExerciseSetCreateOrConnectWithoutUserInput[]
+    createMany?: ExerciseSetCreateManyUserInputEnvelope
+    connect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+  }
+
+  export type CardioLogUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CardioLogCreateWithoutUserInput, CardioLogUncheckedCreateWithoutUserInput> | CardioLogCreateWithoutUserInput[] | CardioLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CardioLogCreateOrConnectWithoutUserInput | CardioLogCreateOrConnectWithoutUserInput[]
+    createMany?: CardioLogCreateManyUserInputEnvelope
+    connect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -29644,6 +34797,48 @@ export namespace Prisma {
     deleteMany?: MeasurementLogScalarWhereInput | MeasurementLogScalarWhereInput[]
   }
 
+  export type WorkoutSessionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WorkoutSessionCreateWithoutUserInput, WorkoutSessionUncheckedCreateWithoutUserInput> | WorkoutSessionCreateWithoutUserInput[] | WorkoutSessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WorkoutSessionCreateOrConnectWithoutUserInput | WorkoutSessionCreateOrConnectWithoutUserInput[]
+    upsert?: WorkoutSessionUpsertWithWhereUniqueWithoutUserInput | WorkoutSessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WorkoutSessionCreateManyUserInputEnvelope
+    set?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+    disconnect?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+    delete?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+    connect?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+    update?: WorkoutSessionUpdateWithWhereUniqueWithoutUserInput | WorkoutSessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WorkoutSessionUpdateManyWithWhereWithoutUserInput | WorkoutSessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WorkoutSessionScalarWhereInput | WorkoutSessionScalarWhereInput[]
+  }
+
+  export type ExerciseSetUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ExerciseSetCreateWithoutUserInput, ExerciseSetUncheckedCreateWithoutUserInput> | ExerciseSetCreateWithoutUserInput[] | ExerciseSetUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExerciseSetCreateOrConnectWithoutUserInput | ExerciseSetCreateOrConnectWithoutUserInput[]
+    upsert?: ExerciseSetUpsertWithWhereUniqueWithoutUserInput | ExerciseSetUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ExerciseSetCreateManyUserInputEnvelope
+    set?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    disconnect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    delete?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    connect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    update?: ExerciseSetUpdateWithWhereUniqueWithoutUserInput | ExerciseSetUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ExerciseSetUpdateManyWithWhereWithoutUserInput | ExerciseSetUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ExerciseSetScalarWhereInput | ExerciseSetScalarWhereInput[]
+  }
+
+  export type CardioLogUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CardioLogCreateWithoutUserInput, CardioLogUncheckedCreateWithoutUserInput> | CardioLogCreateWithoutUserInput[] | CardioLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CardioLogCreateOrConnectWithoutUserInput | CardioLogCreateOrConnectWithoutUserInput[]
+    upsert?: CardioLogUpsertWithWhereUniqueWithoutUserInput | CardioLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CardioLogCreateManyUserInputEnvelope
+    set?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    disconnect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    delete?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    connect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    update?: CardioLogUpdateWithWhereUniqueWithoutUserInput | CardioLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CardioLogUpdateManyWithWhereWithoutUserInput | CardioLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CardioLogScalarWhereInput | CardioLogScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -29816,6 +35011,48 @@ export namespace Prisma {
     update?: MeasurementLogUpdateWithWhereUniqueWithoutUserInput | MeasurementLogUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: MeasurementLogUpdateManyWithWhereWithoutUserInput | MeasurementLogUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: MeasurementLogScalarWhereInput | MeasurementLogScalarWhereInput[]
+  }
+
+  export type WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WorkoutSessionCreateWithoutUserInput, WorkoutSessionUncheckedCreateWithoutUserInput> | WorkoutSessionCreateWithoutUserInput[] | WorkoutSessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WorkoutSessionCreateOrConnectWithoutUserInput | WorkoutSessionCreateOrConnectWithoutUserInput[]
+    upsert?: WorkoutSessionUpsertWithWhereUniqueWithoutUserInput | WorkoutSessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WorkoutSessionCreateManyUserInputEnvelope
+    set?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+    disconnect?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+    delete?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+    connect?: WorkoutSessionWhereUniqueInput | WorkoutSessionWhereUniqueInput[]
+    update?: WorkoutSessionUpdateWithWhereUniqueWithoutUserInput | WorkoutSessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WorkoutSessionUpdateManyWithWhereWithoutUserInput | WorkoutSessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WorkoutSessionScalarWhereInput | WorkoutSessionScalarWhereInput[]
+  }
+
+  export type ExerciseSetUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ExerciseSetCreateWithoutUserInput, ExerciseSetUncheckedCreateWithoutUserInput> | ExerciseSetCreateWithoutUserInput[] | ExerciseSetUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExerciseSetCreateOrConnectWithoutUserInput | ExerciseSetCreateOrConnectWithoutUserInput[]
+    upsert?: ExerciseSetUpsertWithWhereUniqueWithoutUserInput | ExerciseSetUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ExerciseSetCreateManyUserInputEnvelope
+    set?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    disconnect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    delete?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    connect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    update?: ExerciseSetUpdateWithWhereUniqueWithoutUserInput | ExerciseSetUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ExerciseSetUpdateManyWithWhereWithoutUserInput | ExerciseSetUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ExerciseSetScalarWhereInput | ExerciseSetScalarWhereInput[]
+  }
+
+  export type CardioLogUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CardioLogCreateWithoutUserInput, CardioLogUncheckedCreateWithoutUserInput> | CardioLogCreateWithoutUserInput[] | CardioLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CardioLogCreateOrConnectWithoutUserInput | CardioLogCreateOrConnectWithoutUserInput[]
+    upsert?: CardioLogUpsertWithWhereUniqueWithoutUserInput | CardioLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CardioLogCreateManyUserInputEnvelope
+    set?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    disconnect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    delete?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    connect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    update?: CardioLogUpdateWithWhereUniqueWithoutUserInput | CardioLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CardioLogUpdateManyWithWhereWithoutUserInput | CardioLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CardioLogScalarWhereInput | CardioLogScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutAccountsInput = {
@@ -30042,6 +35279,168 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutWaterLogsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWaterLogsInput, UserUpdateWithoutWaterLogsInput>, UserUncheckedUpdateWithoutWaterLogsInput>
+  }
+
+  export type UserCreateNestedOneWithoutWorkoutSessionsInput = {
+    create?: XOR<UserCreateWithoutWorkoutSessionsInput, UserUncheckedCreateWithoutWorkoutSessionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWorkoutSessionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CardioLogCreateNestedManyWithoutSessionInput = {
+    create?: XOR<CardioLogCreateWithoutSessionInput, CardioLogUncheckedCreateWithoutSessionInput> | CardioLogCreateWithoutSessionInput[] | CardioLogUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: CardioLogCreateOrConnectWithoutSessionInput | CardioLogCreateOrConnectWithoutSessionInput[]
+    createMany?: CardioLogCreateManySessionInputEnvelope
+    connect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+  }
+
+  export type ExerciseSetCreateNestedManyWithoutSessionInput = {
+    create?: XOR<ExerciseSetCreateWithoutSessionInput, ExerciseSetUncheckedCreateWithoutSessionInput> | ExerciseSetCreateWithoutSessionInput[] | ExerciseSetUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: ExerciseSetCreateOrConnectWithoutSessionInput | ExerciseSetCreateOrConnectWithoutSessionInput[]
+    createMany?: ExerciseSetCreateManySessionInputEnvelope
+    connect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+  }
+
+  export type CardioLogUncheckedCreateNestedManyWithoutSessionInput = {
+    create?: XOR<CardioLogCreateWithoutSessionInput, CardioLogUncheckedCreateWithoutSessionInput> | CardioLogCreateWithoutSessionInput[] | CardioLogUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: CardioLogCreateOrConnectWithoutSessionInput | CardioLogCreateOrConnectWithoutSessionInput[]
+    createMany?: CardioLogCreateManySessionInputEnvelope
+    connect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+  }
+
+  export type ExerciseSetUncheckedCreateNestedManyWithoutSessionInput = {
+    create?: XOR<ExerciseSetCreateWithoutSessionInput, ExerciseSetUncheckedCreateWithoutSessionInput> | ExerciseSetCreateWithoutSessionInput[] | ExerciseSetUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: ExerciseSetCreateOrConnectWithoutSessionInput | ExerciseSetCreateOrConnectWithoutSessionInput[]
+    createMany?: ExerciseSetCreateManySessionInputEnvelope
+    connect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutWorkoutSessionsNestedInput = {
+    create?: XOR<UserCreateWithoutWorkoutSessionsInput, UserUncheckedCreateWithoutWorkoutSessionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWorkoutSessionsInput
+    upsert?: UserUpsertWithoutWorkoutSessionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWorkoutSessionsInput, UserUpdateWithoutWorkoutSessionsInput>, UserUncheckedUpdateWithoutWorkoutSessionsInput>
+  }
+
+  export type CardioLogUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<CardioLogCreateWithoutSessionInput, CardioLogUncheckedCreateWithoutSessionInput> | CardioLogCreateWithoutSessionInput[] | CardioLogUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: CardioLogCreateOrConnectWithoutSessionInput | CardioLogCreateOrConnectWithoutSessionInput[]
+    upsert?: CardioLogUpsertWithWhereUniqueWithoutSessionInput | CardioLogUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: CardioLogCreateManySessionInputEnvelope
+    set?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    disconnect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    delete?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    connect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    update?: CardioLogUpdateWithWhereUniqueWithoutSessionInput | CardioLogUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: CardioLogUpdateManyWithWhereWithoutSessionInput | CardioLogUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: CardioLogScalarWhereInput | CardioLogScalarWhereInput[]
+  }
+
+  export type ExerciseSetUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<ExerciseSetCreateWithoutSessionInput, ExerciseSetUncheckedCreateWithoutSessionInput> | ExerciseSetCreateWithoutSessionInput[] | ExerciseSetUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: ExerciseSetCreateOrConnectWithoutSessionInput | ExerciseSetCreateOrConnectWithoutSessionInput[]
+    upsert?: ExerciseSetUpsertWithWhereUniqueWithoutSessionInput | ExerciseSetUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: ExerciseSetCreateManySessionInputEnvelope
+    set?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    disconnect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    delete?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    connect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    update?: ExerciseSetUpdateWithWhereUniqueWithoutSessionInput | ExerciseSetUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: ExerciseSetUpdateManyWithWhereWithoutSessionInput | ExerciseSetUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: ExerciseSetScalarWhereInput | ExerciseSetScalarWhereInput[]
+  }
+
+  export type CardioLogUncheckedUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<CardioLogCreateWithoutSessionInput, CardioLogUncheckedCreateWithoutSessionInput> | CardioLogCreateWithoutSessionInput[] | CardioLogUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: CardioLogCreateOrConnectWithoutSessionInput | CardioLogCreateOrConnectWithoutSessionInput[]
+    upsert?: CardioLogUpsertWithWhereUniqueWithoutSessionInput | CardioLogUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: CardioLogCreateManySessionInputEnvelope
+    set?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    disconnect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    delete?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    connect?: CardioLogWhereUniqueInput | CardioLogWhereUniqueInput[]
+    update?: CardioLogUpdateWithWhereUniqueWithoutSessionInput | CardioLogUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: CardioLogUpdateManyWithWhereWithoutSessionInput | CardioLogUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: CardioLogScalarWhereInput | CardioLogScalarWhereInput[]
+  }
+
+  export type ExerciseSetUncheckedUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<ExerciseSetCreateWithoutSessionInput, ExerciseSetUncheckedCreateWithoutSessionInput> | ExerciseSetCreateWithoutSessionInput[] | ExerciseSetUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: ExerciseSetCreateOrConnectWithoutSessionInput | ExerciseSetCreateOrConnectWithoutSessionInput[]
+    upsert?: ExerciseSetUpsertWithWhereUniqueWithoutSessionInput | ExerciseSetUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: ExerciseSetCreateManySessionInputEnvelope
+    set?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    disconnect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    delete?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    connect?: ExerciseSetWhereUniqueInput | ExerciseSetWhereUniqueInput[]
+    update?: ExerciseSetUpdateWithWhereUniqueWithoutSessionInput | ExerciseSetUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: ExerciseSetUpdateManyWithWhereWithoutSessionInput | ExerciseSetUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: ExerciseSetScalarWhereInput | ExerciseSetScalarWhereInput[]
+  }
+
+  export type WorkoutSessionCreateNestedOneWithoutCardioLogsInput = {
+    create?: XOR<WorkoutSessionCreateWithoutCardioLogsInput, WorkoutSessionUncheckedCreateWithoutCardioLogsInput>
+    connectOrCreate?: WorkoutSessionCreateOrConnectWithoutCardioLogsInput
+    connect?: WorkoutSessionWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCardioLogsInput = {
+    create?: XOR<UserCreateWithoutCardioLogsInput, UserUncheckedCreateWithoutCardioLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCardioLogsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumCardioActivityFieldUpdateOperationsInput = {
+    set?: $Enums.CardioActivity
+  }
+
+  export type WorkoutSessionUpdateOneRequiredWithoutCardioLogsNestedInput = {
+    create?: XOR<WorkoutSessionCreateWithoutCardioLogsInput, WorkoutSessionUncheckedCreateWithoutCardioLogsInput>
+    connectOrCreate?: WorkoutSessionCreateOrConnectWithoutCardioLogsInput
+    upsert?: WorkoutSessionUpsertWithoutCardioLogsInput
+    connect?: WorkoutSessionWhereUniqueInput
+    update?: XOR<XOR<WorkoutSessionUpdateToOneWithWhereWithoutCardioLogsInput, WorkoutSessionUpdateWithoutCardioLogsInput>, WorkoutSessionUncheckedUpdateWithoutCardioLogsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCardioLogsNestedInput = {
+    create?: XOR<UserCreateWithoutCardioLogsInput, UserUncheckedCreateWithoutCardioLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCardioLogsInput
+    upsert?: UserUpsertWithoutCardioLogsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCardioLogsInput, UserUpdateWithoutCardioLogsInput>, UserUncheckedUpdateWithoutCardioLogsInput>
+  }
+
+  export type WorkoutSessionCreateNestedOneWithoutExerciseSetsInput = {
+    create?: XOR<WorkoutSessionCreateWithoutExerciseSetsInput, WorkoutSessionUncheckedCreateWithoutExerciseSetsInput>
+    connectOrCreate?: WorkoutSessionCreateOrConnectWithoutExerciseSetsInput
+    connect?: WorkoutSessionWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutExerciseSetsInput = {
+    create?: XOR<UserCreateWithoutExerciseSetsInput, UserUncheckedCreateWithoutExerciseSetsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExerciseSetsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumMuscleGroupFieldUpdateOperationsInput = {
+    set?: $Enums.MuscleGroup
+  }
+
+  export type WorkoutSessionUpdateOneRequiredWithoutExerciseSetsNestedInput = {
+    create?: XOR<WorkoutSessionCreateWithoutExerciseSetsInput, WorkoutSessionUncheckedCreateWithoutExerciseSetsInput>
+    connectOrCreate?: WorkoutSessionCreateOrConnectWithoutExerciseSetsInput
+    upsert?: WorkoutSessionUpsertWithoutExerciseSetsInput
+    connect?: WorkoutSessionWhereUniqueInput
+    update?: XOR<XOR<WorkoutSessionUpdateToOneWithWhereWithoutExerciseSetsInput, WorkoutSessionUpdateWithoutExerciseSetsInput>, WorkoutSessionUncheckedUpdateWithoutExerciseSetsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutExerciseSetsNestedInput = {
+    create?: XOR<UserCreateWithoutExerciseSetsInput, UserUncheckedCreateWithoutExerciseSetsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExerciseSetsInput
+    upsert?: UserUpsertWithoutExerciseSetsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutExerciseSetsInput, UserUpdateWithoutExerciseSetsInput>, UserUncheckedUpdateWithoutExerciseSetsInput>
   }
 
   export type UserCreateNestedOneWithoutMeasurementLogsInput = {
@@ -30351,6 +35750,40 @@ export namespace Prisma {
     _sum?: NestedDecimalFilter<$PrismaModel>
     _min?: NestedDecimalFilter<$PrismaModel>
     _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCardioActivityFilter<$PrismaModel = never> = {
+    equals?: $Enums.CardioActivity | EnumCardioActivityFieldRefInput<$PrismaModel>
+    in?: $Enums.CardioActivity[] | ListEnumCardioActivityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CardioActivity[] | ListEnumCardioActivityFieldRefInput<$PrismaModel>
+    not?: NestedEnumCardioActivityFilter<$PrismaModel> | $Enums.CardioActivity
+  }
+
+  export type NestedEnumCardioActivityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CardioActivity | EnumCardioActivityFieldRefInput<$PrismaModel>
+    in?: $Enums.CardioActivity[] | ListEnumCardioActivityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CardioActivity[] | ListEnumCardioActivityFieldRefInput<$PrismaModel>
+    not?: NestedEnumCardioActivityWithAggregatesFilter<$PrismaModel> | $Enums.CardioActivity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCardioActivityFilter<$PrismaModel>
+    _max?: NestedEnumCardioActivityFilter<$PrismaModel>
+  }
+
+  export type NestedEnumMuscleGroupFilter<$PrismaModel = never> = {
+    equals?: $Enums.MuscleGroup | EnumMuscleGroupFieldRefInput<$PrismaModel>
+    in?: $Enums.MuscleGroup[] | ListEnumMuscleGroupFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MuscleGroup[] | ListEnumMuscleGroupFieldRefInput<$PrismaModel>
+    not?: NestedEnumMuscleGroupFilter<$PrismaModel> | $Enums.MuscleGroup
+  }
+
+  export type NestedEnumMuscleGroupWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MuscleGroup | EnumMuscleGroupFieldRefInput<$PrismaModel>
+    in?: $Enums.MuscleGroup[] | ListEnumMuscleGroupFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MuscleGroup[] | ListEnumMuscleGroupFieldRefInput<$PrismaModel>
+    not?: NestedEnumMuscleGroupWithAggregatesFilter<$PrismaModel> | $Enums.MuscleGroup
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMuscleGroupFilter<$PrismaModel>
+    _max?: NestedEnumMuscleGroupFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -30881,6 +36314,126 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type WorkoutSessionCreateWithoutUserInput = {
+    id?: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cardioLogs?: CardioLogCreateNestedManyWithoutSessionInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutSessionInput
+  }
+
+  export type WorkoutSessionUncheckedCreateWithoutUserInput = {
+    id?: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutSessionInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type WorkoutSessionCreateOrConnectWithoutUserInput = {
+    where: WorkoutSessionWhereUniqueInput
+    create: XOR<WorkoutSessionCreateWithoutUserInput, WorkoutSessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type WorkoutSessionCreateManyUserInputEnvelope = {
+    data: WorkoutSessionCreateManyUserInput | WorkoutSessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExerciseSetCreateWithoutUserInput = {
+    id?: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps?: number | null
+    weightLbs?: Decimal | DecimalJsLike | number | string | null
+    durationSecs?: number | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+    session: WorkoutSessionCreateNestedOneWithoutExerciseSetsInput
+  }
+
+  export type ExerciseSetUncheckedCreateWithoutUserInput = {
+    id?: string
+    sessionId: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps?: number | null
+    weightLbs?: Decimal | DecimalJsLike | number | string | null
+    durationSecs?: number | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ExerciseSetCreateOrConnectWithoutUserInput = {
+    where: ExerciseSetWhereUniqueInput
+    create: XOR<ExerciseSetCreateWithoutUserInput, ExerciseSetUncheckedCreateWithoutUserInput>
+  }
+
+  export type ExerciseSetCreateManyUserInputEnvelope = {
+    data: ExerciseSetCreateManyUserInput | ExerciseSetCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CardioLogCreateWithoutUserInput = {
+    id?: string
+    activity: $Enums.CardioActivity
+    durationMins?: number | null
+    distanceMiles?: Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: number | null
+    avgHeartRate?: number | null
+    maxHeartRate?: number | null
+    hrZone?: number | null
+    pace?: string | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+    session: WorkoutSessionCreateNestedOneWithoutCardioLogsInput
+  }
+
+  export type CardioLogUncheckedCreateWithoutUserInput = {
+    id?: string
+    sessionId: string
+    activity: $Enums.CardioActivity
+    durationMins?: number | null
+    distanceMiles?: Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: number | null
+    avgHeartRate?: number | null
+    maxHeartRate?: number | null
+    hrZone?: number | null
+    pace?: string | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CardioLogCreateOrConnectWithoutUserInput = {
+    where: CardioLogWhereUniqueInput
+    create: XOR<CardioLogCreateWithoutUserInput, CardioLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type CardioLogCreateManyUserInputEnvelope = {
+    data: CardioLogCreateManyUserInput | CardioLogCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
     where: AccountWhereUniqueInput
     update: XOR<AccountUpdateWithoutUserInput, AccountUncheckedUpdateWithoutUserInput>
@@ -31361,6 +36914,109 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"MeasurementLog"> | Date | string
   }
 
+  export type WorkoutSessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: WorkoutSessionWhereUniqueInput
+    update: XOR<WorkoutSessionUpdateWithoutUserInput, WorkoutSessionUncheckedUpdateWithoutUserInput>
+    create: XOR<WorkoutSessionCreateWithoutUserInput, WorkoutSessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type WorkoutSessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: WorkoutSessionWhereUniqueInput
+    data: XOR<WorkoutSessionUpdateWithoutUserInput, WorkoutSessionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type WorkoutSessionUpdateManyWithWhereWithoutUserInput = {
+    where: WorkoutSessionScalarWhereInput
+    data: XOR<WorkoutSessionUpdateManyMutationInput, WorkoutSessionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type WorkoutSessionScalarWhereInput = {
+    AND?: WorkoutSessionScalarWhereInput | WorkoutSessionScalarWhereInput[]
+    OR?: WorkoutSessionScalarWhereInput[]
+    NOT?: WorkoutSessionScalarWhereInput | WorkoutSessionScalarWhereInput[]
+    id?: StringFilter<"WorkoutSession"> | string
+    userId?: StringFilter<"WorkoutSession"> | string
+    date?: DateTimeFilter<"WorkoutSession"> | Date | string
+    name?: StringNullableFilter<"WorkoutSession"> | string | null
+    notes?: StringNullableFilter<"WorkoutSession"> | string | null
+    durationMins?: IntNullableFilter<"WorkoutSession"> | number | null
+    caloriesBurned?: IntNullableFilter<"WorkoutSession"> | number | null
+    healthKitId?: StringNullableFilter<"WorkoutSession"> | string | null
+    googleFitId?: StringNullableFilter<"WorkoutSession"> | string | null
+    createdAt?: DateTimeFilter<"WorkoutSession"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkoutSession"> | Date | string
+  }
+
+  export type ExerciseSetUpsertWithWhereUniqueWithoutUserInput = {
+    where: ExerciseSetWhereUniqueInput
+    update: XOR<ExerciseSetUpdateWithoutUserInput, ExerciseSetUncheckedUpdateWithoutUserInput>
+    create: XOR<ExerciseSetCreateWithoutUserInput, ExerciseSetUncheckedCreateWithoutUserInput>
+  }
+
+  export type ExerciseSetUpdateWithWhereUniqueWithoutUserInput = {
+    where: ExerciseSetWhereUniqueInput
+    data: XOR<ExerciseSetUpdateWithoutUserInput, ExerciseSetUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ExerciseSetUpdateManyWithWhereWithoutUserInput = {
+    where: ExerciseSetScalarWhereInput
+    data: XOR<ExerciseSetUpdateManyMutationInput, ExerciseSetUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ExerciseSetScalarWhereInput = {
+    AND?: ExerciseSetScalarWhereInput | ExerciseSetScalarWhereInput[]
+    OR?: ExerciseSetScalarWhereInput[]
+    NOT?: ExerciseSetScalarWhereInput | ExerciseSetScalarWhereInput[]
+    id?: StringFilter<"ExerciseSet"> | string
+    sessionId?: StringFilter<"ExerciseSet"> | string
+    userId?: StringFilter<"ExerciseSet"> | string
+    exerciseName?: StringFilter<"ExerciseSet"> | string
+    muscleGroup?: EnumMuscleGroupFilter<"ExerciseSet"> | $Enums.MuscleGroup
+    setNumber?: IntFilter<"ExerciseSet"> | number
+    reps?: IntNullableFilter<"ExerciseSet"> | number | null
+    weightLbs?: DecimalNullableFilter<"ExerciseSet"> | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: IntNullableFilter<"ExerciseSet"> | number | null
+    notes?: StringNullableFilter<"ExerciseSet"> | string | null
+    healthKitId?: StringNullableFilter<"ExerciseSet"> | string | null
+    createdAt?: DateTimeFilter<"ExerciseSet"> | Date | string
+  }
+
+  export type CardioLogUpsertWithWhereUniqueWithoutUserInput = {
+    where: CardioLogWhereUniqueInput
+    update: XOR<CardioLogUpdateWithoutUserInput, CardioLogUncheckedUpdateWithoutUserInput>
+    create: XOR<CardioLogCreateWithoutUserInput, CardioLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type CardioLogUpdateWithWhereUniqueWithoutUserInput = {
+    where: CardioLogWhereUniqueInput
+    data: XOR<CardioLogUpdateWithoutUserInput, CardioLogUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CardioLogUpdateManyWithWhereWithoutUserInput = {
+    where: CardioLogScalarWhereInput
+    data: XOR<CardioLogUpdateManyMutationInput, CardioLogUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CardioLogScalarWhereInput = {
+    AND?: CardioLogScalarWhereInput | CardioLogScalarWhereInput[]
+    OR?: CardioLogScalarWhereInput[]
+    NOT?: CardioLogScalarWhereInput | CardioLogScalarWhereInput[]
+    id?: StringFilter<"CardioLog"> | string
+    sessionId?: StringFilter<"CardioLog"> | string
+    userId?: StringFilter<"CardioLog"> | string
+    activity?: EnumCardioActivityFilter<"CardioLog"> | $Enums.CardioActivity
+    durationMins?: IntNullableFilter<"CardioLog"> | number | null
+    distanceMiles?: DecimalNullableFilter<"CardioLog"> | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: IntNullableFilter<"CardioLog"> | number | null
+    avgHeartRate?: IntNullableFilter<"CardioLog"> | number | null
+    maxHeartRate?: IntNullableFilter<"CardioLog"> | number | null
+    hrZone?: IntNullableFilter<"CardioLog"> | number | null
+    pace?: StringNullableFilter<"CardioLog"> | string | null
+    notes?: StringNullableFilter<"CardioLog"> | string | null
+    healthKitId?: StringNullableFilter<"CardioLog"> | string | null
+    createdAt?: DateTimeFilter<"CardioLog"> | Date | string
+  }
+
   export type UserCreateWithoutAccountsInput = {
     id?: string
     name?: string | null
@@ -31382,6 +37038,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -31405,6 +37064,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -31444,6 +37106,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -31467,6 +37132,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -31490,6 +37158,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -31513,6 +37184,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -31552,6 +37226,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -31575,6 +37252,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutProfileInput = {
@@ -31598,6 +37278,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProfileInput = {
@@ -31621,6 +37304,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProfileInput = {
@@ -31660,6 +37346,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProfileInput = {
@@ -31683,6 +37372,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutUserGoalsInput = {
@@ -31706,6 +37398,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutUserGoalsInput = {
@@ -31729,6 +37424,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutUserGoalsInput = {
@@ -31768,6 +37466,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserGoalsInput = {
@@ -31791,6 +37492,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutFoodLogsInput = {
@@ -31814,6 +37518,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFoodLogsInput = {
@@ -31837,6 +37544,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFoodLogsInput = {
@@ -31876,6 +37586,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFoodLogsInput = {
@@ -31899,6 +37612,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutGroceryListInput = {
@@ -31922,6 +37638,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutGroceryListInput = {
@@ -31945,6 +37664,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutGroceryListInput = {
@@ -31984,6 +37706,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGroceryListInput = {
@@ -32007,6 +37732,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSavedFavoritesInput = {
@@ -32030,6 +37758,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSavedFavoritesInput = {
@@ -32053,6 +37784,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSavedFavoritesInput = {
@@ -32092,6 +37826,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSavedFavoritesInput = {
@@ -32115,6 +37852,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCustomFoodsInput = {
@@ -32138,6 +37878,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCustomFoodsInput = {
@@ -32161,6 +37904,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCustomFoodsInput = {
@@ -32200,6 +37946,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCustomFoodsInput = {
@@ -32223,6 +37972,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutUserRecipesInput = {
@@ -32246,6 +37998,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutUserRecipesInput = {
@@ -32269,6 +38024,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutUserRecipesInput = {
@@ -32308,6 +38066,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserRecipesInput = {
@@ -32331,6 +38092,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSavedRecipesInput = {
@@ -32354,6 +38118,9 @@ export namespace Prisma {
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSavedRecipesInput = {
@@ -32377,6 +38144,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSavedRecipesInput = {
@@ -32416,6 +38186,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSavedRecipesInput = {
@@ -32439,6 +38212,9 @@ export namespace Prisma {
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutWeightLogsInput = {
@@ -32462,6 +38238,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWeightLogsInput = {
@@ -32485,6 +38264,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWeightLogsInput = {
@@ -32524,6 +38306,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWeightLogsInput = {
@@ -32547,6 +38332,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutWaterLogsInput = {
@@ -32570,6 +38358,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeCreateNestedManyWithoutUserInput
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWaterLogsInput = {
@@ -32593,6 +38384,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeUncheckedCreateNestedManyWithoutUserInput
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWaterLogsInput = {
@@ -32632,6 +38426,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeUpdateManyWithoutUserNestedInput
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWaterLogsInput = {
@@ -32655,6 +38452,633 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeUncheckedUpdateManyWithoutUserNestedInput
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutWorkoutSessionsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    password?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    userGoals?: UserGoalsCreateNestedOneWithoutUserInput
+    foodLogs?: FoodLogCreateNestedManyWithoutUserInput
+    groceryList?: GroceryListCreateNestedManyWithoutUserInput
+    savedFavorites?: SavedFavoriteCreateNestedManyWithoutUserInput
+    customFoods?: CustomFoodCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutUserInput
+    savedRecipes?: SavedRecipeCreateNestedManyWithoutUserInput
+    weightLogs?: WeightLogCreateNestedManyWithoutUserInput
+    waterLogs?: WaterLogCreateNestedManyWithoutUserInput
+    measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutWorkoutSessionsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    password?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    userGoals?: UserGoalsUncheckedCreateNestedOneWithoutUserInput
+    foodLogs?: FoodLogUncheckedCreateNestedManyWithoutUserInput
+    groceryList?: GroceryListUncheckedCreateNestedManyWithoutUserInput
+    savedFavorites?: SavedFavoriteUncheckedCreateNestedManyWithoutUserInput
+    customFoods?: CustomFoodUncheckedCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutUserInput
+    savedRecipes?: SavedRecipeUncheckedCreateNestedManyWithoutUserInput
+    weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
+    waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
+    measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutWorkoutSessionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutWorkoutSessionsInput, UserUncheckedCreateWithoutWorkoutSessionsInput>
+  }
+
+  export type CardioLogCreateWithoutSessionInput = {
+    id?: string
+    activity: $Enums.CardioActivity
+    durationMins?: number | null
+    distanceMiles?: Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: number | null
+    avgHeartRate?: number | null
+    maxHeartRate?: number | null
+    hrZone?: number | null
+    pace?: string | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutCardioLogsInput
+  }
+
+  export type CardioLogUncheckedCreateWithoutSessionInput = {
+    id?: string
+    userId: string
+    activity: $Enums.CardioActivity
+    durationMins?: number | null
+    distanceMiles?: Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: number | null
+    avgHeartRate?: number | null
+    maxHeartRate?: number | null
+    hrZone?: number | null
+    pace?: string | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CardioLogCreateOrConnectWithoutSessionInput = {
+    where: CardioLogWhereUniqueInput
+    create: XOR<CardioLogCreateWithoutSessionInput, CardioLogUncheckedCreateWithoutSessionInput>
+  }
+
+  export type CardioLogCreateManySessionInputEnvelope = {
+    data: CardioLogCreateManySessionInput | CardioLogCreateManySessionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExerciseSetCreateWithoutSessionInput = {
+    id?: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps?: number | null
+    weightLbs?: Decimal | DecimalJsLike | number | string | null
+    durationSecs?: number | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutExerciseSetsInput
+  }
+
+  export type ExerciseSetUncheckedCreateWithoutSessionInput = {
+    id?: string
+    userId: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps?: number | null
+    weightLbs?: Decimal | DecimalJsLike | number | string | null
+    durationSecs?: number | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ExerciseSetCreateOrConnectWithoutSessionInput = {
+    where: ExerciseSetWhereUniqueInput
+    create: XOR<ExerciseSetCreateWithoutSessionInput, ExerciseSetUncheckedCreateWithoutSessionInput>
+  }
+
+  export type ExerciseSetCreateManySessionInputEnvelope = {
+    data: ExerciseSetCreateManySessionInput | ExerciseSetCreateManySessionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutWorkoutSessionsInput = {
+    update: XOR<UserUpdateWithoutWorkoutSessionsInput, UserUncheckedUpdateWithoutWorkoutSessionsInput>
+    create: XOR<UserCreateWithoutWorkoutSessionsInput, UserUncheckedCreateWithoutWorkoutSessionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutWorkoutSessionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutWorkoutSessionsInput, UserUncheckedUpdateWithoutWorkoutSessionsInput>
+  }
+
+  export type UserUpdateWithoutWorkoutSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    userGoals?: UserGoalsUpdateOneWithoutUserNestedInput
+    foodLogs?: FoodLogUpdateManyWithoutUserNestedInput
+    groceryList?: GroceryListUpdateManyWithoutUserNestedInput
+    savedFavorites?: SavedFavoriteUpdateManyWithoutUserNestedInput
+    customFoods?: CustomFoodUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutUserNestedInput
+    savedRecipes?: SavedRecipeUpdateManyWithoutUserNestedInput
+    weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
+    waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
+    measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutWorkoutSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    userGoals?: UserGoalsUncheckedUpdateOneWithoutUserNestedInput
+    foodLogs?: FoodLogUncheckedUpdateManyWithoutUserNestedInput
+    groceryList?: GroceryListUncheckedUpdateManyWithoutUserNestedInput
+    savedFavorites?: SavedFavoriteUncheckedUpdateManyWithoutUserNestedInput
+    customFoods?: CustomFoodUncheckedUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutUserNestedInput
+    savedRecipes?: SavedRecipeUncheckedUpdateManyWithoutUserNestedInput
+    weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
+    waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
+    measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type CardioLogUpsertWithWhereUniqueWithoutSessionInput = {
+    where: CardioLogWhereUniqueInput
+    update: XOR<CardioLogUpdateWithoutSessionInput, CardioLogUncheckedUpdateWithoutSessionInput>
+    create: XOR<CardioLogCreateWithoutSessionInput, CardioLogUncheckedCreateWithoutSessionInput>
+  }
+
+  export type CardioLogUpdateWithWhereUniqueWithoutSessionInput = {
+    where: CardioLogWhereUniqueInput
+    data: XOR<CardioLogUpdateWithoutSessionInput, CardioLogUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type CardioLogUpdateManyWithWhereWithoutSessionInput = {
+    where: CardioLogScalarWhereInput
+    data: XOR<CardioLogUpdateManyMutationInput, CardioLogUncheckedUpdateManyWithoutSessionInput>
+  }
+
+  export type ExerciseSetUpsertWithWhereUniqueWithoutSessionInput = {
+    where: ExerciseSetWhereUniqueInput
+    update: XOR<ExerciseSetUpdateWithoutSessionInput, ExerciseSetUncheckedUpdateWithoutSessionInput>
+    create: XOR<ExerciseSetCreateWithoutSessionInput, ExerciseSetUncheckedCreateWithoutSessionInput>
+  }
+
+  export type ExerciseSetUpdateWithWhereUniqueWithoutSessionInput = {
+    where: ExerciseSetWhereUniqueInput
+    data: XOR<ExerciseSetUpdateWithoutSessionInput, ExerciseSetUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type ExerciseSetUpdateManyWithWhereWithoutSessionInput = {
+    where: ExerciseSetScalarWhereInput
+    data: XOR<ExerciseSetUpdateManyMutationInput, ExerciseSetUncheckedUpdateManyWithoutSessionInput>
+  }
+
+  export type WorkoutSessionCreateWithoutCardioLogsInput = {
+    id?: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutWorkoutSessionsInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutSessionInput
+  }
+
+  export type WorkoutSessionUncheckedCreateWithoutCardioLogsInput = {
+    id?: string
+    userId: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type WorkoutSessionCreateOrConnectWithoutCardioLogsInput = {
+    where: WorkoutSessionWhereUniqueInput
+    create: XOR<WorkoutSessionCreateWithoutCardioLogsInput, WorkoutSessionUncheckedCreateWithoutCardioLogsInput>
+  }
+
+  export type UserCreateWithoutCardioLogsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    password?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    userGoals?: UserGoalsCreateNestedOneWithoutUserInput
+    foodLogs?: FoodLogCreateNestedManyWithoutUserInput
+    groceryList?: GroceryListCreateNestedManyWithoutUserInput
+    savedFavorites?: SavedFavoriteCreateNestedManyWithoutUserInput
+    customFoods?: CustomFoodCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutUserInput
+    savedRecipes?: SavedRecipeCreateNestedManyWithoutUserInput
+    weightLogs?: WeightLogCreateNestedManyWithoutUserInput
+    waterLogs?: WaterLogCreateNestedManyWithoutUserInput
+    measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCardioLogsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    password?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    userGoals?: UserGoalsUncheckedCreateNestedOneWithoutUserInput
+    foodLogs?: FoodLogUncheckedCreateNestedManyWithoutUserInput
+    groceryList?: GroceryListUncheckedCreateNestedManyWithoutUserInput
+    savedFavorites?: SavedFavoriteUncheckedCreateNestedManyWithoutUserInput
+    customFoods?: CustomFoodUncheckedCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutUserInput
+    savedRecipes?: SavedRecipeUncheckedCreateNestedManyWithoutUserInput
+    weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
+    waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
+    measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCardioLogsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCardioLogsInput, UserUncheckedCreateWithoutCardioLogsInput>
+  }
+
+  export type WorkoutSessionUpsertWithoutCardioLogsInput = {
+    update: XOR<WorkoutSessionUpdateWithoutCardioLogsInput, WorkoutSessionUncheckedUpdateWithoutCardioLogsInput>
+    create: XOR<WorkoutSessionCreateWithoutCardioLogsInput, WorkoutSessionUncheckedCreateWithoutCardioLogsInput>
+    where?: WorkoutSessionWhereInput
+  }
+
+  export type WorkoutSessionUpdateToOneWithWhereWithoutCardioLogsInput = {
+    where?: WorkoutSessionWhereInput
+    data: XOR<WorkoutSessionUpdateWithoutCardioLogsInput, WorkoutSessionUncheckedUpdateWithoutCardioLogsInput>
+  }
+
+  export type WorkoutSessionUpdateWithoutCardioLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutWorkoutSessionsNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutSessionNestedInput
+  }
+
+  export type WorkoutSessionUncheckedUpdateWithoutCardioLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type UserUpsertWithoutCardioLogsInput = {
+    update: XOR<UserUpdateWithoutCardioLogsInput, UserUncheckedUpdateWithoutCardioLogsInput>
+    create: XOR<UserCreateWithoutCardioLogsInput, UserUncheckedCreateWithoutCardioLogsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCardioLogsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCardioLogsInput, UserUncheckedUpdateWithoutCardioLogsInput>
+  }
+
+  export type UserUpdateWithoutCardioLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    userGoals?: UserGoalsUpdateOneWithoutUserNestedInput
+    foodLogs?: FoodLogUpdateManyWithoutUserNestedInput
+    groceryList?: GroceryListUpdateManyWithoutUserNestedInput
+    savedFavorites?: SavedFavoriteUpdateManyWithoutUserNestedInput
+    customFoods?: CustomFoodUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutUserNestedInput
+    savedRecipes?: SavedRecipeUpdateManyWithoutUserNestedInput
+    weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
+    waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
+    measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCardioLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    userGoals?: UserGoalsUncheckedUpdateOneWithoutUserNestedInput
+    foodLogs?: FoodLogUncheckedUpdateManyWithoutUserNestedInput
+    groceryList?: GroceryListUncheckedUpdateManyWithoutUserNestedInput
+    savedFavorites?: SavedFavoriteUncheckedUpdateManyWithoutUserNestedInput
+    customFoods?: CustomFoodUncheckedUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutUserNestedInput
+    savedRecipes?: SavedRecipeUncheckedUpdateManyWithoutUserNestedInput
+    weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
+    waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
+    measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type WorkoutSessionCreateWithoutExerciseSetsInput = {
+    id?: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutWorkoutSessionsInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutSessionInput
+  }
+
+  export type WorkoutSessionUncheckedCreateWithoutExerciseSetsInput = {
+    id?: string
+    userId: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type WorkoutSessionCreateOrConnectWithoutExerciseSetsInput = {
+    where: WorkoutSessionWhereUniqueInput
+    create: XOR<WorkoutSessionCreateWithoutExerciseSetsInput, WorkoutSessionUncheckedCreateWithoutExerciseSetsInput>
+  }
+
+  export type UserCreateWithoutExerciseSetsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    password?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    userGoals?: UserGoalsCreateNestedOneWithoutUserInput
+    foodLogs?: FoodLogCreateNestedManyWithoutUserInput
+    groceryList?: GroceryListCreateNestedManyWithoutUserInput
+    savedFavorites?: SavedFavoriteCreateNestedManyWithoutUserInput
+    customFoods?: CustomFoodCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeCreateNestedManyWithoutUserInput
+    savedRecipes?: SavedRecipeCreateNestedManyWithoutUserInput
+    weightLogs?: WeightLogCreateNestedManyWithoutUserInput
+    waterLogs?: WaterLogCreateNestedManyWithoutUserInput
+    measurementLogs?: MeasurementLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutExerciseSetsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    password?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    userGoals?: UserGoalsUncheckedCreateNestedOneWithoutUserInput
+    foodLogs?: FoodLogUncheckedCreateNestedManyWithoutUserInput
+    groceryList?: GroceryListUncheckedCreateNestedManyWithoutUserInput
+    savedFavorites?: SavedFavoriteUncheckedCreateNestedManyWithoutUserInput
+    customFoods?: CustomFoodUncheckedCreateNestedManyWithoutUserInput
+    userRecipes?: UserRecipeUncheckedCreateNestedManyWithoutUserInput
+    savedRecipes?: SavedRecipeUncheckedCreateNestedManyWithoutUserInput
+    weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
+    waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
+    measurementLogs?: MeasurementLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutExerciseSetsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutExerciseSetsInput, UserUncheckedCreateWithoutExerciseSetsInput>
+  }
+
+  export type WorkoutSessionUpsertWithoutExerciseSetsInput = {
+    update: XOR<WorkoutSessionUpdateWithoutExerciseSetsInput, WorkoutSessionUncheckedUpdateWithoutExerciseSetsInput>
+    create: XOR<WorkoutSessionCreateWithoutExerciseSetsInput, WorkoutSessionUncheckedCreateWithoutExerciseSetsInput>
+    where?: WorkoutSessionWhereInput
+  }
+
+  export type WorkoutSessionUpdateToOneWithWhereWithoutExerciseSetsInput = {
+    where?: WorkoutSessionWhereInput
+    data: XOR<WorkoutSessionUpdateWithoutExerciseSetsInput, WorkoutSessionUncheckedUpdateWithoutExerciseSetsInput>
+  }
+
+  export type WorkoutSessionUpdateWithoutExerciseSetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutWorkoutSessionsNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutSessionNestedInput
+  }
+
+  export type WorkoutSessionUncheckedUpdateWithoutExerciseSetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type UserUpsertWithoutExerciseSetsInput = {
+    update: XOR<UserUpdateWithoutExerciseSetsInput, UserUncheckedUpdateWithoutExerciseSetsInput>
+    create: XOR<UserCreateWithoutExerciseSetsInput, UserUncheckedCreateWithoutExerciseSetsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutExerciseSetsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutExerciseSetsInput, UserUncheckedUpdateWithoutExerciseSetsInput>
+  }
+
+  export type UserUpdateWithoutExerciseSetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    userGoals?: UserGoalsUpdateOneWithoutUserNestedInput
+    foodLogs?: FoodLogUpdateManyWithoutUserNestedInput
+    groceryList?: GroceryListUpdateManyWithoutUserNestedInput
+    savedFavorites?: SavedFavoriteUpdateManyWithoutUserNestedInput
+    customFoods?: CustomFoodUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUpdateManyWithoutUserNestedInput
+    savedRecipes?: SavedRecipeUpdateManyWithoutUserNestedInput
+    weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
+    waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
+    measurementLogs?: MeasurementLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutExerciseSetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    userGoals?: UserGoalsUncheckedUpdateOneWithoutUserNestedInput
+    foodLogs?: FoodLogUncheckedUpdateManyWithoutUserNestedInput
+    groceryList?: GroceryListUncheckedUpdateManyWithoutUserNestedInput
+    savedFavorites?: SavedFavoriteUncheckedUpdateManyWithoutUserNestedInput
+    customFoods?: CustomFoodUncheckedUpdateManyWithoutUserNestedInput
+    userRecipes?: UserRecipeUncheckedUpdateManyWithoutUserNestedInput
+    savedRecipes?: SavedRecipeUncheckedUpdateManyWithoutUserNestedInput
+    weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
+    waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
+    measurementLogs?: MeasurementLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMeasurementLogsInput = {
@@ -32678,6 +39102,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeCreateNestedManyWithoutUserInput
     weightLogs?: WeightLogCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMeasurementLogsInput = {
@@ -32701,6 +39128,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeUncheckedCreateNestedManyWithoutUserInput
     weightLogs?: WeightLogUncheckedCreateNestedManyWithoutUserInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutUserInput
+    workoutSessions?: WorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+    exerciseSets?: ExerciseSetUncheckedCreateNestedManyWithoutUserInput
+    cardioLogs?: CardioLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMeasurementLogsInput = {
@@ -32740,6 +39170,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeUpdateManyWithoutUserNestedInput
     weightLogs?: WeightLogUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMeasurementLogsInput = {
@@ -32763,6 +39196,9 @@ export namespace Prisma {
     savedRecipes?: SavedRecipeUncheckedUpdateManyWithoutUserNestedInput
     weightLogs?: WeightLogUncheckedUpdateManyWithoutUserNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutUserNestedInput
+    workoutSessions?: WorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutUserNestedInput
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -32932,6 +39368,49 @@ export namespace Prisma {
     rightCalf?: Decimal | DecimalJsLike | number | string | null
     bodyFatPct?: Decimal | DecimalJsLike | number | string | null
     note?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WorkoutSessionCreateManyUserInput = {
+    id?: string
+    date: Date | string
+    name?: string | null
+    notes?: string | null
+    durationMins?: number | null
+    caloriesBurned?: number | null
+    healthKitId?: string | null
+    googleFitId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExerciseSetCreateManyUserInput = {
+    id?: string
+    sessionId: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps?: number | null
+    weightLbs?: Decimal | DecimalJsLike | number | string | null
+    durationSecs?: number | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CardioLogCreateManyUserInput = {
+    id?: string
+    sessionId: string
+    activity: $Enums.CardioActivity
+    durationMins?: number | null
+    distanceMiles?: Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: number | null
+    avgHeartRate?: number | null
+    maxHeartRate?: number | null
+    hrZone?: number | null
+    pace?: string | null
+    notes?: string | null
+    healthKitId?: string | null
     createdAt?: Date | string
   }
 
@@ -33442,6 +39921,259 @@ export namespace Prisma {
     rightCalf?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     bodyFatPct?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkoutSessionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cardioLogs?: CardioLogUpdateManyWithoutSessionNestedInput
+    exerciseSets?: ExerciseSetUpdateManyWithoutSessionNestedInput
+  }
+
+  export type WorkoutSessionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cardioLogs?: CardioLogUncheckedUpdateManyWithoutSessionNestedInput
+    exerciseSets?: ExerciseSetUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type WorkoutSessionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    googleFitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExerciseSetUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: WorkoutSessionUpdateOneRequiredWithoutExerciseSetsNestedInput
+  }
+
+  export type ExerciseSetUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExerciseSetUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CardioLogUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: WorkoutSessionUpdateOneRequiredWithoutCardioLogsNestedInput
+  }
+
+  export type CardioLogUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CardioLogUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CardioLogCreateManySessionInput = {
+    id?: string
+    userId: string
+    activity: $Enums.CardioActivity
+    durationMins?: number | null
+    distanceMiles?: Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: number | null
+    avgHeartRate?: number | null
+    maxHeartRate?: number | null
+    hrZone?: number | null
+    pace?: string | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ExerciseSetCreateManySessionInput = {
+    id?: string
+    userId: string
+    exerciseName: string
+    muscleGroup: $Enums.MuscleGroup
+    setNumber: number
+    reps?: number | null
+    weightLbs?: Decimal | DecimalJsLike | number | string | null
+    durationSecs?: number | null
+    notes?: string | null
+    healthKitId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CardioLogUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCardioLogsNestedInput
+  }
+
+  export type CardioLogUncheckedUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CardioLogUncheckedUpdateManyWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    activity?: EnumCardioActivityFieldUpdateOperationsInput | $Enums.CardioActivity
+    durationMins?: NullableIntFieldUpdateOperationsInput | number | null
+    distanceMiles?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    caloriesBurned?: NullableIntFieldUpdateOperationsInput | number | null
+    avgHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    maxHeartRate?: NullableIntFieldUpdateOperationsInput | number | null
+    hrZone?: NullableIntFieldUpdateOperationsInput | number | null
+    pace?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExerciseSetUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutExerciseSetsNestedInput
+  }
+
+  export type ExerciseSetUncheckedUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExerciseSetUncheckedUpdateManyWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    exerciseName?: StringFieldUpdateOperationsInput | string
+    muscleGroup?: EnumMuscleGroupFieldUpdateOperationsInput | $Enums.MuscleGroup
+    setNumber?: IntFieldUpdateOperationsInput | number
+    reps?: NullableIntFieldUpdateOperationsInput | number | null
+    weightLbs?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    durationSecs?: NullableIntFieldUpdateOperationsInput | number | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    healthKitId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
