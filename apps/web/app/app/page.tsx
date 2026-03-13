@@ -39,6 +39,8 @@ type UserGoal = {
   protein_goal: number | null;
   carbs_goal: number | null;
   fat_goal: number | null;
+  target_weight?: number | null;
+  target_date?: string | null;
 };
 
 type HistoricalData = {
