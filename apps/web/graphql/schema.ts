@@ -68,6 +68,8 @@ export const typeDefs = gql`
     proteinGoal: Int
     carbsGoal: Int
     fatGoal: Int
+    targetWeight: Float
+    targetDate: String
   }
 
   # ─── Profile ─────────────────────────────────────────────────────────────────

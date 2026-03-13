@@ -149,6 +149,23 @@ export type MealPlan = {
   };
 };
 
+type DayPlan = {
+  meals: MealPlan["meals"];
+  nutrients: MealPlan["nutrients"];
+};
+
+export type WeeklyMealPlan = {
+  week: {
+    monday: DayPlan;
+    tuesday: DayPlan;
+    wednesday: DayPlan;
+    thursday: DayPlan;
+    friday: DayPlan;
+    saturday: DayPlan;
+    sunday: DayPlan;
+  };
+};
+
 export async function generateMealPlan(
   timeFrame: "day" | "week",
   targetCalories?: number,

@@ -53,6 +53,8 @@ export type UserGoal = {
   protein_goal: number | null;
   carbs_goal: number | null;
   fat_goal: number | null;
+  target_weight?: number | null;
+  target_date?: string | null;
 };
 
 export type UsdaFood = {
@@ -150,12 +152,19 @@ export type WeightLog = {
   created_at: string;
 };
 
+export type WaterLog = {
+  id: string;
+  date: string;       // YYYY-MM-DD
+  cups: number;
+  logged_at: string;  // ISO timestamp
+};
+
 // ─── RTK Query API ────────────────────────────────────────────────────────────
 
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }),
-  tagTypes: ["FoodLog", "Goals", "Grocery", "Favorites", "CustomFoods", "UserRecipes", "SavedRecipes", "WeightLogs"],
+  tagTypes: ["FoodLog", "Goals", "Grocery", "Favorites", "CustomFoods", "UserRecipes", "SavedRecipes", "WeightLogs", "WaterLogs"],
 
   endpoints: (builder) => ({
     // ── Food Logs ──────────────────────────────────────────────────────────
@@ -364,6 +373,23 @@ export const api = createApi({
       query: (id) => ({ url: `api/weight?id=${id}`, method: "DELETE" }),
       invalidatesTags: [{ type: "WeightLogs", id: "LIST" }],
     }),
+
+    // ── Water Logs ────────────────────────────────────────────────
+    getWaterLogs: builder.query<{ logs: WaterLog[]; totalCups: number }, string>({
+      query: (date) => `api/water?date=${date}`,
+      providesTags: [{ type: "WaterLogs", id: "LIST" }],
+    }),
+
+    addWaterLog: builder.mutation<WaterLog, { cups: number; date: string }>({
+      query: (body) => ({ url: "api/water", method: "POST", body }),
+      transformResponse: (res: { log: WaterLog }) => res.log,
+      invalidatesTags: [{ type: "WaterLogs", id: "LIST" }],
+    }),
+
+    deleteWaterLog: builder.mutation<void, string>({
+      query: (id) => ({ url: `api/water?id=${id}`, method: "DELETE" }),
+      invalidatesTags: [{ type: "WaterLogs", id: "LIST" }],
+    }),
   }),
 });
 
@@ -401,4 +427,7 @@ export const {
   useGetWeightLogsQuery,
   useAddWeightLogMutation,
   useDeleteWeightLogMutation,
+  useGetWaterLogsQuery,
+  useAddWaterLogMutation,
+  useDeleteWaterLogMutation,
 } = api;

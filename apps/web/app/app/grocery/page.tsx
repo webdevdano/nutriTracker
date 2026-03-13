@@ -59,10 +59,33 @@ type MealPlanMeal = {
   sourceUrl: string;
 };
 
+type DayNutrients = { calories: number; protein: number; fat: number; carbohydrates: number };
+
 type MealPlan = {
   meals: MealPlanMeal[];
-  nutrients: { calories: number; protein: number; fat: number; carbohydrates: number };
+  nutrients: DayNutrients;
 };
+
+const WEEK_DAYS = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"] as const;
+type WeekDay = typeof WEEK_DAYS[number];
+type WeeklyMealPlan = { week: Record<WeekDay, { meals: MealPlanMeal[]; nutrients: DayNutrients }> };
+
+function MealPlanCard({ meal }: { meal: MealPlanMeal }) {
+  return (
+    <div className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
+      <p className="text-sm font-semibold">{meal.title}</p>
+      <div className="mt-1.5 flex gap-3 text-xs text-zinc-500">
+        <span>⏱️ {meal.readyInMinutes} min</span>
+        <span>🍽️ {meal.servings} servings</span>
+      </div>
+      {meal.sourceUrl && (
+        <a href={meal.sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-1.5 inline-block text-xs text-[#4169E1] hover:underline dark:text-[#87CEEB]">
+          View Recipe →
+        </a>
+      )}
+    </div>
+  );
+}
 
 export default function GroceryPage() {
   const router = useRouter();
@@ -72,8 +95,11 @@ export default function GroceryPage() {
   const [activeTab, setActiveTab]         = useState<"grocery" | "favorites">("grocery");
   const [newItem, setNewItem]              = useState("");
   const [showMealPlan, setShowMealPlan]    = useState(false);
+  const [mealPlanFrame, setMealPlanFrame]  = useState<"day" | "week">("day");
   const [generatingPlan, setGeneratingPlan] = useState(false);
   const [mealPlan, setMealPlan]            = useState<MealPlan | null>(null);
+  const [weeklyPlan, setWeeklyPlan]        = useState<WeeklyMealPlan | null>(null);
+  const [activePlanDay, setActivePlanDay]  = useState<WeekDay>("monday");
   const [toast, setToast]                  = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
 
   // ── RTK Query ────────────────────────────────────────────────────────────
@@ -179,12 +205,23 @@ export default function GroceryPage() {
     await Promise.all(purchased.map((i) => deleteItem(i.id)));
   }
 
-  async function generateMealPlan() {
+  async function generateMealPlan(frame: "day" | "week" = "day") {
+    setMealPlanFrame(frame);
     setGeneratingPlan(true);
     try {
-      const res  = await fetch("/api/meal-plan?timeFrame=day&targetCalories=2000");
+      const res  = await fetch(`/api/meal-plan?timeFrame=${frame}&targetCalories=2000`);
       const data = await res.json();
-      if (res.ok) { setMealPlan(data); setShowMealPlan(true); }
+      if (res.ok) {
+        if (frame === "week") {
+          setWeeklyPlan(data as WeeklyMealPlan);
+          setMealPlan(null);
+          setActivePlanDay("monday");
+        } else {
+          setMealPlan(data as MealPlan);
+          setWeeklyPlan(null);
+        }
+        setShowMealPlan(true);
+      }
     } catch { /* silent */ }
     finally { setGeneratingPlan(false); }
   }
@@ -307,13 +344,22 @@ export default function GroceryPage() {
               <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Grocery list &amp; saved favourites</p>
             </div>
             {activeTab === "grocery" && (
-              <button
-                onClick={generateMealPlan}
-                disabled={generatingPlan}
-                className="h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
-              >
-                {generatingPlan ? "Generating…" : "📅 Meal Plan"}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => generateMealPlan("day")}
+                  disabled={generatingPlan}
+                  className="h-9 rounded-full border border-zinc-300 px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                >
+                  {generatingPlan && mealPlanFrame === "day" ? "…" : "📅 Day"}
+                </button>
+                <button
+                  onClick={() => generateMealPlan("week")}
+                  disabled={generatingPlan}
+                  className="h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+                >
+                  {generatingPlan && mealPlanFrame === "week" ? "Generating…" : "🗓️ Week Plan"}
+                </button>
+              </div>
             )}
           </div>
 
@@ -476,42 +522,83 @@ export default function GroceryPage() {
       </div>
 
       {/* Meal Plan Modal */}
-      {showMealPlan && mealPlan && (
+      {showMealPlan && (mealPlan || weeklyPlan) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowMealPlan(false)}>
           <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Daily Meal Plan</h2>
+              <h2 className="text-lg font-semibold">{weeklyPlan ? "Weekly Meal Plan" : "Daily Meal Plan"}</h2>
               <button onClick={() => setShowMealPlan(false)} className="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">✕</button>
             </div>
-            <div className="mb-4 grid grid-cols-4 gap-3 rounded-xl border border-zinc-200 p-4 text-center dark:border-zinc-800">
-              {[
-                { label: "Calories", value: Math.round(mealPlan.nutrients.calories) },
-                { label: "Protein",  value: `${Math.round(mealPlan.nutrients.protein)}g` },
-                { label: "Carbs",    value: `${Math.round(mealPlan.nutrients.carbohydrates)}g` },
-                { label: "Fat",      value: `${Math.round(mealPlan.nutrients.fat)}g` },
-              ].map(({ label, value }) => (
-                <div key={label}>
-                  <p className="text-xs text-zinc-500">{label}</p>
-                  <p className="text-sm font-semibold">{value}</p>
+
+            {/* ── Daily view ── */}
+            {mealPlan && (
+              <>
+                <div className="mb-4 grid grid-cols-4 gap-3 rounded-xl border border-zinc-200 p-4 text-center dark:border-zinc-800">
+                  {[
+                    { label: "Calories", value: Math.round(mealPlan.nutrients.calories) },
+                    { label: "Protein",  value: `${Math.round(mealPlan.nutrients.protein)}g` },
+                    { label: "Carbs",    value: `${Math.round(mealPlan.nutrients.carbohydrates)}g` },
+                    { label: "Fat",      value: `${Math.round(mealPlan.nutrients.fat)}g` },
+                  ].map(({ label, value }) => (
+                    <div key={label}>
+                      <p className="text-xs text-zinc-500">{label}</p>
+                      <p className="text-sm font-semibold">{value}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="space-y-3">
-              {mealPlan.meals.map((meal) => (
-                <div key={meal.id} className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
-                  <p className="text-sm font-semibold">{meal.title}</p>
-                  <div className="mt-1.5 flex gap-3 text-xs text-zinc-500">
-                    <span>⏱️ {meal.readyInMinutes} min</span>
-                    <span>🍽️ {meal.servings} servings</span>
-                  </div>
-                  {meal.sourceUrl && (
-                    <a href={meal.sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-1.5 inline-block text-xs text-[#4169E1] hover:underline dark:text-[#87CEEB]">
-                      View Recipe →
-                    </a>
-                  )}
+                <div className="space-y-3">
+                  {mealPlan.meals.map((meal) => (
+                    <MealPlanCard key={meal.id} meal={meal} />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </>
+            )}
+
+            {/* ── Weekly calendar view ── */}
+            {weeklyPlan && (
+              <>
+                {/* Day-of-week pill nav */}
+                <div className="mb-4 flex gap-1 overflow-x-auto rounded-full border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-800 dark:bg-zinc-900">
+                  {WEEK_DAYS.map((day) => (
+                    <button
+                      key={day}
+                      onClick={() => setActivePlanDay(day)}
+                      className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
+                        activePlanDay === day
+                          ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                          : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                      }`}
+                    >
+                      {day.slice(0, 3).charAt(0).toUpperCase() + day.slice(0, 3).slice(1)}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Active day nutrients */}
+                {weeklyPlan.week[activePlanDay] && (
+                  <>
+                    <div className="mb-4 grid grid-cols-4 gap-3 rounded-xl border border-zinc-200 p-4 text-center dark:border-zinc-800">
+                      {[
+                        { label: "Calories", value: Math.round(weeklyPlan.week[activePlanDay].nutrients.calories) },
+                        { label: "Protein",  value: `${Math.round(weeklyPlan.week[activePlanDay].nutrients.protein)}g` },
+                        { label: "Carbs",    value: `${Math.round(weeklyPlan.week[activePlanDay].nutrients.carbohydrates)}g` },
+                        { label: "Fat",      value: `${Math.round(weeklyPlan.week[activePlanDay].nutrients.fat)}g` },
+                      ].map(({ label, value }) => (
+                        <div key={label}>
+                          <p className="text-xs text-zinc-500">{label}</p>
+                          <p className="text-sm font-semibold">{value}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="space-y-3">
+                      {weeklyPlan.week[activePlanDay].meals.map((meal) => (
+                        <MealPlanCard key={meal.id} meal={meal} />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
       )}

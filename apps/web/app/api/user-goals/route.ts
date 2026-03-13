@@ -35,6 +35,8 @@ export async function POST(request: Request) {
         fatGoal: body.fat_goal,
         fiberGoal: body.fiber_goal ?? undefined,
         sodiumGoal: body.sodium_goal ?? undefined,
+        targetWeight: body.target_weight ?? undefined,
+        targetDate: body.target_date ? new Date(body.target_date) : undefined,
       },
       create: {
         userId: user.id,
@@ -44,6 +46,8 @@ export async function POST(request: Request) {
         fatGoal: body.fat_goal,
         fiberGoal: body.fiber_goal ?? undefined,
         sodiumGoal: body.sodium_goal ?? undefined,
+        targetWeight: body.target_weight ?? undefined,
+        targetDate: body.target_date ? new Date(body.target_date) : undefined,
       },
     });
     return NextResponse.json({ goals: serializeGoals(goals) });

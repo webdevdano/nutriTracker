@@ -73,6 +73,8 @@ export const resolvers = {
               proteinGoal:  goals.proteinGoal,
               carbsGoal:    goals.carbsGoal,
               fatGoal:      goals.fatGoal,
+              targetWeight: goals.targetWeight ? Number(goals.targetWeight) : null,
+              targetDate:   goals.targetDate instanceof Date ? goals.targetDate.toISOString().split("T")[0] : (goals.targetDate ?? null),
             }
           : null,
         profile: profile

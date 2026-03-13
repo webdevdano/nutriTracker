@@ -7,6 +7,8 @@ import type {
   UserRecipe,
   SavedRecipe,
   WeightLog,
+  WaterLog,
+  MeasurementLog,
 } from "./generated/prisma";
 
 // Convert Prisma Decimal / null to plain number | null
@@ -74,6 +76,8 @@ export function serializeGoals(goals: UserGoals) {
     fat_goal: goals.fatGoal,
     fiber_goal: goals.fiberGoal,
     sodium_goal: goals.sodiumGoal,
+    target_weight: n(goals.targetWeight),
+    target_date: goals.targetDate instanceof Date ? goals.targetDate.toISOString().split("T")[0] : (goals.targetDate ?? null),
     created_at: goals.createdAt instanceof Date ? goals.createdAt.toISOString() : goals.createdAt,
     updated_at: goals.updatedAt instanceof Date ? goals.updatedAt.toISOString() : goals.updatedAt,
   };
@@ -183,5 +187,38 @@ export function serializeWeightLog(w: WeightLog) {
     note: w.note,
     logged_at: w.loggedAt instanceof Date ? w.loggedAt.toISOString().split("T")[0] : w.loggedAt,
     created_at: w.createdAt instanceof Date ? w.createdAt.toISOString() : w.createdAt,
+  };
+}
+
+// Serialize Prisma WaterLog → snake_case
+export function serializeWaterLog(w: WaterLog) {
+  return {
+    id: w.id,
+    user_id: w.userId,
+    date: w.date instanceof Date ? w.date.toISOString().split("T")[0] : String(w.date),
+    cups: Number(w.cups),
+    logged_at: w.loggedAt instanceof Date ? w.loggedAt.toISOString() : String(w.loggedAt),
+  };
+}
+
+export function serializeMeasurement(m: MeasurementLog) {
+  return {
+    id: m.id,
+    user_id: m.userId,
+    date: m.date instanceof Date ? m.date.toISOString().split("T")[0] : String(m.date),
+    neck:         n(m.neck),
+    shoulders:    n(m.shoulders),
+    chest:        n(m.chest),
+    waist:        n(m.waist),
+    hips:         n(m.hips),
+    left_bicep:   n(m.leftBicep),
+    right_bicep:  n(m.rightBicep),
+    left_thigh:   n(m.leftThigh),
+    right_thigh:  n(m.rightThigh),
+    left_calf:    n(m.leftCalf),
+    right_calf:   n(m.rightCalf),
+    body_fat_pct: n(m.bodyFatPct),
+    note:         m.note ?? null,
+    created_at:   m.createdAt instanceof Date ? m.createdAt.toISOString() : String(m.createdAt),
   };
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery, useApolloClient } from "@apollo/client/react";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -27,10 +27,12 @@ import {
 } from "@/graphql/queries";
 import {
   PieChart, Pie, Cell,
+  BarChart, Bar,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer,
 } from "recharts";
 import Toast from "@/components/Toast";
 import WeightWidget from "@/components/WeightWidget";
+import WaterWidget from "@/components/WaterWidget";
 
 type UserGoal = {
   calories_goal: number | null;
@@ -94,6 +96,21 @@ export default function TodayPage() {
   const { data: streakData } = useGetStreakQuery(undefined, { skip: isGuest });
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
 
+  // Listen for service-worker offline queue / sync events
+  useEffect(() => {
+    const onQueued = () => setToast({ message: "📡 You're offline — meal saved locally and will sync when you reconnect.", type: "info" });
+    const onSynced = (e: Event) => {
+      const count = (e as CustomEvent<{ count: number }>).detail?.count ?? 0;
+      setToast({ message: `✅ ${count} offline meal${count !== 1 ? "s" : ""} synced!`, type: "success" });
+    };
+    window.addEventListener("sw:food-log-queued", onQueued);
+    window.addEventListener("sw:offline-logs-synced", onSynced);
+    return () => {
+      window.removeEventListener("sw:food-log-queued", onQueued);
+      window.removeEventListener("sw:offline-logs-synced", onSynced);
+    };
+  }, []);
+
   // Normalise GraphQL response → same shape the rest of the page expects
   const rawGqlLogs = gqlData?.dashboard?.logs ?? [];
   const logs: FoodLog[] = rawGqlLogs.map((l: FoodLog & { foodName?: string; fdcId?: number }) => ({
@@ -107,6 +124,8 @@ export default function TodayPage() {
         protein_goal:  gqlData.dashboard.goals.proteinGoal,
         carbs_goal:    gqlData.dashboard.goals.carbsGoal,
         fat_goal:      gqlData.dashboard.goals.fatGoal,
+        target_weight: gqlData.dashboard.goals.targetWeight ?? null,
+        target_date:   gqlData.dashboard.goals.targetDate ?? null,
       }
     : null;
   const loading = gqlLoading && !gqlData;
@@ -169,6 +188,38 @@ export default function TodayPage() {
     } catch {
       setToast({ message: "Failed to quick-add food", type: "error" });
     }
+  }
+
+  async function handleCopyYesterday() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split("T")[0];
+    const yesterdayLogs = recentLogs.filter(
+      (log) => ((log as FoodLog & { date?: string }).date ?? "") === yesterdayStr
+    );
+    if (yesterdayLogs.length === 0) {
+      setToast({ message: "No meals logged yesterday to copy", type: "info" });
+      return;
+    }
+    try {
+      await Promise.all(
+        yesterdayLogs.map((log) =>
+          addFoodLog({ ...log, id: undefined, date: today, time: new Date().toISOString() })
+        )
+      );
+      await apolloClient.refetchQueries({ include: [DASHBOARD_QUERY] });
+      setToast({ message: `Copied ${yesterdayLogs.length} meal${yesterdayLogs.length !== 1 ? "s" : ""} from yesterday`, type: "success" });
+    } catch {
+      setToast({ message: "Failed to copy yesterday's meals", type: "error" });
+    }
+  }
+
+  function handleExportCSV() {
+    const url = `/api/food-logs/export?start=${startDate}&end=${today}`;
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `food-log-${startDate}-to-${today}.csv`;
+    a.click();
   }
 
   async function handleEditLog(log: FoodLog) {
@@ -353,6 +404,10 @@ export default function TodayPage() {
         </div>
       )}
       {/* Daily Summary Card — only meaningful in today view */}
+      {/* Onboarding banner — shown to new users who haven't set up a profile */}
+      {!isGuest && !loading && !gqlData?.dashboard?.profile?.fitnessGoal && (
+        <OnboardingBanner />
+      )}
       {/* Tip of the Day — today only, above summary card */}
       {timeView === 'today' && !isGuest && (
         <div className="mb-6">
@@ -361,10 +416,19 @@ export default function TodayPage() {
       )}
 
       {timeView === 'today' && !isGuest && (
-        <div className="mb-6 grid gap-4 lg:grid-cols-[3fr_2fr] lg:items-stretch">
+        <div className="mb-6 grid gap-4 lg:grid-cols-[3fr_1fr_1fr] lg:items-stretch">
           <DailySummaryCard totals={totals} goals={goals} logCount={logs.length} />
           <WeightWidget />
+          <WaterWidget />
         </div>
+      )}
+
+      {timeView === 'today' && !isGuest && logs.length > 0 && (
+        <NutrientDeficiencyAlerts totals={totals} logCount={logs.length} />
+      )}
+
+      {timeView === 'today' && !isGuest && goals?.target_weight && (
+        <GoalProgressWidget goals={goals} />
       )}
 
       <div className="flex items-center justify-between">
@@ -382,6 +446,25 @@ export default function TodayPage() {
                 )}
               </span>
             )}
+            {(() => {
+              const MILESTONES = [
+                { days: 100, icon: "🏆", label: "Century" },
+                { days: 60,  icon: "💎", label: "Diamond" },
+                { days: 30,  icon: "🥇", label: "Gold" },
+                { days: 14,  icon: "🥈", label: "Silver" },
+                { days: 7,   icon: "🥉", label: "Bronze" },
+              ];
+              const milestone = MILESTONES.find((m) => (streakData?.streak ?? 0) >= m.days);
+              if (!milestone) return null;
+              return (
+                <span
+                  title={`${milestone.label} milestone — ${milestone.days}+ day streak!`}
+                  className="inline-flex items-center gap-1 rounded-full bg-yellow-50 px-2.5 py-0.5 text-xs font-semibold text-yellow-700 dark:bg-yellow-950/30 dark:text-yellow-400"
+                >
+                  {milestone.icon} {milestone.label}
+                </span>
+              );
+            })()}
           </div>
         </div>
         
@@ -457,7 +540,20 @@ export default function TodayPage() {
               color="#FF6347"
             />
           </div>
-          
+
+          {goals?.calories_goal && (
+            <div className="mt-4">
+              <DeficitSurplusChart data={historicalData} goal={goals.calories_goal} />
+            </div>
+          )}
+
+          {/* Week-over-week comparison — shown in week view */}
+          {timeView === 'week' && !isGuest && (
+            <div className="mt-4">
+              <WeekComparisonWidget />
+            </div>
+          )}
+
           {/* Statistics Summary */}
           <div className="mt-6 grid gap-4 sm:grid-cols-4 border-t border-zinc-200 pt-6 dark:border-blue-950/70">
             <StatCard 
@@ -507,9 +603,12 @@ export default function TodayPage() {
         <NutrientMiniWidget totals={totals} />
       )}
 
-      {/* Meal Breakdown Pie — today only, needs at least one log */}
+      {/* Meal Breakdown — today only, needs at least one log */}
       {timeView === 'today' && logs.length > 0 && (
-        <MealPieChart logs={logs} />
+        <>
+          <MealPieChart logs={logs} />
+          <MealMacroChart logs={logs} />
+        </>
       )}
 
       {/* Additional Nutrients Section */}
@@ -600,14 +699,40 @@ export default function TodayPage() {
           <QuickAddRecents foods={recentFoods} onAdd={handleQuickAdd} />
         )}
 
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="text-lg font-semibold tracking-tight">Today&apos;s Meals</h2>
-          <a
-            href="/app/search"
-            className="inline-flex h-9 items-center justify-center rounded-full bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
-          >
-            + Add Food
-          </a>
+          <div className="flex items-center gap-2">
+            {timeView === 'today' && !isGuest && (
+              <button
+                onClick={handleCopyYesterday}
+                className="inline-flex h-9 items-center gap-1.5 rounded-full border border-zinc-300 px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                title="Copy all meals from yesterday to today"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy Yesterday
+              </button>
+            )}
+            {!isGuest && logs.length > 0 && (
+              <button
+                onClick={handleExportCSV}
+                className="inline-flex h-9 items-center gap-1.5 rounded-full border border-zinc-300 px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                title="Download food log as CSV"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Export CSV
+              </button>
+            )}
+            <a
+              href="/app/search"
+              className="inline-flex h-9 items-center justify-center rounded-full bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-white"
+            >
+              + Add Food
+            </a>
+          </div>
         </div>
 
         {logs.length === 0 ? (
@@ -1344,6 +1469,374 @@ function StatCard({
           }`}>{Math.round(percentage)}% of goal</div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── OnboardingBanner ────────────────────────────────────────────────────────
+
+const ONBOARDING_STEPS = [
+  { num: 1, href: "/profile-setup", label: "Set up your profile & nutrition goals" },
+  { num: 2, href: "/app/search",    label: "Search and log your first meal" },
+  { num: 3, href: "/app/grocery",   label: "Generate a personalised meal plan" },
+  { num: 4, href: "/app/measurements", label: "Log your starting body measurements" },
+];
+
+function OnboardingBanner() {
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("onboarding_dismissed") === "1";
+  });
+  if (dismissed) return null;
+
+  return (
+    <div className="mb-6 rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-900/40 dark:bg-blue-950/20">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-base font-semibold text-blue-900 dark:text-blue-200">Welcome to NutriTracker! 👋</h2>
+          <p className="mt-1 text-sm text-blue-700 dark:text-blue-300">
+            Complete a few steps to personalise your experience:
+          </p>
+        </div>
+        <button
+          onClick={() => { localStorage.setItem("onboarding_dismissed", "1"); setDismissed(true); }}
+          className="shrink-0 text-blue-400 hover:text-blue-600 dark:hover:text-blue-200"
+          title="Dismiss"
+        >
+          ✕
+        </button>
+      </div>
+      <ol className="mt-4 space-y-2">
+        {ONBOARDING_STEPS.map(({ num, href, label }) => (
+          <li key={num}>
+            <a
+              href={href}
+              className="flex items-center gap-3 rounded-xl border border-blue-100 bg-white px-4 py-2.5 text-sm font-medium text-blue-800 hover:border-blue-300 hover:bg-blue-50 dark:border-blue-800/40 dark:bg-zinc-900 dark:text-blue-300 dark:hover:border-blue-600"
+            >
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white dark:bg-blue-500">
+                {num}
+              </span>
+              {label}
+              <span className="ml-auto text-blue-400">→</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+// ─── GoalProgressWidget ──────────────────────────────────────────────────────
+
+function GoalProgressWidget({ goals }: { goals: UserGoal }) {
+  const targetWeight = goals.target_weight;
+  const targetDate   = goals.target_date;
+
+  const daysLeft = useMemo(() => {
+    if (!targetDate) return null;
+    const diff = new Date(targetDate).getTime() - Date.now();
+    return Math.ceil(diff / 86_400_000);
+  }, [targetDate]);
+
+  if (!targetWeight) return null;
+
+  return (
+    <div className="mb-6 rounded-2xl border border-zinc-200/70 bg-white p-4 dark:border-blue-950/70 dark:bg-zinc-900">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-base font-semibold">🎯 Goal</span>
+          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-sm font-medium dark:bg-zinc-800">
+            {targetWeight} lbs target weight
+          </span>
+        </div>
+        {daysLeft !== null && (
+          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
+            daysLeft < 0
+              ? "bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400"
+              : daysLeft <= 14
+              ? "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400"
+              : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400"
+          }`}>
+            {daysLeft < 0 ? `${Math.abs(daysLeft)} days overdue` : daysLeft === 0 ? "Target day!" : `${daysLeft} days left`}
+          </span>
+        )}
+        <a href="/profile-setup" className="ml-auto text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 underline">
+          Edit goal
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ─── NutrientDeficiencyAlerts ─────────────────────────────────────────────────
+
+const DEFICIENCY_CHECKS = [
+  { key: "vitamin_d",   label: "Vitamin D",   rdi: 20,   unit: "µg", food: "salmon, eggs, fortified milk" },
+  { key: "iron",        label: "Iron",         rdi: 18,   unit: "mg", food: "lean meat, lentils, spinach" },
+  { key: "calcium",     label: "Calcium",      rdi: 1000, unit: "mg", food: "dairy, kale, almonds" },
+  { key: "potassium",   label: "Potassium",    rdi: 4700, unit: "mg", food: "banana, sweet potato, avocado" },
+  { key: "magnesium",   label: "Magnesium",    rdi: 420,  unit: "mg", food: "pumpkin seeds, dark chocolate, spinach" },
+  { key: "vitamin_b12", label: "Vitamin B12",  rdi: 2.4,  unit: "µg", food: "meat, fish, dairy, fortified foods" },
+  { key: "zinc",        label: "Zinc",         rdi: 11,   unit: "mg", food: "oysters, beef, pumpkin seeds" },
+  { key: "fiber",       label: "Fiber",        rdi: 28,   unit: "g",  food: "oats, beans, fruits, vegetables" },
+  { key: "vitamin_c",   label: "Vitamin C",    rdi: 90,   unit: "mg", food: "bell peppers, citrus, broccoli" },
+];
+
+function NutrientDeficiencyAlerts({
+  totals,
+  logCount,
+}: {
+  totals: Record<string, number>;
+  logCount: number;
+}) {
+  const [dismissed, setDismissed] = useState(false);
+  if (dismissed || logCount === 0) return null;
+
+  const deficient = DEFICIENCY_CHECKS.filter(({ key, rdi }) => (totals[key] ?? 0) < rdi * 0.3);
+  if (deficient.length < 2) return null;
+
+  const shown = deficient.slice(0, 4);
+
+  return (
+    <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/50 dark:bg-amber-950/20">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">⚠️</span>
+          <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+            Low on {deficient.length} nutrient{deficient.length !== 1 ? "s" : ""} today
+          </p>
+        </div>
+        <button
+          onClick={() => setDismissed(true)}
+          className="shrink-0 rounded p-0.5 text-amber-500 hover:bg-amber-100 hover:text-amber-700 dark:hover:bg-amber-900/40 dark:hover:text-amber-300"
+          title="Dismiss"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        {shown.map(({ key, label, rdi, unit, food }) => {
+          const val = totals[key] ?? 0;
+          const pct = Math.round((val / rdi) * 100);
+          return (
+            <div key={key} className="flex items-start gap-2 rounded-lg bg-white/60 px-3 py-2 dark:bg-zinc-900/40">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-amber-800 dark:text-amber-300">{label}</span>
+                  <span className="text-xs tabular-nums text-amber-600 dark:text-amber-400">{pct}% of RDI</span>
+                </div>
+                <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+                  Try: <span className="italic">{food}</span>
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {deficient.length > 4 && (
+        <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
+          +{deficient.length - 4} more low nutrients —{" "}
+          <a href="/app/nutrients" className="underline hover:text-amber-800 dark:hover:text-amber-200">
+            see full breakdown
+          </a>
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── WeekComparisonWidget ────────────────────────────────────────────────────
+
+type WeekAvg = { calories: number; protein: number; carbs: number; fat: number; days: number };
+
+function WeekComparisonWidget() {
+  const [data, setData] = useState<{ thisWeek: WeekAvg; lastWeek: WeekAvg } | null>(null);
+
+  useEffect(() => {
+    const today  = new Date();
+    const d = (offset: number) => {
+      const d = new Date(today);
+      d.setDate(d.getDate() - offset);
+      return d.toISOString().split("T")[0];
+    };
+    const thisStart = d(6);
+    const lastStart = d(13);
+    const lastEnd   = d(7);
+
+    async function fetchRange(start: string, end: string): Promise<WeekAvg> {
+      const res  = await fetch(`/api/food-logs?start=${start}&end=${end}`);
+      const json = await res.json();
+      const logs: Array<{ calories: number; protein: number; carbs: number; fat: number; quantity: number; date: string }> = json.logs ?? [];
+      const byDate: Record<string, { cal: number; pro: number; car: number; fat: number }> = {};
+      for (const l of logs) {
+        const q = l.quantity || 1;
+        if (!byDate[l.date]) byDate[l.date] = { cal:0, pro:0, car:0, fat:0 };
+        byDate[l.date].cal += (l.calories || 0) * q;
+        byDate[l.date].pro += (l.protein  || 0) * q;
+        byDate[l.date].car += (l.carbs    || 0) * q;
+        byDate[l.date].fat += (l.fat      || 0) * q;
+      }
+      const days = Object.values(byDate);
+      if (!days.length) return { calories: 0, protein: 0, carbs: 0, fat: 0, days: 0 };
+      const n = days.length;
+      return {
+        calories: Math.round(days.reduce((s, d) => s + d.cal, 0) / n),
+        protein:  Math.round(days.reduce((s, d) => s + d.pro, 0) / n),
+        carbs:    Math.round(days.reduce((s, d) => s + d.car, 0) / n),
+        fat:      Math.round(days.reduce((s, d) => s + d.fat, 0) / n),
+        days:     n,
+      };
+    }
+
+    Promise.all([
+      fetchRange(thisStart, d(0)),
+      fetchRange(lastStart, lastEnd),
+    ]).then(([thisWeek, lastWeek]) => setData({ thisWeek, lastWeek }));
+  }, []);
+
+  if (!data) return null;
+  if (data.thisWeek.days === 0 && data.lastWeek.days === 0) return null;
+
+  const metrics: { key: keyof WeekAvg; label: string; unit: string }[] = [
+    { key: "calories", label: "Avg Calories", unit: "kcal" },
+    { key: "protein",  label: "Avg Protein",  unit: "g" },
+    { key: "carbs",    label: "Avg Carbs",    unit: "g" },
+    { key: "fat",      label: "Avg Fat",      unit: "g" },
+  ];
+
+  return (
+    <div className="rounded-2xl border border-zinc-200/70 bg-white p-4 dark:border-blue-950/70 dark:bg-zinc-900">
+      <h3 className="mb-3 text-sm font-semibold">📊 This Week vs Last Week</h3>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {metrics.map(({ key, label, unit }) => {
+          const thisVal = data.thisWeek[key] as number;
+          const lastVal = data.lastWeek[key] as number;
+          const delta   = lastVal > 0 ? Math.round(((thisVal - lastVal) / lastVal) * 100) : null;
+          return (
+            <div key={key} className="rounded-xl border border-zinc-100 p-3 dark:border-zinc-800">
+              <p className="text-xs text-zinc-500">{label}</p>
+              <p className="text-lg font-semibold">{thisVal}<span className="ml-0.5 text-xs font-normal">{unit}</span></p>
+              {delta !== null && (
+                <span className={`mt-0.5 inline-block text-xs font-medium ${
+                  delta > 0 ? "text-red-500" : delta < 0 ? "text-emerald-500" : "text-zinc-400"
+                }`}>
+                  {delta > 0 ? "+" : ""}{delta}% vs last wk
+                </span>
+              )}
+              <p className="text-xs text-zinc-400">Last: {lastVal}{unit}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── DeficitSurplusChart ──────────────────────────────────────────────────────
+
+function DeficitSurplusChart({ data, goal }: { data: HistoricalData[]; goal: number }) {
+  if (!data.length) return null;
+
+  const chartData = data.map((d) => ({
+    date: new Date(d.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    diff: Math.round(d.calories - goal),
+  }));
+
+  return (
+    <div className="rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800/50">
+      <div className="mb-3 flex items-center justify-between">
+        <h4 className="text-xs font-semibold">Daily Calorie Surplus / Deficit vs. Goal</h4>
+        <div className="flex items-center gap-4 text-xs text-zinc-500">
+          <span className="flex items-center gap-1">
+            <span className="inline-block h-2 w-2 rounded-sm bg-red-400" /> Surplus
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block h-2 w-2 rounded-sm bg-emerald-500" /> Deficit
+          </span>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={130}>
+        <BarChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+          <XAxis
+            dataKey="date"
+            tick={{ fontSize: 10, fill: "#9ca3af" }}
+            tickLine={false}
+            axisLine={false}
+            interval="preserveStartEnd"
+          />
+          <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} tickLine={false} axisLine={false} />
+          <Tooltip
+            contentStyle={{ fontSize: 12, borderRadius: 8 }}
+            formatter={(val) => [`${Number(val) > 0 ? "+" : ""}${val} kcal`, "vs. goal"]}
+          />
+          <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={1} />
+          <Bar dataKey="diff" radius={[3, 3, 0, 0]}>
+            {chartData.map((entry, i) => (
+              <Cell key={i} fill={entry.diff > 0 ? "#f87171" : "#22c55e"} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+// ─── MealMacroChart ───────────────────────────────────────────────────────────
+
+const MEAL_COLORS = {
+  protein: "#22c55e",
+  carbs: "#4169E1",
+  fat: "#f59e0b",
+};
+
+function MealMacroChart({ logs }: { logs: FoodLog[] }) {
+  const data = (["BREAKFAST", "LUNCH", "DINNER", "SNACK"] as const)
+    .map((meal) => {
+      const ml = logs.filter((l) => (l.meal_type ?? "SNACK") === meal);
+      return {
+        name: meal.charAt(0) + meal.slice(1).toLowerCase(),
+        protein: Math.round(ml.reduce((s, l) => s + (l.protein || 0) * l.quantity, 0)),
+        carbs: Math.round(ml.reduce((s, l) => s + (l.carbs || 0) * l.quantity, 0)),
+        fat: Math.round(ml.reduce((s, l) => s + (l.fat || 0) * l.quantity, 0)),
+      };
+    })
+    .filter((d) => d.protein > 0 || d.carbs > 0 || d.fat > 0);
+
+  if (data.length === 0) return null;
+
+  return (
+    <div className="mt-4 rounded-2xl border border-zinc-200/70 bg-white p-5 dark:border-blue-950/70 dark:bg-zinc-900">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-sm font-semibold">Macros by Meal</h3>
+        <div className="flex items-center gap-4 text-xs text-zinc-500">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2 w-2 rounded-sm" style={{ backgroundColor: MEAL_COLORS.protein }} /> Protein
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2 w-2 rounded-sm" style={{ backgroundColor: MEAL_COLORS.carbs }} /> Carbs
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2 w-2 rounded-sm" style={{ backgroundColor: MEAL_COLORS.fat }} /> Fat
+          </span>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={160}>
+        <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+          <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#9ca3af" }} tickLine={false} axisLine={false} />
+          <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} tickLine={false} axisLine={false} unit="g" />
+          <Tooltip
+            contentStyle={{ fontSize: 12, borderRadius: 8 }}
+            formatter={(val, name) => [`${val}g`, String(name).charAt(0).toUpperCase() + String(name).slice(1)]}
+          />
+          <Bar dataKey="protein" stackId="a" fill={MEAL_COLORS.protein} radius={[0, 0, 0, 0]} />
+          <Bar dataKey="carbs"   stackId="a" fill={MEAL_COLORS.carbs}   radius={[0, 0, 0, 0]} />
+          <Bar dataKey="fat"     stackId="a" fill={MEAL_COLORS.fat}     radius={[3, 3, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }

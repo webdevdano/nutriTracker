@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerUser } from "@/lib/auth-helpers";
 import { serializeFoodLog } from "@/lib/api-serializers";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +52,12 @@ export async function GET(request: Request) {
 
 // POST /api/food-logs — log a food
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`${ip}:food-logs-post`, { limit: 60, windowSeconds: 60 });
+  if (!rl.success) {
+    return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
+  }
+
   const user = await getServerUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

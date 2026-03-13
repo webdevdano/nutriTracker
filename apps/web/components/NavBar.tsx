@@ -4,12 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
-  { href: "/app",           label: "Progress",     exact: true  },
-  { href: "/app/search",    label: "Search Foods", exact: false },
-  { href: "/app/meals",     label: "Meals",        exact: false },
-  { href: "/app/learn",     label: "Learn",        exact: false },
-  { href: "/app/nutrients", label: "Nutrients",    exact: false },
-  { href: "/app/grocery",   label: "Lists",        exact: false },
+  { href: "/app",              label: "Progress",     exact: true  },
+  { href: "/app/search",        label: "Search Foods", exact: false },
+  { href: "/app/meals",         label: "Meals",        exact: false },
+  { href: "/app/measurements",  label: "Measurements", exact: false },
+  { href: "/app/learn",         label: "Learn",        exact: false },
+  { href: "/app/nutrients",     label: "Nutrients",    exact: false },
+  { href: "/app/grocery",       label: "Lists",        exact: false },
 ];
 
 export default function NavBar({ isGuest }: { isGuest: boolean }) {

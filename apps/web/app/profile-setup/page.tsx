@@ -46,6 +46,8 @@ export default function ProfileSetupPage() {
   const [editedFat, setEditedFat] = useState("");
   const [editedFiber, setEditedFiber] = useState("");
   const [editedSodium, setEditedSodium] = useState("");
+  const [targetWeight, setTargetWeight] = useState("");
+  const [targetDate, setTargetDate] = useState("");
 
   useEffect(() => {
     async function checkProfile() {
@@ -219,6 +221,8 @@ export default function ProfileSetupPage() {
           fat_goal: parseInt(editedFat) || calculated.fat,
           fiber_goal: parseInt(editedFiber) || calculated.fiber,
           sodium_goal: parseInt(editedSodium) || calculated.sodium,
+          target_weight: targetWeight ? parseFloat(targetWeight) : undefined,
+          target_date: targetDate || undefined,
         }),
       });
 
@@ -490,6 +494,28 @@ export default function ProfileSetupPage() {
                     className="w-full bg-transparent text-xl font-semibold outline-none"
                     value={editedSodium}
                     onChange={(e) => setEditedSodium(e.target.value)}
+                  />
+                </label>
+                {/* Target weight */}
+                <label className="grid gap-1 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Target weight (lbs)</span>
+                  <input
+                    type="number"
+                    placeholder="e.g. 165"
+                    className="w-full bg-transparent text-xl font-semibold outline-none placeholder:font-normal placeholder:text-zinc-400"
+                    value={targetWeight}
+                    onChange={(e) => setTargetWeight(e.target.value)}
+                  />
+                </label>
+                {/* Target date */}
+                <label className="grid gap-1 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Goal deadline</span>
+                  <input
+                    type="date"
+                    className="w-full bg-transparent text-xl font-semibold outline-none"
+                    value={targetDate}
+                    min={new Date().toISOString().split("T")[0]}
+                    onChange={(e) => setTargetDate(e.target.value)}
                   />
                 </label>
               </div>

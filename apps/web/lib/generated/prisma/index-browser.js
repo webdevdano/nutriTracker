@@ -189,6 +189,8 @@ exports.Prisma.UserGoalsScalarFieldEnum = {
   fatGoal: 'fatGoal',
   fiberGoal: 'fiberGoal',
   sodiumGoal: 'sodiumGoal',
+  targetWeight: 'targetWeight',
+  targetDate: 'targetDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -373,6 +375,34 @@ exports.Prisma.WeightLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.WaterLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  cups: 'cups',
+  loggedAt: 'loggedAt'
+};
+
+exports.Prisma.MeasurementLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  neck: 'neck',
+  shoulders: 'shoulders',
+  chest: 'chest',
+  waist: 'waist',
+  hips: 'hips',
+  leftBicep: 'leftBicep',
+  rightBicep: 'rightBicep',
+  leftThigh: 'leftThigh',
+  rightThigh: 'rightThigh',
+  leftCalf: 'leftCalf',
+  rightCalf: 'rightCalf',
+  bodyFatPct: 'bodyFatPct',
+  note: 'note',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -419,7 +449,9 @@ exports.Prisma.ModelName = {
   CustomFood: 'CustomFood',
   UserRecipe: 'UserRecipe',
   SavedRecipe: 'SavedRecipe',
-  WeightLog: 'WeightLog'
+  WeightLog: 'WeightLog',
+  WaterLog: 'WaterLog',
+  MeasurementLog: 'MeasurementLog'
 };
 
 /**

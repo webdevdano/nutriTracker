@@ -46,6 +46,8 @@ export const DASHBOARD_QUERY = gql`
         proteinGoal
         carbsGoal
         fatGoal
+        targetWeight
+        targetDate
       }
       profile {
         fullName

@@ -28,15 +28,17 @@ model User {
   sessions Session[]
 
   // App relations
-  profile        Profile?
-  userGoals      UserGoals?
-  foodLogs       FoodLog[]
-  groceryList    GroceryList[]
-  savedFavorites SavedFavorite[]
-  customFoods    CustomFood[]
-  userRecipes    UserRecipe[]
-  savedRecipes   SavedRecipe[]
-  weightLogs     WeightLog[]
+  profile         Profile?
+  userGoals       UserGoals?
+  foodLogs        FoodLog[]
+  groceryList     GroceryList[]
+  savedFavorites  SavedFavorite[]
+  customFoods     CustomFood[]
+  userRecipes     UserRecipe[]
+  savedRecipes    SavedRecipe[]
+  weightLogs      WeightLog[]
+  waterLogs       WaterLog[]
+  measurementLogs MeasurementLog[]
 }
 
 model Account {
@@ -110,16 +112,18 @@ model Profile {
 }
 
 model UserGoals {
-  id           String   @id @default(uuid())
-  userId       String   @unique
+  id           String    @id @default(uuid())
+  userId       String    @unique
   caloriesGoal Int?
   proteinGoal  Int?
   carbsGoal    Int?
   fatGoal      Int?
   fiberGoal    Int?
   sodiumGoal   Int?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  targetWeight Decimal?
+  targetDate   DateTime? @db.Date
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -386,4 +390,50 @@ model WeightLog {
 
   @@unique([userId, loggedAt])
   @@index([userId, loggedAt(sort: Desc)])
+}
+
+// =====================================================
+// WATER TRACKING
+// =====================================================
+
+model WaterLog {
+  id       String   @id @default(uuid())
+  userId   String
+  date     DateTime @db.Date
+  cups     Decimal  @default(1)
+  loggedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date(sort: Desc)])
+}
+
+// =====================================================
+// BODY MEASUREMENTS
+// =====================================================
+
+model MeasurementLog {
+  id         String   @id @default(uuid())
+  userId     String
+  date       DateTime @db.Date
+  // All measurements in inches (null = not recorded)
+  neck       Decimal?
+  shoulders  Decimal?
+  chest      Decimal?
+  waist      Decimal?
+  hips       Decimal?
+  leftBicep  Decimal?
+  rightBicep Decimal?
+  leftThigh  Decimal?
+  rightThigh Decimal?
+  leftCalf   Decimal?
+  rightCalf  Decimal?
+  bodyFatPct Decimal?
+  note       String?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date(sort: Desc)])
 }

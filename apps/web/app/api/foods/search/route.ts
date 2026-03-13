@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import { searchFoodsService } from "@/lib/food-service";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  const rl = rateLimit(`${getClientIp(request)}:foods-search`, { limit: 30, windowSeconds: 60 });
+  if (!rl.success) {
+    return NextResponse.json({ error: "Too many search requests — please slow down" }, { status: 429 });
+  }
   try {
     const url = new URL(request.url);
     const query = url.searchParams.get("query");
