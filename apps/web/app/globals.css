@@ -1,7 +1,8 @@
-/* Prevent horizontal page scroll on mobile */
+/* Prevent horizontal page scroll on mobile.
+   Use clip (not hidden) so fixed children can still have their own overflow-x: auto. */
 html,
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
 }
 

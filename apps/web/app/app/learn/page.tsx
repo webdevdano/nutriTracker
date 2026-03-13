@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getAllNutrientsAlphabetically, getNutrientsByCategory, type NutrientInfo } from "@/lib/nutrient-data";
+import { useAddGroceryItemMutation } from "@/store/api";
 
 // Sample food sources for each category
 
@@ -839,6 +840,7 @@ function SuperfoodModal({ superfoods, initialIndex, onClose }: { superfoods: Sup
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [quantity, setQuantity] = useState(1);
   const [showAddSuccess, setShowAddSuccess] = useState(false);
+  const [addGroceryItem] = useAddGroceryItemMutation();
   
   const superfood = superfoods[currentIndex];
   
@@ -854,23 +856,13 @@ function SuperfoodModal({ superfoods, initialIndex, onClose }: { superfoods: Sup
   
   const handleAddToGroceryList = async () => {
     try {
-      const response = await fetch('/api/grocery', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          food_name: superfood.name,
-          quantity: quantity,
-          unit: superfood.serving
-        })
-      });
-      if (response.ok) {
-        setShowAddSuccess(true);
-        setTimeout(() => setShowAddSuccess(false), 2000);
-      } else {
-        const error = await response.json();
-        console.error('Error adding to grocery list:', error);
-        alert('Failed to add to grocery list. Please try again.');
-      }
+      await addGroceryItem({
+        food_name: superfood.name,
+        quantity,
+        unit: superfood.serving,
+      }).unwrap();
+      setShowAddSuccess(true);
+      setTimeout(() => setShowAddSuccess(false), 2000);
     } catch (error) {
       console.error('Error adding to grocery list:', error);
       alert('Failed to add to grocery list. Please try again.');

@@ -98,16 +98,16 @@ export default function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 sm:hidden border-t border-[#D3D8E0] bg-white/95 backdrop-blur-sm dark:border-gray-800 dark:bg-black/95">
-      <div className="overflow-x-auto scrollbar-hide" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      <div className="flex items-stretch min-w-max">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 sm:hidden overflow-hidden border-t border-[#D3D8E0] bg-white/95 backdrop-blur-sm dark:border-gray-800 dark:bg-black/95">
+      <div className="overflow-x-auto scrollbar-hide" style={{ paddingBottom: "env(safe-area-inset-bottom)", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
+      <div className="flex min-w-max">
         {TABS.map(({ href, label, icon, exact }) => {
           const isActive = active(href, exact);
           return (
             <Link
               key={href}
               href={href}
-              className={`flex flex-shrink-0 min-w-[68px] flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors ${
+              className={`flex shrink-0 min-w-17 flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors ${
                 isActive
                   ? "text-[#4169E1] dark:text-[#87CEEB]"
                   : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"
@@ -125,7 +125,7 @@ export default function BottomNav() {
         {isGuest ? (
           <Link
             href="/login"
-            className={`flex flex-shrink-0 min-w-[68px] flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors ${
+            className={`flex shrink-0 min-w-17 flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors ${
               pathname.startsWith("/login") || pathname.startsWith("/signup")
                 ? "text-[#4169E1] dark:text-[#87CEEB]"
                 : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"
@@ -139,7 +139,7 @@ export default function BottomNav() {
         ) : (
           <Link
             href="/profile-setup"
-            className={`flex flex-shrink-0 min-w-[68px] flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors ${
+            className={`flex shrink-0 min-w-17 flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors ${
               active("/profile-setup", false)
                 ? "text-[#4169E1] dark:text-[#87CEEB]"
                 : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"
