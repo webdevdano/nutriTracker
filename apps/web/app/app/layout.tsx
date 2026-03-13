@@ -23,7 +23,7 @@ export default async function AppLayout({
             </div>
           </div>
           {/* Desktop nav — hidden on mobile (bottom nav handles mobile) */}
-          <div className="hidden sm:flex items-center gap-2 overflow-x-auto">
+          <div className="hidden sm:flex items-center gap-2">
             <NavBar isGuest={isGuest} />
             <ThemeToggle />
           </div>
