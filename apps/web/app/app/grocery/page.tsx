@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/Skeleton";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Toast from "@/components/Toast";
@@ -415,7 +416,7 @@ export default function GroceryPage() {
                         className="flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:border-[#4169E1]/40 hover:bg-[#4169E1]/5 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-[#87CEEB]/40 dark:hover:bg-[#87CEEB]/5"
                       >
                         <span>+</span>
-                        <span className="max-w-[160px] truncate">{name}</span>
+                        <span className="max-w-40 truncate">{name}</span>
                       </button>
                     ))}
                   </div>
@@ -423,10 +424,23 @@ export default function GroceryPage() {
               )}
 
               {loading ? (
-                <div className="mt-8 text-center text-sm text-zinc-500">Loading…</div>
+                <div className="mt-4 space-y-2">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="flex items-center gap-3 rounded-xl border border-zinc-200/70 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-4">
+                      <Skeleton className="h-4 w-4 shrink-0 rounded-full" />
+                      <Skeleton className="h-3.5 w-48" />
+                    </div>
+                  ))}
+                </div>
               ) : items.length === 0 ? (
-                <div className="rounded-2xl border border-zinc-200/70 bg-white p-8 text-center dark:border-zinc-800/80 dark:bg-zinc-900">
-                  <p className="text-sm text-zinc-500">Your grocery list is empty. Add items above or from the Search page.</p>
+                <div className="rounded-2xl border border-zinc-200/70 bg-white p-10 text-center dark:border-zinc-800/80 dark:bg-zinc-900">
+                  <div className="text-4xl mb-3">🛒</div>
+                  <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">Your list is empty</p>
+                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Add items above, or find foods to add from Search or the Learn section</p>
+                  <div className="mt-5 flex justify-center gap-3">
+                    <a href="/app/search" className="inline-flex h-8 items-center rounded-full bg-[#4169E1] px-4 text-xs font-semibold text-white hover:bg-[#3558c4] dark:bg-[#87CEEB] dark:text-black">Search Foods</a>
+                    <a href="/app/learn" className="inline-flex h-8 items-center rounded-full border border-zinc-200 px-4 text-xs font-medium text-zinc-700 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-300">Learn section</a>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -474,10 +488,23 @@ export default function GroceryPage() {
           {activeTab === "favorites" && (
             <>
               {loading ? (
-                <div className="mt-8 text-center text-sm text-zinc-500">Loading…</div>
+                <div className="mt-4 space-y-2">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="flex items-center gap-3 rounded-xl border border-zinc-200/70 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-4">
+                      <Skeleton className="h-9 w-9 shrink-0 rounded-xl" />
+                      <div className="space-y-2 flex-1">
+                        <Skeleton className="h-3.5 w-40" />
+                        <Skeleton className="h-3 w-28" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : favorites.length === 0 ? (
-                <div className="rounded-2xl border border-zinc-200/70 bg-white p-8 text-center dark:border-zinc-800/80 dark:bg-zinc-900">
-                  <p className="text-sm text-zinc-500">No saved favourites yet. Star foods from the Search page.</p>
+                <div className="rounded-2xl border border-zinc-200/70 bg-white p-10 text-center dark:border-zinc-800/80 dark:bg-zinc-900">
+                  <div className="text-4xl mb-3">⭐</div>
+                  <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">No favourites saved yet</p>
+                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Star foods from the Search page to save them here for quick logging</p>
+                  <a href="/app/search" className="mt-5 inline-flex h-8 items-center rounded-full bg-[#4169E1] px-4 text-xs font-semibold text-white hover:bg-[#3558c4] dark:bg-[#87CEEB] dark:text-black">Browse Foods</a>
                 </div>
               ) : (
                 <div className="space-y-3">

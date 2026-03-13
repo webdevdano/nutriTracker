@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
+import { Skeleton } from "@/components/Skeleton";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import {
@@ -399,12 +400,31 @@ export default function MealsPage() {
       {activeTab === "history" && (
         <>
           {isLoading && (
-            <div className="mt-10 text-center text-sm text-zinc-500 dark:text-zinc-400">Loading…</div>
+            <div className="mt-6 space-y-4">
+              {[...Array(2)].map((_, i) => (
+                <div key={i} className="overflow-hidden rounded-2xl border border-zinc-200/70 dark:border-zinc-800/80 bg-white dark:bg-zinc-900">
+                  <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 px-5 py-3.5">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-3.5 w-20" />
+                  </div>
+                  <div className="px-5 py-3 space-y-2.5">
+                    {[...Array(3)].map((_, j) => (
+                      <div key={j} className="flex items-center justify-between">
+                        <Skeleton className="h-3.5 w-44" />
+                        <Skeleton className="h-3.5 w-16" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
           {!isLoading && days.length === 0 && (
             <div className="mt-8 rounded-2xl border border-zinc-200/70 bg-white p-10 text-center dark:border-zinc-800/80 dark:bg-zinc-900">
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">No meals logged in the last 7 days.</p>
-              <Link href="/app/search" className="mt-4 inline-flex rounded-full bg-[#4169E1] px-5 py-2 text-sm font-medium text-white hover:bg-[#000080] dark:bg-[#87CEEB] dark:text-black">
+              <div className="text-4xl mb-3">📅</div>
+              <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">No meals logged in the last 7 days</p>
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Start logging to see your meal history here</p>
+              <Link href="/app/search" className="mt-5 inline-flex h-9 items-center rounded-full bg-[#4169E1] px-5 text-sm font-medium text-white hover:bg-[#3558c4] dark:bg-[#87CEEB] dark:text-black">
                 Log your first meal
               </Link>
             </div>
@@ -706,7 +726,7 @@ function RecipeDetailModal({
         {recipe.image && (
           <div className="relative h-52 w-full overflow-hidden rounded-t-2xl">
             <Image src={recipe.image} alt={recipe.title} fill className="object-cover" unoptimized />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
             <button
               onClick={onClose}
               className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60"

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, useEffect } from "react";
+import { Skeleton } from "@/components/Skeleton";
 import { useSession } from "next-auth/react";
 import { useQuery, useApolloClient } from "@apollo/client/react";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -373,8 +374,29 @@ export default function TodayPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto w-full max-w-6xl px-6 py-8">
-        <div className="text-center text-zinc-600 dark:text-zinc-400">Loading...</div>
+      <div className="mx-auto w-full max-w-6xl px-6 py-8 space-y-6">
+        {/* Stat cards */}
+        <div className="grid gap-4 sm:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="rounded-2xl border border-zinc-200/70 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-5">
+              <Skeleton className="h-3 w-16 mb-3" />
+              <Skeleton className="h-7 w-20" />
+            </div>
+          ))}
+        </div>
+        {/* Meals skeleton */}
+        <div className="rounded-2xl border border-zinc-200/70 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 p-5 space-y-4">
+          <Skeleton className="h-4 w-32" />
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="flex items-center justify-between rounded-xl border border-zinc-100 dark:border-zinc-800 p-4">
+              <div className="space-y-2">
+                <Skeleton className="h-3.5 w-40" />
+                <Skeleton className="h-3 w-28" />
+              </div>
+              <Skeleton className="h-3.5 w-16" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -738,10 +760,16 @@ export default function TodayPage() {
         </div>
 
         {logs.length === 0 ? (
-          <div className="rounded-2xl border border-zinc-200/70 p-8 text-center dark:border-blue-950/70 bg-white dark:bg-zinc-900">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              No meals logged yet today. Start by searching for foods!
-            </p>
+          <div className="rounded-2xl border border-zinc-200/70 p-10 text-center dark:border-blue-950/70 bg-white dark:bg-zinc-900">
+            <div className="text-4xl mb-3">🍽️</div>
+            <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">Nothing logged today yet</p>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Search for a food to start tracking your nutrition</p>
+            <a
+              href="/app/search"
+              className="mt-5 inline-flex h-9 items-center gap-1.5 rounded-full bg-[#4169E1] px-5 text-sm font-medium text-white hover:bg-[#3558c4] dark:bg-[#87CEEB] dark:text-black"
+            >
+              + Search Foods
+            </a>
           </div>
         ) : (
           <div className="space-y-6">
@@ -956,7 +984,7 @@ function QuickAddRecents({ foods, onAdd }: { foods: FoodLog[]; onAdd: (log: Food
               onClick={() => onAdd(log)}
               className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-sm transition-colors hover:border-[#4169E1]/40 hover:bg-[#4169E1]/5 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-[#87CEEB]/40 dark:hover:bg-[#87CEEB]/5"
             >
-              <span className="max-w-[130px] truncate">{name}</span>
+              <span className="max-w-32.5 truncate">{name}</span>
               <span className="shrink-0 text-zinc-400">{kcal} kcal</span>
             </button>
           );
