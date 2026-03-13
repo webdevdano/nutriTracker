@@ -98,9 +98,16 @@ export default function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 sm:hidden overflow-hidden border-t border-[#D3D8E0] bg-white/95 backdrop-blur-sm dark:border-gray-800 dark:bg-black/95">
-      <div className="overflow-x-auto scrollbar-hide" style={{ paddingBottom: "env(safe-area-inset-bottom)", WebkitOverflowScrolling: "touch" } as React.CSSProperties}>
-      <div className="flex min-w-max">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 sm:hidden border-t border-[#D3D8E0] bg-white/95 backdrop-blur-sm dark:border-gray-800 dark:bg-black/95">
+      <div
+        className="scrollbar-hide"
+        style={{
+          overflowX: "scroll",
+          WebkitOverflowScrolling: "touch",
+          paddingBottom: "env(safe-area-inset-bottom)",
+        } as React.CSSProperties}
+      >
+      <div className="flex">
         {TABS.map(({ href, label, icon, exact }) => {
           const isActive = active(href, exact);
           return (
