@@ -1,3 +1,10 @@
+/* Prevent horizontal page scroll on mobile */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 /* Hide scrollbar utility for horizontal nav bar */
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE and Edge */
