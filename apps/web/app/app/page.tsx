@@ -56,7 +56,7 @@ type DashboardQueryResult = {
   dashboard: {
     logs: Array<FoodLog & { foodName: string }>;
     summary: { calories: number; protein: number; carbs: number; fat: number; fiber: number; sodium: number };
-    goals: { caloriesGoal: number | null; proteinGoal: number | null; carbsGoal: number | null; fatGoal: number | null } | null;
+    goals: { caloriesGoal: number | null; proteinGoal: number | null; carbsGoal: number | null; fatGoal: number | null; targetWeight?: number | null; targetDate?: string | null } | null;
     profile: { fullName: string | null; fitnessGoal: string | null } | null;
   };
 };
