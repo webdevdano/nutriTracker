@@ -181,24 +181,126 @@ const PROTEINS_PLANT: Superfood[] = [
 // Flat list used for the food detail modal navigation within the proteins tab
 const PROTEINS_FOODS_ALL: Superfood[] = [...PROTEINS_POULTRY, ...PROTEINS_FISH, ...PROTEINS_SHELLFISH, ...PROTEINS_EGGS_DAIRY, ...PROTEINS_PLANT];
 
-const VITAMINS_FOODS: Superfood[] = [
-  { name: "Spinach", emoji: "🥬", description: "Rich in vitamin K, A, C", nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"], benefits: ["Supports bone health", "Boosts immune system", "Improves eye health", "Rich in antioxidants"], serving: "1 cup cooked (180g)" },
-  { name: "Citrus Fruits", emoji: "🍋", description: "High in vitamin C", nutrients: ["Vitamin C", "Folate", "Potassium", "Fiber", "Antioxidants"], benefits: ["Boosts immune system", "Improves skin health", "Aids iron absorption", "Antioxidant-rich"], serving: "1 medium orange (130g)" },
-  { name: "Carrots", emoji: "🥕", description: "Excellent source of vitamin A", nutrients: ["Vitamin A", "Vitamin K", "Fiber", "Potassium", "Vitamin C"], benefits: ["Eye health", "Immune support", "Digestive health", "Antioxidant-rich"], serving: "1 medium (61g)" },
-  { name: "Red Peppers", emoji: "🫑", description: "Vitamin C and antioxidants", nutrients: ["Vitamin C", "Vitamin A", "Vitamin B6", "Folate", "Antioxidants"], benefits: ["Boosts immune system", "Supports eye health", "Rich in antioxidants", "Aids iron absorption"], serving: "1 medium (119g)" },
+const FATS_WHOLE: Superfood[] = [
+  { name: "Avocado", emoji: "🥑", description: "Creamy fruit loaded with monounsaturated fat", nutrients: ["Monounsaturated Fat", "Fiber", "Potassium", "Vitamin E", "Vitamin K", "Folate"], benefits: ["Heart health", "Nutrient absorption", "Skin health", "Sustained satiety"], serving: "1/2 avocado (100g)" },
+  { name: "Olive Oil (Extra Virgin)", emoji: "🫒", description: "Cold-pressed oil rich in oleic acid and polyphenols", nutrients: ["Monounsaturated Fat", "Vitamin E", "Vitamin K", "Polyphenols", "Oleic Acid"], benefits: ["Heart health", "Anti-inflammatory", "Antioxidant-rich", "Reduces LDL cholesterol"], serving: "1 tbsp (14g)" },
+  { name: "Coconut Oil", emoji: "🥥", description: "Tropical oil high in medium-chain triglycerides", nutrients: ["Saturated Fat", "MCTs", "Lauric Acid", "Caprylic Acid"], benefits: ["Quick energy from MCTs", "Antimicrobial properties", "Supports brain function", "Raises HDL cholesterol"], serving: "1 tbsp (14g)" },
+  { name: "Butter", emoji: "🧈", description: "Dairy fat rich in fat-soluble vitamins", nutrients: ["Saturated Fat", "Vitamin A", "Vitamin D", "Vitamin K2", "Butyrate", "CLA"], benefits: ["Vitamin K2 for arteries", "Gut health via butyrate", "Fat-soluble vitamin absorption", "Energy dense"], serving: "1 tbsp (14g)" },
+  { name: "Ghee", emoji: "🧈", description: "Clarified butter — lactose-free with concentrated nutrients", nutrients: ["Saturated Fat", "Vitamin A", "Vitamin D", "Vitamin K2", "Butyrate", "CLA"], benefits: ["Lactose-free", "High smoke point", "Gut health", "Rich in fat-soluble vitamins"], serving: "1 tbsp (13g)" },
+  { name: "Olives", emoji: "🫒", description: "Whole food source of healthy monounsaturated fat", nutrients: ["Monounsaturated Fat", "Vitamin E", "Iron", "Copper", "Polyphenols", "Fiber"], benefits: ["Heart health", "Anti-inflammatory", "Antioxidant-rich", "Bone health"], serving: "10 olives (44g)" },
 ];
 
-const MINERALS_FOODS: Superfood[] = [
-  { name: "Almonds", emoji: "🥜", description: "Magnesium, calcium, iron", nutrients: ["Magnesium", "Calcium", "Iron", "Fiber", "Vitamin E", "Protein"], benefits: ["Supports heart health", "Bone strength", "Rich in antioxidants", "Helps control blood sugar"], serving: "1 oz (28g)" },
-  { name: "Pumpkin Seeds", emoji: "🎃", description: "Zinc, magnesium, iron", nutrients: ["Zinc", "Magnesium", "Iron", "Copper", "Manganese", "Healthy Fats"], benefits: ["Improves sleep", "Boosts immune system", "Supports prostate health", "Rich in antioxidants"], serving: "1 oz (28g)" },
-  { name: "Salmon", emoji: "🐟", description: "Rich in selenium and iodine", nutrients: ["Selenium", "Iodine", "Phosphorus", "Potassium", "Magnesium", "Vitamin D"], benefits: ["Heart health", "Brain function", "Reduces inflammation", "High-quality protein"], serving: "3 oz (85g)" },
-  { name: "Broccoli", emoji: "🥦", description: "Calcium, potassium, iron", nutrients: ["Calcium", "Potassium", "Iron", "Vitamin C", "Folate", "Fiber"], benefits: ["Cancer prevention", "Bone health", "Digestive health", "Immune support"], serving: "1 cup chopped (91g)" },
+const FATS_NUTS_SEEDS: Superfood[] = [
+  { name: "Almonds", emoji: "🥜", description: "Monounsaturated fat with vitamin E", nutrients: ["Monounsaturated Fat", "Vitamin E", "Magnesium", "Fiber", "Protein", "Calcium"], benefits: ["Heart health", "Blood sugar control", "Rich in antioxidants", "Bone strength"], serving: "1 oz (28g)" },
+  { name: "Walnuts", emoji: "🌰", description: "Highest omega-3 content of any nut", nutrients: ["Omega-3 ALA", "Polyunsaturated Fat", "Magnesium", "Copper", "Manganese", "Folate"], benefits: ["Brain health", "Heart health", "Anti-inflammatory", "Reduces LDL cholesterol"], serving: "1 oz (28g)" },
+  { name: "Macadamia Nuts", emoji: "🥜", description: "Richest nut in monounsaturated fat", nutrients: ["Monounsaturated Fat", "Thiamine", "Manganese", "Copper", "Fiber"], benefits: ["Heart health", "Anti-inflammatory", "Satiating", "Improves cholesterol ratio"], serving: "1 oz (28g)" },
+  { name: "Pecans", emoji: "🌰", description: "Antioxidant-rich nut with healthy fats", nutrients: ["Monounsaturated Fat", "Zinc", "Manganese", "Copper", "Thiamine", "Fiber"], benefits: ["Heart health", "Antioxidant-rich", "Blood sugar support", "Anti-inflammatory"], serving: "1 oz (28g)" },
+  { name: "Chia Seeds", emoji: "🌱", description: "Tiny seeds packed with omega-3 ALA", nutrients: ["Omega-3 ALA", "Fiber", "Calcium", "Magnesium", "Phosphorus", "Protein"], benefits: ["Heart health", "Digestive health", "Bone strength", "Blood sugar control"], serving: "2 tbsp (28g)" },
+  { name: "Flaxseeds", emoji: "🌿", description: "Ground seeds with the highest plant omega-3", nutrients: ["Omega-3 ALA", "Fiber", "Lignan", "Magnesium", "Thiamine", "Phosphorus"], benefits: ["Hormone balance", "Heart health", "Digestive health", "Anti-inflammatory"], serving: "2 tbsp (20g)" },
+  { name: "Hemp Seeds", emoji: "🌿", description: "Complete protein with balanced omega-3 to omega-6", nutrients: ["Omega-3 ALA", "Omega-6", "Protein", "Magnesium", "Iron", "Zinc"], benefits: ["Ideal omega ratio", "Complete amino acids", "Heart health", "Anti-inflammatory"], serving: "3 tbsp (30g)" },
+  { name: "Sunflower Seeds", emoji: "🌻", description: "Vitamin E rich seed with polyunsaturated fats", nutrients: ["Polyunsaturated Fat", "Vitamin E", "Selenium", "Magnesium", "Thiamine", "Copper"], benefits: ["Antioxidant-rich", "Heart health", "Immune support", "Skin health"], serving: "1 oz (28g)" },
+  { name: "Pumpkin Seeds", emoji: "🎃", description: "Zinc and magnesium rich seeds with healthy fats", nutrients: ["Monounsaturated Fat", "Zinc", "Magnesium", "Iron", "Copper", "Manganese"], benefits: ["Immune support", "Sleep quality", "Prostate health", "Anti-inflammatory"], serving: "1 oz (28g)" },
 ];
+
+const FATS_FISH: Superfood[] = [
+  { name: "Salmon", emoji: "🐟", description: "Best source of long-chain omega-3s EPA and DHA", nutrients: ["Omega-3 EPA", "Omega-3 DHA", "Protein", "Vitamin D", "Selenium", "Astaxanthin"], benefits: ["Heart health", "Brain function", "Reduces inflammation", "Eye health"], serving: "3 oz (85g)" },
+  { name: "Mackerel", emoji: "🐟", description: "Fatty fish extremely high in omega-3s", nutrients: ["Omega-3 EPA", "Omega-3 DHA", "Vitamin D", "Vitamin B12", "Selenium", "Niacin"], benefits: ["Heart health", "Brain health", "Reduces triglycerides", "Anti-inflammatory"], serving: "3 oz (85g)" },
+  { name: "Sardines", emoji: "🐟", description: "Small oily fish packed with omega-3s and calcium", nutrients: ["Omega-3 EPA", "Omega-3 DHA", "Calcium", "Vitamin D", "Vitamin B12", "Selenium"], benefits: ["Bone health", "Heart health", "Brain function", "Sustainable source"], serving: "3 oz (85g)" },
+  { name: "Herring", emoji: "🐟", description: "Underrated fatty fish with great omega-3 profile", nutrients: ["Omega-3 EPA", "Omega-3 DHA", "Vitamin D", "Vitamin B12", "Selenium", "Iodine"], benefits: ["Heart health", "Thyroid support", "Brain health", "Rich in vitamin D"], serving: "3 oz (85g)" },
+  { name: "Anchovies", emoji: "🐟", description: "Tiny fish with concentrated omega-3s", nutrients: ["Omega-3 EPA", "Omega-3 DHA", "Calcium", "Iron", "Selenium", "Niacin"], benefits: ["Heart health", "Anti-inflammatory", "Bone health", "Umami flavor boost"], serving: "1 oz (28g)" },
+];
+
+const FATS_DAIRY: Superfood[] = [
+  { name: "Full-Fat Greek Yogurt", emoji: "🥛", description: "Probiotic dairy with healthy saturated fat", nutrients: ["Saturated Fat", "Protein", "Calcium", "Probiotics", "Vitamin B12", "CLA"], benefits: ["Gut health", "Bone strength", "Satiating", "CLA for body composition"], serving: "1 cup (245g)" },
+  { name: "Hard Cheese (Cheddar)", emoji: "🧀", description: "Aged cheese with fat-soluble vitamins", nutrients: ["Saturated Fat", "Protein", "Calcium", "Vitamin K2", "Vitamin A", "Zinc"], benefits: ["Bone health", "Vitamin K2 for arteries", "Satiating", "Dental health"], serving: "1 oz (28g)" },
+  { name: "Heavy Cream", emoji: "🥛", description: "High-fat dairy for cooking and calories", nutrients: ["Saturated Fat", "Vitamin A", "Vitamin D", "Choline", "Riboflavin"], benefits: ["Energy dense", "Fat-soluble vitamin source", "Keto-friendly", "Cooking versatility"], serving: "2 tbsp (30ml)" },
+  { name: "Whole Milk", emoji: "🥛", description: "Balanced fat and protein dairy", nutrients: ["Saturated Fat", "Protein", "Calcium", "Vitamin D", "Phosphorus", "Riboflavin"], benefits: ["Bone health", "Muscle recovery", "CLA content", "Nutrient absorption"], serving: "1 cup (244ml)" },
+];
+
+const FATS_ALL: Superfood[] = [...FATS_WHOLE, ...FATS_NUTS_SEEDS, ...FATS_FISH, ...FATS_DAIRY];
+
+const VITAMINS_FAT_SOLUBLE: Superfood[] = [
+  { name: "Carrots", emoji: "🥕", description: "Highest beta-carotene (pro-vitamin A) vegetable", nutrients: ["Vitamin A", "Vitamin K", "Fiber", "Potassium", "Vitamin C"], benefits: ["Eye health", "Immune support", "Skin health", "Antioxidant-rich"], serving: "1 medium (61g)" },
+  { name: "Sweet Potato", emoji: "🍠", description: "One of the richest sources of vitamin A", nutrients: ["Vitamin A", "Vitamin C", "Vitamin B6", "Potassium", "Fiber", "Manganese"], benefits: ["Eye health", "Immune support", "Skin health", "Stable energy"], serving: "1 medium (150g)" },
+  { name: "Liver (Beef)", emoji: "🥩", description: "Most nutrient-dense food — richest source of vitamin A", nutrients: ["Vitamin A", "Vitamin B12", "Folate", "Iron", "Copper", "Riboflavin"], benefits: ["Eye health", "Immune support", "Red blood cell production", "Detoxification"], serving: "3 oz (85g)" },
+  { name: "Egg Yolk", emoji: "🥚", description: "Natural source of vitamins A, D, E and K", nutrients: ["Vitamin A", "Vitamin D", "Vitamin E", "Vitamin K2", "Choline", "Selenium"], benefits: ["Eye health", "Bone health", "Brain health", "Fat-soluble vitamin package"], serving: "1 large yolk (17g)" },
+  { name: "Salmon", emoji: "🐟", description: "Top food source of vitamin D3 and E", nutrients: ["Vitamin D", "Vitamin E", "Omega-3s", "Selenium", "Protein", "Vitamin B12"], benefits: ["Bone health", "Immune support", "Heart health", "Anti-inflammatory"], serving: "3 oz (85g)" },
+  { name: "Sardines", emoji: "🐟", description: "Excellent vitamin D source with calcium", nutrients: ["Vitamin D", "Vitamin B12", "Calcium", "Omega-3s", "Selenium", "Phosphorus"], benefits: ["Bone health", "Immune support", "Brain health", "Heart health"], serving: "3 oz (85g)" },
+  { name: "Cod Liver Oil", emoji: "🫙", description: "Concentrated vitamin A and D supplement food", nutrients: ["Vitamin A", "Vitamin D", "Vitamin E", "Omega-3 EPA", "Omega-3 DHA"], benefits: ["Bone health", "Immune support", "Eye health", "Anti-inflammatory"], serving: "1 tsp (5ml)" },
+  { name: "Sunflower Seeds", emoji: "🌻", description: "Richest food source of vitamin E", nutrients: ["Vitamin E", "Selenium", "Magnesium", "Thiamine", "Copper", "Polyunsaturated Fat"], benefits: ["Antioxidant protection", "Immune support", "Heart health", "Skin health"], serving: "1 oz (28g)" },
+  { name: "Almonds", emoji: "🥜", description: "Top plant source of vitamin E", nutrients: ["Vitamin E", "Magnesium", "Calcium", "Fiber", "Protein", "Monounsaturated Fat"], benefits: ["Antioxidant protection", "Heart health", "Blood sugar control", "Skin health"], serving: "1 oz (28g)" },
+  { name: "Spinach", emoji: "🥬", description: "Richest leafy green for vitamin K1", nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Iron", "Calcium"], benefits: ["Blood clotting", "Bone health", "Antioxidant-rich", "Eye health"], serving: "1 cup cooked (180g)" },
+  { name: "Kale", emoji: "🥗", description: "High in both vitamin K1 and K2", nutrients: ["Vitamin K", "Vitamin A", "Vitamin C", "Folate", "Calcium", "Iron"], benefits: ["Bone health", "Heart health", "Cancer prevention", "Anti-inflammatory"], serving: "1 cup raw (67g)" },
+  { name: "Natto (Fermented Soy)", emoji: "🌱", description: "Highest food source of vitamin K2 (MK-7)", nutrients: ["Vitamin K2", "Protein", "Fiber", "Iron", "Calcium", "Nattokinase"], benefits: ["Arterial health", "Bone density", "Cardiovascular health", "Blood clot prevention"], serving: "3 oz (85g)" },
+];
+
+const VITAMINS_B: Superfood[] = [
+  { name: "Beef Liver", emoji: "🥩", description: "Best overall source of all B vitamins", nutrients: ["Vitamin B12", "Riboflavin (B2)", "Niacin (B3)", "Folate (B9)", "B6", "Pantothenic Acid"], benefits: ["Energy production", "Red blood cell formation", "Nerve health", "Detoxification"], serving: "3 oz (85g)" },
+  { name: "Salmon", emoji: "🐟", description: "Excellent source of B vitamins especially B12", nutrients: ["Vitamin B12", "Niacin (B3)", "Vitamin B6", "Riboflavin", "Thiamine", "Pantothenic Acid"], benefits: ["Nerve health", "Energy metabolism", "Heart health", "Brain function"], serving: "3 oz (85g)" },
+  { name: "Eggs", emoji: "🥚", description: "Complete B vitamin profile especially biotin and B12", nutrients: ["Vitamin B12", "Biotin (B7)", "Riboflavin (B2)", "Pantothenic Acid", "Folate", "Choline"], benefits: ["Hair and nail health", "Energy production", "Brain health", "Nerve function"], serving: "1 large egg (50g)" },
+  { name: "Lentils", emoji: "🥣", description: "Best plant source of folate (B9)", nutrients: ["Folate (B9)", "Thiamine (B1)", "Iron", "Fiber", "Protein", "Manganese"], benefits: ["Cell division", "Pregnancy health", "Red blood cell formation", "Heart health"], serving: "1 cup cooked (198g)" },
+  { name: "Chickpeas", emoji: "🫘", description: "High in folate and vitamin B6", nutrients: ["Folate (B9)", "Vitamin B6", "Thiamine (B1)", "Protein", "Fiber", "Iron"], benefits: ["Brain health", "Cell growth", "Heart health", "Blood sugar control"], serving: "1 cup cooked (164g)" },
+  { name: "Brown Rice", emoji: "🍚", description: "Good source of thiamine and niacin", nutrients: ["Thiamine (B1)", "Niacin (B3)", "Vitamin B6", "Magnesium", "Phosphorus", "Manganese"], benefits: ["Energy metabolism", "Nerve function", "Digestive health", "Blood sugar control"], serving: "1 cup cooked (195g)" },
+  { name: "Nutritional Yeast", emoji: "🧬", description: "Complete B vitamin complex including B12", nutrients: ["Vitamin B12", "Thiamine (B1)", "Riboflavin (B2)", "Niacin (B3)", "Folate", "B6"], benefits: ["Vegan B12 source", "Energy production", "Immune support", "Savory umami flavor"], serving: "2 tbsp (16g)" },
+  { name: "Avocado", emoji: "🥑", description: "Richest fruit in B vitamins", nutrients: ["Pantothenic Acid (B5)", "Folate (B9)", "Vitamin B6", "Riboflavin", "Niacin", "Thiamine"], benefits: ["Energy metabolism", "Hormone production", "Brain health", "Heart health"], serving: "1/2 avocado (100g)" },
+  { name: "Turkey Breast", emoji: "🦃", description: "Excellent source of niacin (B3) and B6", nutrients: ["Niacin (B3)", "Vitamin B6", "Vitamin B12", "Pantothenic Acid", "Riboflavin", "Selenium"], benefits: ["Energy production", "Nerve health", "Mood regulation", "Muscle support"], serving: "3 oz (85g)" },
+];
+
+const VITAMINS_C: Superfood[] = [
+  { name: "Red Bell Pepper", emoji: "🫑", description: "Highest vitamin C of any common vegetable", nutrients: ["Vitamin C", "Vitamin A", "Vitamin B6", "Folate", "Potassium", "Fiber"], benefits: ["Immune boost", "Collagen production", "Eye health", "Iron absorption"], serving: "1 medium (119g)" },
+  { name: "Kiwi", emoji: "🥝", description: "Gram for gram more vitamin C than oranges", nutrients: ["Vitamin C", "Vitamin K", "Vitamin E", "Folate", "Fiber", "Potassium"], benefits: ["Immune support", "Digestive health", "Sleep quality", "Antioxidant-rich"], serving: "1 medium (69g)" },
+  { name: "Strawberries", emoji: "🍓", description: "Sweet berry packed with vitamin C", nutrients: ["Vitamin C", "Manganese", "Folate", "Fiber", "Potassium", "Antioxidants"], benefits: ["Heart health", "Blood sugar control", "Immune support", "Skin health"], serving: "1 cup (152g)" },
+  { name: "Broccoli", emoji: "🥦", description: "High vitamin C and K cruciferous vegetable", nutrients: ["Vitamin C", "Vitamin K", "Folate", "Fiber", "Potassium", "Sulforaphane"], benefits: ["Cancer prevention", "Immune support", "Bone health", "Detoxification"], serving: "1 cup chopped (91g)" },
+  { name: "Oranges", emoji: "🍊", description: "Classic vitamin C citrus fruit", nutrients: ["Vitamin C", "Folate", "Thiamine", "Potassium", "Fiber", "Hesperidin"], benefits: ["Immune support", "Collagen production", "Heart health", "Iron absorption"], serving: "1 medium (130g)" },
+  { name: "Guava", emoji: "🍈", description: "Tropical fruit with 4x more vitamin C than oranges", nutrients: ["Vitamin C", "Fiber", "Folate", "Potassium", "Vitamin A", "Lycopene"], benefits: ["Immune powerhouse", "Gut health", "Skin health", "Blood sugar control"], serving: "1 medium (55g)" },
+  { name: "Papaya", emoji: "🍐", description: "Tropical fruit high in vitamin C and digestive enzymes", nutrients: ["Vitamin C", "Vitamin A", "Folate", "Potassium", "Papain", "Fiber"], benefits: ["Digestive health", "Immune support", "Anti-inflammatory", "Skin health"], serving: "1 cup cubed (145g)" },
+  { name: "Brussels Sprouts", emoji: "🥦", description: "Cruciferous vegetable with high vitamin C and K", nutrients: ["Vitamin C", "Vitamin K", "Folate", "Fiber", "Vitamin B6", "Glucosinolates"], benefits: ["Cancer prevention", "Bone health", "Digestive health", "Immune support"], serving: "1 cup cooked (156g)" },
+  { name: "Spinach", emoji: "🥬", description: "Leafy green with vitamin C, K and folate", nutrients: ["Vitamin C", "Vitamin K", "Folate", "Vitamin A", "Iron", "Calcium"], benefits: ["Immune support", "Iron absorption", "Bone health", "Eye health"], serving: "1 cup raw (30g)" },
+];
+
+const VITAMINS_ALL: Superfood[] = [...VITAMINS_FAT_SOLUBLE, ...VITAMINS_B, ...VITAMINS_C];
+
+const MINERALS_ELECTROLYTES: Superfood[] = [
+  { name: "Banana", emoji: "🍌", description: "Potassium-rich fruit for muscle and nerve function", nutrients: ["Potassium", "Vitamin B6", "Vitamin C", "Magnesium", "Fiber", "Carbohydrates"], benefits: ["Muscle function", "Blood pressure control", "Heart rhythm", "Reduces cramps"], serving: "1 medium (118g)" },
+  { name: "Sweet Potato", emoji: "🍠", description: "High potassium and magnesium root vegetable", nutrients: ["Potassium", "Magnesium", "Vitamin A", "Fiber", "Manganese", "Vitamin C"], benefits: ["Blood pressure support", "Muscle health", "Heart health", "Electrolyte balance"], serving: "1 medium (150g)" },
+  { name: "Avocado", emoji: "🥑", description: "Potassium-dense fruit — more than a banana", nutrients: ["Potassium", "Magnesium", "Sodium", "Fiber", "Vitamin K", "Folate"], benefits: ["Blood pressure control", "Heart health", "Muscle recovery", "Electrolyte balance"], serving: "1/2 avocado (100g)" },
+  { name: "Spinach", emoji: "🤬", description: "Rich in magnesium and potassium", nutrients: ["Magnesium", "Potassium", "Calcium", "Iron", "Vitamin K", "Folate"], benefits: ["Muscle relaxation", "Blood pressure support", "Bone health", "Heart health"], serving: "1 cup cooked (180g)" },
+  { name: "Coconut Water", emoji: "🥥", description: "Natural electrolyte-packed drink", nutrients: ["Potassium", "Sodium", "Magnesium", "Calcium", "Phosphorus"], benefits: ["Hydration", "Electrolyte replenishment", "Muscle recovery", "Blood pressure support"], serving: "1 cup (240ml)" },
+  { name: "Dark Chocolate (70%+)", emoji: "🍫", description: "Rich in magnesium with antioxidants", nutrients: ["Magnesium", "Iron", "Copper", "Manganese", "Zinc", "Polyphenols"], benefits: ["Heart health", "Stress relief", "Antioxidant-rich", "Mood support"], serving: "1 oz (28g)" },
+  { name: "Pumpkin Seeds", emoji: "🎃", description: "Highest magnesium content of any seed", nutrients: ["Magnesium", "Zinc", "Iron", "Copper", "Manganese", "Phosphorus"], benefits: ["Muscle function", "Sleep quality", "Immune support", "Blood sugar control"], serving: "1 oz (28g)" },
+  { name: "Black Beans", emoji: "🫘", description: "Magnesium and potassium-rich legume", nutrients: ["Magnesium", "Potassium", "Iron", "Folate", "Fiber", "Protein"], benefits: ["Heart health", "Blood sugar control", "Digestive health", "Muscle function"], serving: "1 cup cooked (172g)" },
+];
+
+const MINERALS_BONE: Superfood[] = [
+  { name: "Milk", emoji: "🥛", description: "Most bioavailable calcium dairy source", nutrients: ["Calcium", "Phosphorus", "Vitamin D", "Protein", "Vitamin B12", "Riboflavin"], benefits: ["Bone density", "Teeth strength", "Muscle contraction", "Nerve function"], serving: "1 cup (244ml)" },
+  { name: "Greek Yogurt", emoji: "🥛", description: "High calcium probiotic dairy", nutrients: ["Calcium", "Phosphorus", "Protein", "Vitamin B12", "Probiotics", "Selenium"], benefits: ["Bone health", "Gut health", "Muscle support", "Immune support"], serving: "1 cup (245g)" },
+  { name: "Parmesan Cheese", emoji: "🧀", description: "Highest calcium content of any cheese", nutrients: ["Calcium", "Phosphorus", "Protein", "Vitamin A", "Zinc", "Vitamin K2"], benefits: ["Bone density", "Teeth health", "Muscle support", "Low lactose"], serving: "1 oz (28g)" },
+  { name: "Sardines (with bones)", emoji: "🐟", description: "Calcium-rich fish with edible bones", nutrients: ["Calcium", "Phosphorus", "Vitamin D", "Omega-3s", "Selenium", "Vitamin B12"], benefits: ["Bone health", "Heart health", "Anti-inflammatory", "Convenient protein"], serving: "3 oz (85g)" },
+  { name: "Kale", emoji: "🤬", description: "Best non-dairy plant source of calcium", nutrients: ["Calcium", "Vitamin K", "Vitamin C", "Magnesium", "Manganese", "Folate"], benefits: ["Bone density", "Heart health", "Cancer prevention", "Anti-inflammatory"], serving: "1 cup raw (67g)" },
+  { name: "Broccoli", emoji: "🥦", description: "Calcium and phosphorus cruciferous vegetable", nutrients: ["Calcium", "Phosphorus", "Vitamin C", "Vitamin K", "Folate", "Fiber"], benefits: ["Bone health", "Immune support", "Cancer prevention", "Digestive health"], serving: "1 cup chopped (91g)" },
+  { name: "Almonds", emoji: "🥜", description: "Best nut for calcium intake", nutrients: ["Calcium", "Magnesium", "Phosphorus", "Vitamin E", "Fiber", "Protein"], benefits: ["Bone strength", "Heart health", "Blood sugar control", "Antioxidant-rich"], serving: "1 oz (28g)" },
+  { name: "Edamame", emoji: "🫛", description: "Calcium and phosphorus-rich soy", nutrients: ["Calcium", "Phosphorus", "Magnesium", "Protein", "Fiber", "Folate"], benefits: ["Bone health", "Plant-based calcium", "Muscle support", "Heart health"], serving: "1 cup (155g)" },
+];
+
+const MINERALS_TRACE: Superfood[] = [
+  { name: "Oysters", emoji: "🐚", description: "Highest zinc and copper food source", nutrients: ["Zinc", "Copper", "Selenium", "Iron", "Vitamin B12", "Omega-3s"], benefits: ["Immune function", "Wound healing", "Fertility support", "Antioxidant-rich"], serving: "3 oz (85g)" },
+  { name: "Beef (Sirloin)", emoji: "🥩", description: "Richest source of heme iron and zinc", nutrients: ["Iron", "Zinc", "Selenium", "Vitamin B12", "Creatine", "Phosphorus"], benefits: ["Red blood cell formation", "Immune support", "Muscle building", "Energy production"], serving: "3 oz (85g)" },
+  { name: "Spinach", emoji: "🤬", description: "Iron-rich leafy green (non-heme)", nutrients: ["Iron", "Calcium", "Magnesium", "Vitamin C", "Folate", "Vitamin K"], benefits: ["Anemia prevention", "Immune support", "Bone health", "Energy production"], serving: "1 cup cooked (180g)" },
+  { name: "Lentils", emoji: "🥣", description: "Best plant source of iron and manganese", nutrients: ["Iron", "Manganese", "Folate", "Copper", "Phosphorus", "Fiber"], benefits: ["Iron for vegetarians", "Blood health", "Heart health", "Digestive health"], serving: "1 cup cooked (198g)" },
+  { name: "Brazil Nuts", emoji: "🥜", description: "Highest selenium food — just 1-2 per day", nutrients: ["Selenium", "Magnesium", "Phosphorus", "Copper", "Manganese", "Zinc"], benefits: ["Thyroid function", "Antioxidant protection", "Immune support", "Mood regulation"], serving: "1 oz / 6 nuts (28g)" },
+  { name: "Salmon", emoji: "🐟", description: "Selenium and iodine-rich fatty fish", nutrients: ["Selenium", "Iodine", "Phosphorus", "Potassium", "Magnesium", "Vitamin D"], benefits: ["Thyroid support", "Heart health", "Brain function", "Anti-inflammatory"], serving: "3 oz (85g)" },
+  { name: "Shiitake Mushrooms", emoji: "🍄", description: "Rich in copper, manganese and selenium", nutrients: ["Copper", "Manganese", "Selenium", "Zinc", "Vitamin B5", "Fiber"], benefits: ["Immune support", "Antioxidant protection", "Heart health", "Anti-inflammatory"], serving: "1 cup cooked (145g)" },
+  { name: "Cashews", emoji: "🥜", description: "High in copper and manganese", nutrients: ["Copper", "Manganese", "Magnesium", "Phosphorus", "Iron", "Zinc"], benefits: ["Nerve function", "Bone health", "Immune support", "Energy production"], serving: "1 oz (28g)" },
+  { name: "Cod", emoji: "🐟", description: "Richest common food source of iodine", nutrients: ["Iodine", "Selenium", "Protein", "Phosphorus", "Vitamin B12", "Niacin"], benefits: ["Thyroid function", "Metabolism support", "Brain development", "Low in fat"], serving: "3 oz (85g)" },
+  { name: "Seaweed (Nori)", emoji: "🌿", description: "Ocean plant packed with iodine and trace minerals", nutrients: ["Iodine", "Manganese", "Iron", "Calcium", "Magnesium", "Omega-3s"], benefits: ["Thyroid support", "Gut health", "Antioxidant-rich", "Anti-inflammatory"], serving: "1 sheet / 2.5g" },
+];
+
+const MINERALS_ALL: Superfood[] = [...MINERALS_ELECTROLYTES, ...MINERALS_BONE, ...MINERALS_TRACE];
 
 function LearnPage() {
   // Filter nutrients based on search
   const [searchQuery, setSearchQuery] = useState('');
-  const [view, setView] = useState<'alphabetical' | 'category' | 'carbohydrates' | 'proteins' | 'vitamins' | 'minerals' | 'superfoods'>('category');
+  const [view, setView] = useState<'alphabetical' | 'category' | 'carbohydrates' | 'proteins' | 'fats' | 'vitamins' | 'minerals' | 'superfoods'>('category');
   const nutrientsByCategory = getNutrientsByCategory();
   const [selectedNutrientIndex, setSelectedNutrientIndex] = useState<number | null>(null);
   const [selectedFoodList, setSelectedFoodList] = useState<Superfood[] | null>(null);
@@ -244,6 +346,7 @@ function LearnPage() {
             <button onClick={() => setView('category')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'category' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}>By Category</button>
             <button onClick={() => setView('carbohydrates')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'carbohydrates' ? 'bg-blue-900 text-white dark:bg-blue-100 dark:text-blue-900' : 'bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-700'}`}>Carbohydrates</button>
             <button onClick={() => setView('proteins')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'proteins' ? 'bg-orange-900 text-white dark:bg-orange-100 dark:text-orange-900' : 'bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-800 dark:text-orange-300 dark:hover:bg-orange-700'}`}>Proteins</button>
+            <button onClick={() => setView('fats')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'fats' ? 'bg-amber-900 text-white dark:bg-amber-100 dark:text-amber-900' : 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-800 dark:text-amber-300 dark:hover:bg-amber-700'}`}>Healthy Fats</button>
             <button onClick={() => setView('vitamins')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'vitamins' ? 'bg-green-900 text-white dark:bg-green-100 dark:text-green-900' : 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-800 dark:text-green-300 dark:hover:bg-green-700'}`}>Vitamins</button>
             <button onClick={() => setView('minerals')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'minerals' ? 'bg-yellow-900 text-white dark:bg-yellow-100 dark:text-yellow-900' : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-800 dark:text-yellow-300 dark:hover:bg-yellow-700'}`}>Minerals</button>
             <button onClick={() => setView('superfoods')} className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'superfoods' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}>🌟 Superfoods</button>
@@ -400,38 +503,134 @@ function LearnPage() {
             </div>
           </div>
         </div>
+        ) : view === 'fats' ? (
+        // Healthy Fats View — grouped by sub-category
+        <div>
+          <div className="mb-6 rounded-xl bg-amber-50 p-6 dark:bg-amber-950/30">
+            <h2 className="mb-2 text-2xl font-bold">🥑 Healthy Fats</h2>
+            <p className="text-zinc-700 dark:text-zinc-300">Foods rich in healthy fats, grouped by type</p>
+          </div>
+
+          <div className="space-y-10">
+            {/* Whole Food Fats */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🫒 Whole Food Fats & Oils</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {FATS_WHOLE.map((food) => (
+                  <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(FATS_ALL, FATS_ALL.findIndex(f => f.name === food.name))} />
+                ))}
+              </div>
+            </div>
+
+            {/* Nuts & Seeds */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🥜 Nuts & Seeds</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {FATS_NUTS_SEEDS.map((food) => (
+                  <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(FATS_ALL, FATS_ALL.findIndex(f => f.name === food.name))} />
+                ))}
+              </div>
+            </div>
+
+            {/* Fatty Fish */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🐟 Fatty Fish</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {FATS_FISH.map((food) => (
+                  <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(FATS_ALL, FATS_ALL.findIndex(f => f.name === food.name))} />
+                ))}
+              </div>
+            </div>
+
+            {/* Dairy Fats */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🧀 Dairy</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {FATS_DAIRY.map((food) => (
+                  <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(FATS_ALL, FATS_ALL.findIndex(f => f.name === food.name))} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
         ) : view === 'vitamins' ? (
-          // Vitamins Food Sources View 
+          // Vitamins Food Sources View
           <div>
             <div className="mb-6 rounded-xl bg-green-50 p-6 dark:bg-green-950/30">
               <h2 className="mb-2 text-2xl font-bold">🍃 Vitamins</h2>
-              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in vitamins</p>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in vitamins, grouped by type</p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {VITAMINS_FOODS.map((vitamin, idx) => (
-                <SuperfoodCard
-                  key={vitamin.name}
-                  superfood={vitamin}
-                  onClick={() => openFood(VITAMINS_FOODS, idx)}
-                />
-              ))}
+
+            <div className="space-y-10">
+              {/* Fat-Soluble: A, D, E, K */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">☀️ Fat-Soluble Vitamins (A, D, E, K)</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {VITAMINS_FAT_SOLUBLE.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(VITAMINS_ALL, VITAMINS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
+
+              {/* B Vitamins */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">⚡ B Vitamins (B1, B2, B3, B5, B6, B7, B9, B12)</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {VITAMINS_B.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(VITAMINS_ALL, VITAMINS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Vitamin C */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🍊 Vitamin C</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {VITAMINS_C.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(VITAMINS_ALL, VITAMINS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         ) : view === 'minerals' ? (
-          // Minerals Food Sources View 
+          // Minerals Food Sources View
           <div>
             <div className="mb-6 rounded-xl bg-yellow-50 p-6 dark:bg-yellow-950/30">
-              <h2 className="mb-2 text-2xl font-bold">🧂 Minerals</h2>
-              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in minerals</p>
+              <h2 className="mb-2 text-2xl font-bold">🪨 Minerals</h2>
+              <p className="text-zinc-700 dark:text-zinc-300">Foods rich in minerals, grouped by type</p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {MINERALS_FOODS.map((mineral, idx) => (
-                <SuperfoodCard
-                  key={mineral.name}
-                  superfood={mineral}
-                  onClick={() => openFood(MINERALS_FOODS, idx)}
-                />
-              ))}
+
+            <div className="space-y-10">
+              {/* Electrolytes */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">⚡ Electrolytes (Potassium, Magnesium, Sodium)</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {MINERALS_ELECTROLYTES.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(MINERALS_ALL, MINERALS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Bone Minerals */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🦴 Bone Minerals (Calcium, Phosphorus)</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {MINERALS_BONE.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(MINERALS_ALL, MINERALS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Trace Minerals */}
+              <div>
+                <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-100">🔬 Trace Minerals (Iron, Zinc, Selenium, Copper, Iodine)</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {MINERALS_TRACE.map((food) => (
+                    <SuperfoodCard key={food.name} superfood={food} onClick={() => openFood(MINERALS_ALL, MINERALS_ALL.findIndex(f => f.name === food.name))} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         ) : view === 'superfoods' ? (
