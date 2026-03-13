@@ -17,11 +17,15 @@ export default async function AppLayout({
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold tracking-tight text-[#4169E1] dark:text-[#87CEEB]">NutriTracker</div>
-            <ThemeToggle />
+            {/* Theme toggle only visible on mobile here; desktop gets it on the right */}
+            <div className="sm:hidden">
+              <ThemeToggle />
+            </div>
           </div>
           {/* Desktop nav — hidden on mobile (bottom nav handles mobile) */}
-          <div className="hidden sm:flex items-center gap-4 overflow-x-auto">
+          <div className="hidden sm:flex items-center gap-2 overflow-x-auto">
             <NavBar isGuest={isGuest} />
+            <ThemeToggle />
           </div>
         </div>
       </header>
