@@ -73,7 +73,7 @@ export default async function Home() {
       <header className="sticky top-0 z-50 border-b border-[#D3D8E0]/60 bg-white/90 backdrop-blur-xl dark:border-gray-800/60 dark:bg-black/90">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <span className="text-xl">🥗</span>
+            <img src="/favicon26_io/favicon-32x32.png" alt="" width={24} height={24} className="rounded-sm" />
             <span className="text-sm font-bold tracking-tight text-[#4169E1] dark:text-[#87CEEB]">NutriTracker</span>
           </div>
           <nav className="flex items-center gap-2 text-sm">
@@ -387,7 +387,7 @@ export default async function Home() {
         <div className="mx-auto w-full max-w-6xl px-6 py-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-2 text-sm font-bold text-[#4169E1] dark:text-[#87CEEB]">
-              <span className="text-lg">🥗</span> NutriTracker
+              <img src="/favicon26_io/favicon-32x32.png" alt="" width={20} height={20} className="rounded-sm" /> NutriTracker
             </div>
             <div className="flex items-center gap-6 text-xs text-zinc-400">
               <a href="/app/learn" className="hover:text-zinc-700 dark:hover:text-zinc-200">Learn</a>

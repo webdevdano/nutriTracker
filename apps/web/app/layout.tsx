@@ -53,9 +53,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" type="image/jpeg" href="/favicon/favicon26.jpg" />
-        <link rel="shortcut icon" href="/favicon/favicon26.jpg" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/favicon/favicon26.jpg" />
+        <link rel="icon" type="image/x-icon" href="/favicon26_io/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon26_io/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon26_io/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon26_io/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#4169E1" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
