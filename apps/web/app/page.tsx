@@ -82,6 +82,12 @@ export default async function Home() {
                 <span className="hidden text-sm text-zinc-500 dark:text-zinc-400 sm:block">
                   Hey, {firstName || user.email?.split("@")[0]} 👋
                 </span>
+                <form action="/api/auth/signout" method="POST">
+                  <input type="hidden" name="callbackUrl" value="/" />
+                  <button type="submit" className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
+                    Not you? Sign out
+                  </button>
+                </form>
                 <a href="/app" className="rounded-full bg-[#4169E1] px-5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#3558c4] dark:bg-[#87CEEB] dark:text-black">
                   Dashboard →
                 </a>
@@ -138,6 +144,9 @@ export default async function Home() {
                         Log a meal
                       </a>
                     </div>
+                    <a href="/app?guest=true" className="mt-3 inline-block text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 underline underline-offset-2">
+                      View guest demo
+                    </a>
                   </>
                 ) : (
                   <>
