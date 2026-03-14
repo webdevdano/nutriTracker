@@ -71,8 +71,8 @@ function InstallBanner() {
     >
       <div className="relative flex items-start gap-3 rounded-2xl border border-zinc-200/80 bg-white px-4 py-3.5 shadow-xl shadow-black/10 dark:border-zinc-700/80 dark:bg-zinc-900">
         {/* Icon */}
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#4169E1]/10 text-xl dark:bg-[#87CEEB]/10">
-          🥗
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#4169E1]/10 dark:bg-[#87CEEB]/10">
+          <img src="/favicon26_io/android-chrome-192x192.png" alt="" width={28} height={28} className="rounded-lg" />
         </div>
 
         <div className="min-w-0 flex-1">
