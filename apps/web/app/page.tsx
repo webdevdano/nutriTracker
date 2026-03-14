@@ -1,6 +1,12 @@
 import { getServerUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { RevealInit } from "@/components/RevealInit";
+import { signOut } from "@/auth";
+
+async function signOutAction() {
+  "use server";
+  await signOut({ redirectTo: "/" });
+}
 
 const FEATURES = [
   {
@@ -82,8 +88,7 @@ export default async function Home() {
                 <span className="hidden text-sm text-zinc-500 dark:text-zinc-400 sm:block">
                   Hey, {firstName || user.email?.split("@")[0]} 👋
                 </span>
-                <form action="/api/auth/signout" method="POST">
-                  <input type="hidden" name="callbackUrl" value="/" />
+                <form action={signOutAction}>
                   <button type="submit" className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
                     Not you? Sign out
                   </button>
