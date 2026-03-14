@@ -625,24 +625,22 @@ export default function WorkoutPage() {
                 {cardioHistory.map((s) =>
                   s.cardioLogs.map((c) => (
                     <div key={c.id} className="rounded-2xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">{ACTIVITY_EMOJI[c.activity] ?? "🏃"}</span>
-                          <div>
-                            <p className="font-semibold text-zinc-900 dark:text-white">
-                              {c.activity.charAt(0) + c.activity.slice(1).toLowerCase().replace("_", " ")}
-                            </p>
-                            <p className="text-xs text-zinc-500 dark:text-zinc-400">{fmtDate(s.date)}</p>
-                          </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-2xl shrink-0">{ACTIVITY_EMOJI[c.activity] ?? "🏃"}</span>
+                          <p className="font-semibold truncate text-zinc-900 dark:text-white">
+                            {c.activity.charAt(0) + c.activity.slice(1).toLowerCase().replace("_", " ")}
+                          </p>
                         </div>
                         <button onClick={() => setDeleteId(s.id)}
-                          className="text-zinc-300 hover:text-red-400 dark:text-zinc-600">
+                          className="shrink-0 text-zinc-300 hover:text-red-400 dark:text-zinc-600">
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
                       </div>
-                      <div className="mt-3 flex flex-wrap gap-2">
+                      <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{fmtDate(s.date)}</p>
+                      <div className="mt-2 flex flex-wrap gap-2">
                         {c.durationMins && (
                           <Chip label={`${c.durationMins} min`} icon="⏱" />
                         )}
@@ -682,26 +680,24 @@ export default function WorkoutPage() {
                   }, {});
 
                   return (
-                    <div key={s.id} className="rounded-2xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-semibold text-zinc-900 dark:text-white">
-                            {s.name || "Strength Session"}
-                          </p>
-                          <p className="text-xs text-zinc-500 dark:text-zinc-400">{fmtDate(s.date)}</p>
-                        </div>
+                    <div key={s.id} className="rounded-2xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 overflow-hidden">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="min-w-0 truncate font-semibold text-zinc-900 dark:text-white">
+                          {s.name || "Strength Session"}
+                        </p>
                         <button onClick={() => setDeleteId(s.id)}
-                          className="text-zinc-300 hover:text-red-400 dark:text-zinc-600">
+                          className="shrink-0 text-zinc-300 hover:text-red-400 dark:text-zinc-600">
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
                       </div>
+                      <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{fmtDate(s.date)}</p>
 
                       <div className="mt-3 space-y-2">
                         {Object.entries(grouped).map(([name, sets]) => (
-                          <div key={name} className="rounded-lg bg-zinc-50 px-3 py-2 dark:bg-zinc-800">
-                            <p className="mb-1 text-xs font-semibold text-zinc-700 dark:text-zinc-200">
+                          <div key={name} className="rounded-lg bg-zinc-50 px-3 py-2 dark:bg-zinc-800 overflow-hidden">
+                            <p className="mb-1 text-xs font-semibold text-zinc-700 dark:text-zinc-200 break-words">
                               {name}
                               <span className="ml-2 font-normal text-zinc-400">
                                 {MUSCLE_GROUPS.find((m) => m.value === sets[0].muscleGroup)?.label}
@@ -710,7 +706,7 @@ export default function WorkoutPage() {
                             <div className="flex flex-wrap gap-1.5">
                               {sets.map((set) => (
                                 <span key={set.id}
-                                  className="rounded-md bg-white px-2 py-0.5 text-xs text-zinc-600 shadow-sm dark:bg-zinc-700 dark:text-zinc-300">
+                                  className="shrink-0 rounded-md bg-white px-2 py-0.5 text-xs text-zinc-600 shadow-sm dark:bg-zinc-700 dark:text-zinc-300">
                                   {set.weightLbs ? `${set.weightLbs} lbs` : "BW"} × {set.reps ?? "—"}
                                 </span>
                               ))}
