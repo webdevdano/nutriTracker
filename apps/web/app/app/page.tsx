@@ -34,6 +34,7 @@ import {
 import Toast from "@/components/Toast";
 import WeightWidget from "@/components/WeightWidget";
 import WaterWidget from "@/components/WaterWidget";
+import VerifyEmailBanner from "@/components/VerifyEmailBanner";
 
 type UserGoal = {
   calories_goal: number | null;
@@ -64,7 +65,7 @@ type DashboardQueryResult = {
 
 export default function TodayPage() {
   const dispatch = useAppDispatch();
-  const { status } = useSession();
+  const { status, data: sessionData } = useSession();
   const isGuest = status === 'unauthenticated';
   const { timeView, showAllNutrients, editingLog, editServingSize, editCustomServing, updating } =
     useAppSelector((s) => s.ui.dashboard);
@@ -431,6 +432,10 @@ export default function TodayPage() {
       {/* Onboarding banner — shown to new users who haven't set up a profile */}
       {!isGuest && !loading && !gqlData?.dashboard?.profile?.fitnessGoal && (
         <OnboardingBanner />
+      )}
+      {/* Email verification banner — shown until user verifies */}
+      {!isGuest && sessionData?.user && !sessionData.user.emailVerified && (
+        <VerifyEmailBanner />
       )}
       {/* Tip of the Day — today only, above summary card */}
       {timeView === 'today' && !isGuest && (

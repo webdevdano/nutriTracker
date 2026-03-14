@@ -32,9 +32,12 @@ export default function ProfileSetupPage() {
   // Physical stats
   const [age, setAge] = useState("");
   const [sex, setSex] = useState("female");
+  // Units toggle — imperial (ft/in, lbs) or metric (cm, kg)
+  const [useMetric, setUseMetric] = useState(false);
   const [feet, setFeet] = useState("");
   const [inches, setInches] = useState("0");
-  const [weight, setWeight] = useState("");
+  const [cm, setCm] = useState("");
+  const [weight, setWeight] = useState("");  // lbs in imperial, kg in metric
   const [activityLevel, setActivityLevel] = useState("Active");
   const [fitnessGoal, setFitnessGoal] = useState<"shred" | "bulk" | "maintain">("maintain");
 
@@ -76,6 +79,17 @@ export default function ProfileSetupPage() {
     setCalculating(true);
     setError(null);
 
+    // Convert metric → imperial if needed (API always expects std units)
+    let apiFeet = feet;
+    let apiInches = inches;
+    let apiLbs = weight;
+    if (useMetric) {
+      const totalInches = parseFloat(cm) / 2.54;
+      apiFeet = String(Math.floor(totalInches / 12));
+      apiInches = String(Math.round(totalInches % 12));
+      apiLbs = String(Math.round(parseFloat(weight) * 2.20462));
+    }
+
     try {
       const params = new URLSearchParams({
         measurement_units: "std",
@@ -83,9 +97,9 @@ export default function ProfileSetupPage() {
         age_value: age,
         age_type: "yrs",
         activity_level: activityLevel,
-        feet,
-        inches,
-        lbs: weight,
+        feet: apiFeet,
+        inches: apiInches,
+        lbs: apiLbs,
       });
 
       const [bmiRes, nutritionRes] = await Promise.all([
@@ -181,6 +195,17 @@ export default function ProfileSetupPage() {
     setLoading(true);
     setError(null);
 
+    // Convert metric → imperial for storage (DB always stores imperial)
+    let saveFeet = parseInt(feet);
+    let saveInches = parseInt(inches);
+    let saveLbs = parseInt(weight);
+    if (useMetric) {
+      const totalIn = parseFloat(cm) / 2.54;
+      saveFeet = Math.floor(totalIn / 12);
+      saveInches = Math.round(totalIn % 12);
+      saveLbs = Math.round(parseFloat(weight) * 2.20462);
+    }
+
     try {
       // Save profile (personal info + physical stats + recommendations)
       const profileRes = await fetch("/api/profile", {
@@ -190,9 +215,9 @@ export default function ProfileSetupPage() {
           full_name: fullName.trim() || undefined,
           age: parseInt(age),
           sex,
-          height_feet: parseInt(feet),
-          height_inches: parseInt(inches),
-          weight_lbs: parseInt(weight),
+          height_feet: saveFeet,
+          height_inches: saveInches,
+          weight_lbs: saveLbs,
           activity_level: activityLevel,
           fitness_goal: fitnessGoal,
           bmi: parseFloat(calculated.bmi),
@@ -298,33 +323,75 @@ export default function ProfileSetupPage() {
           </div>
 
           {/* ── Physical Stats ── */}
-          <h2 className="mb-4 mt-8 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-            Physical Stats
-          </h2>
+          <div className="mb-4 mt-8 flex items-center justify-between">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              Physical Stats
+            </h2>
+            {/* Units toggle */}
+            <div className="flex items-center gap-1 rounded-full border border-zinc-300 p-0.5 text-xs dark:border-zinc-700">
+              <button
+                type="button"
+                onClick={() => setUseMetric(false)}
+                className={`rounded-full px-3 py-1 font-medium transition-colors ${
+                  !useMetric
+                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                    : "text-zinc-500 dark:text-zinc-400"
+                }`}
+              >
+                Imperial
+              </button>
+              <button
+                type="button"
+                onClick={() => setUseMetric(true)}
+                className={`rounded-full px-3 py-1 font-medium transition-colors ${
+                  useMetric
+                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                    : "text-zinc-500 dark:text-zinc-400"
+                }`}
+              >
+                Metric
+              </button>
+            </div>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-1.5">
-              <span className="text-sm font-medium">Height (feet)</span>
-              <input
-                type="number"
-                className="h-10 rounded-xl border border-zinc-300 bg-transparent px-3 text-sm dark:border-zinc-700"
-                value={feet}
-                onChange={(e) => setFeet(e.target.value)}
-                required
-              />
-            </label>
+            {useMetric ? (
+              <label className="grid gap-1.5">
+                <span className="text-sm font-medium">Height (cm)</span>
+                <input
+                  type="number"
+                  placeholder="e.g. 175"
+                  className="h-10 rounded-xl border border-zinc-300 bg-transparent px-3 text-sm dark:border-zinc-700"
+                  value={cm}
+                  onChange={(e) => setCm(e.target.value)}
+                  required
+                />
+              </label>
+            ) : (
+              <>
+                <label className="grid gap-1.5">
+                  <span className="text-sm font-medium">Height (feet)</span>
+                  <input
+                    type="number"
+                    className="h-10 rounded-xl border border-zinc-300 bg-transparent px-3 text-sm dark:border-zinc-700"
+                    value={feet}
+                    onChange={(e) => setFeet(e.target.value)}
+                    required
+                  />
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-sm font-medium">Height (inches)</span>
+                  <input
+                    type="number"
+                    className="h-10 rounded-xl border border-zinc-300 bg-transparent px-3 text-sm dark:border-zinc-700"
+                    value={inches}
+                    onChange={(e) => setInches(e.target.value)}
+                  />
+                </label>
+              </>
+            )}
 
             <label className="grid gap-1.5">
-              <span className="text-sm font-medium">Height (inches)</span>
-              <input
-                type="number"
-                className="h-10 rounded-xl border border-zinc-300 bg-transparent px-3 text-sm dark:border-zinc-700"
-                value={inches}
-                onChange={(e) => setInches(e.target.value)}
-              />
-            </label>
-
-            <label className="grid gap-1.5">
-              <span className="text-sm font-medium">Weight (lbs)</span>
+              <span className="text-sm font-medium">Weight ({useMetric ? "kg" : "lbs"})</span>
               <input
                 type="number"
                 className="h-10 rounded-xl border border-zinc-300 bg-transparent px-3 text-sm dark:border-zinc-700"
@@ -406,6 +473,11 @@ export default function ProfileSetupPage() {
           >
             {calculating ? "Calculating…" : "Calculate My Needs"}
           </button>
+          <div className="mt-3 text-center">
+            <a href="/app" className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 underline underline-offset-2">
+              Skip for now →
+            </a>
+          </div>
         </form>
 
         {calculated ? (
@@ -498,7 +570,7 @@ export default function ProfileSetupPage() {
                 </label>
                 {/* Target weight */}
                 <label className="grid gap-1 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
-                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Target weight (lbs)</span>
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Target weight ({useMetric ? "kg" : "lbs"})</span>
                   <input
                     type="number"
                     placeholder="e.g. 165"
